@@ -6,9 +6,14 @@ function LayoutDefault(){
   return(
     <>
       <Header />
-        <Sidebar />
+      <div className="insert_space">
+
+      </div>
       <main>
-        <Outlet />
+        <Sidebar />
+        <div className="main__content">
+          <Outlet/>
+        </div>
       </main>
       {/* <footer>Footer</footer> */}
     </>
