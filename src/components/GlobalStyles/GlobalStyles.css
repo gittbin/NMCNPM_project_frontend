@@ -1,0 +1,56 @@
+
+
+:root{
+    --primary-color:#04AA6D;
+}
+
+*{  margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    font-size: 62.5%;
+}
+body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1.5;
+    text-rendering: optimizeSpeed;
+}
+.grid{
+    /* voi man to hon 1200 thi chi hien thi 1200 thoi con nho hon thi co th dieu chinh theo cho dung  */
+    /* width:1200px; */
+    max-width: 100%;
+    margin:0 auto;
+    /* can giua */
+}
+.grid__full-width{
+    width:100%;
+}
+.grid__row{
+    display: flex;
+    flex-wrap:wrap;
+    /* cung nam tren hang ngang do main asis=row co xuong dong   */
+    margin-left:-5px;
+    margin-right: -5px;
+    /* tao khoang cach */
+}
+.grid__column2{
+padding-left: 5px;
+padding-right: 5px;
+width:16.6667%;
+}
+.grid__column24{
+    padding-left: 5px;
+    padding-right: 5px;
+    width:20%;
+    }
+.grid__column10{
+    padding-left: 5px;
+    padding-right: 5px;
+    width:83.3333%;
+}
+button,input,[tabindex]{
+    outline: none;
+    border:none;
+}

@@ -13,24 +13,23 @@
 //             </Routes>
 //     </div>
 
-
 //   );
 // }
 // export default App;
-import './App.css';
-import {Route, Routes} from 'react-router-dom';
-import LayoutDefault from './layouts/LayoutDefault';
-import Home from './pages/Home';
-import ManageProduct from './pages/ManageProduct';
-import Page404 from './pages/Page404';
-import Import from './pages/Import';
-import Export from './pages/Export';
-import Main  from './components/introduce/Main_intro.js'
-
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import LayoutDefault from "./layouts/LayoutDefault";
+import Home from "./pages/Home";
+import ManageProduct from "./pages/ManageProduct";
+import Page404 from "./pages/Page404";
+import Import from "./pages/Import";
+import Export from "./pages/Export";
+import Main from "./components/introduce/Main_intro.js";
+import Content from "./components/Content";
 function App() {
   return (
     <>
-      <Routes>
+      {/* <Routes>
       <Route path="/" element={<Main />} /> 
         <Route path='/home' element={<LayoutDefault/>}>
           <Route path='/home' element={<Home/>}/>
@@ -39,7 +38,8 @@ function App() {
           <Route path = 'export' element={<Export/>}/>
           <Route path = '*' element={<Page404/>}/>
         </Route>
-      </Routes>
+      </Routes> */}
+      <Content />
     </>
   );
 }
