@@ -28,6 +28,7 @@ import Main from "./components/introduce/Main_intro.js";
 import Content from "./components/Content";
 import Test from'./pages/Test'
 import Header from "./components/Header/index.js";
+import Form from './components/From/index.js'
 function App() {
   return (
     <>
@@ -41,8 +42,9 @@ function App() {
           <Route path = '*' element={<Page404/>}/>
         </Route>
       </Routes> */}
-      <Header/>
-      <Test />
+      
+      <Test /> 
+
     </>
   );
 }

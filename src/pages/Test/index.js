@@ -5,11 +5,13 @@ import Sidebar from "../../components/Sidebar";
 function Test() {
   return (
     <div className="grid">
-      <div className="grid__row">
-        <div className="grid__column2">
+      <div className="cushion"></div>
+      <Header />
+      <div className="division">
+        <div className="grid__column2 posiSide">
           <Sidebar />
         </div>
-        <div className="grid__column10">
+        <div className="grid__column10 posiContent">
           <Content />
         </div>
       </div>

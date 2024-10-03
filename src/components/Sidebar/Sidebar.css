@@ -3,6 +3,7 @@
     padding: 10px;
     border-right: 2px #b7b7b7 solid;
     width: 240px;
+    position: fixed;
 }
   
 .sidebar>li{

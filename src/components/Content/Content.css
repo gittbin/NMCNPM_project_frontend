@@ -1,181 +1,168 @@
 
-.Content {
-    height: 100vh; 
-  }
-  
 
-  
 .Content_Catergory {
-    height: 28px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    position: relative;
-
+  height: 28px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  position: relative;
 }
 
 .Content_Catergory a {
-    height: 100%;
-    display: block;
-    color: red;
-    padding: 5px 15px;
-    border-radius: 12px;
-    line-height: 1.2rem;
-    font-size: 1.2rem;
+  height: 100%;
+  display: block;
+  color: red;
+  padding: 5px 15px;
+  border-radius: 12px;
+  line-height: 100%;
 }
 
 .scrollContainer {
-    background-color: #555;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none; /* Hide scrollbar on Firefox */
-    position: relative;
-
+  background-color: #555;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none; /* Hide scrollbar on Firefox */
+  position: relative;
 }
 
 .scrollContainer::-webkit-scrollbar {
-    display: none; /* Hide scrollbar on Chrome, Safari and Edge */
+  display: none; /* Hide scrollbar on Chrome, Safari and Edge */
 }
 
 .categoryBold {
-    background-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
 
 .categoryHovered {
-    background-color: black;
+  background-color: black;
 }
 
 /* New Button CSS */
 .fixedButton {
-    background-color: var(--primary-color);
-    border: none;
-    color: red;
-    padding: 5px 10px;
-    cursor: pointer;
-    z-index: 1; /* Đảm bảo nó nằm trên các nội dung khác */
-    border-top-right-radius:12px ;
-    border-bottom-right-radius:12px ;
+  background-color: var(--primary-color);
+  border: none;
+  color: red;
+  padding: 5px 10px;
+  cursor: pointer;
+  z-index: 1; /* Đảm bảo nó nằm trên các nội dung khác */
+  border-top-right-radius:12px ;
+  border-bottom-right-radius:12px ;
 }
 
 .wraper {
-    width: 100%; /* Đảm bảo nó không làm thay đổi chiều rộng của thẻ con */
-    overflow: hidden; /* Ngăn tràn theo chiều dọc nếu có */
-    display: flex;
-    border-top:2px solid blueviolet;
+  width: 100%; /* Đảm bảo nó không làm thay đổi chiều rộng của thẻ con */
+  display: flex;
 }
 .bor{
-    background-color: #555;
-    border: none;
-    color: red;
-    padding: 5px 10px;
-    border-top-left-radius: 12px;
-    border-bottom-left-radius: 12px;
+  background-color: #555;
+  border: none;
+  color: red;
+  padding: 5px 10px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
-.ContentProduct.grid__row {
+.ContentProduct.grid__row{
   display: flex;
-  flex-wrap: wrap;
-  max-height: calc(100vh - 200px); /* Ví dụ: trừ đi 200px để còn khoảng trống cho các phần tử khác */
-  width: 100%;
-  margin: 6px 0;
+flex-wrap: wrap;
+max-height: 100%; /* Đặt giới hạn chiều cao để bật tính năng cuộn */
 }
-
 .Content__filter{
-    width:100%;
+  width:100%;
 }
 
 /* SortBar.css */
 .sort-container {
-    display: flex;
-    justify-content:space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    background-color: #f5f5f5;
-    height: 100%;
-  }
-  
-  .sort-options {
-    display: flex;
-    align-items: center;
-  }
-  
-  .sort-options span {
-    margin-right: 10px;
-  }
-  
-  .sort-options button {
-    padding: 8px 16px;
-    margin: 0 5px;
-    border: none;
-    background-color: #fff;
-    cursor: pointer;
-  }
-  
-  .sort-options button.active {
-    background-color: #d9534f;
-    color: #fff;
-  }
-  
-  .sort-options .arrow {
-    margin-left: 5px;
-  }
-  
-  .pagination {
-    display: flex;
-    align-items: center;
-  }
-  
-  .pagination span {
-    margin-right: 10px;
-  }
-  
-  .page-button {
-    margin: 0 5px;
-    padding: 8px;
-    border: none;
-    background-color: #fff;
-    cursor: pointer;
-  }
-  
-  .page-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-  
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f5f5f5;
+  height: 100%;
+}
+
+.sort-options {
+  display: flex;
+  align-items: center;
+}
+
+.sort-options span {
+  margin-right: 10px;
+}
+
+.sort-options button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.sort-options button.active {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.sort-options .arrow {
+  margin-left: 5px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.pagination span {
+  margin-right: 10px;
+}
+
+.page-button {
+  margin: 0 5px;
+  padding: 8px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.page-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .item__price{
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    background-color: white;
-    height: 28px;
-    width:86px;
-    padding:4px 6px ;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  background-color: white;
+  height: 28px;
+  width:86px;
+  padding:4px 6px ;
 }
 .item__price:after{
-  content: '';
-  position:absolute;
-  left:0;
-  bottom: -4px;
-  height:10px;
-  width:86px;
-  background-color:transparent;
+content: '';
+position:absolute;
+left:0;
+bottom: -4px;
+height:10px;
+width:86px;
+background-color:transparent;
 }
 .item__price:hover .select-input__list {
-  display: block;
+display: block;
 }
 
 .select-input__list{
-    position: absolute;
-    left:0;
-    bottom:-4px;
-    transform: translateY(100%);
-    background-color: white;
-    z-index: 1;
-    display: none;
+  position: absolute;
+  left:0;
+  bottom:-4px;
+  transform: translateY(100%);
+  background-color: white;
+  z-index: 1;
+  display: none;
 }
 .select-input__item{
-  padding:6px 4px;
+padding:6px 4px;
 }
 .select-input__link:hover{
-  color:var(--primary-color)
+color:var(--primary-color)
 }

@@ -33,49 +33,47 @@ function Content() {
   const [choose, setChoose] = useState(undefined);
   const [hovered, setHovered] = useState(undefined);
   return (
-      <div className="Content">
-        <div className="grid__row">
-          <div className="wraper">
-            <div className="bor"></div>
-            <div className="scrollContainer">
-              <div className="Content_Catergory">
-                {objectTitle.map((title, index) => {
-                  return (
-                    <a
-                      href="#"
-                      alt=""
-                      key={index}
-                      onClick={() => setChoose(index)}
-                      onMouseOut={() => setHovered(undefined)}
-                      onMouseOver={() => setHovered(index)}
-                      className={
-                        choose === index
-                          ? "categoryBold"
-                          : hovered === index
-                          ? "categoryHovered"
-                          : ""
-                      }
-                    >
-                      {title}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-            <button className="fixedButton"> Adding </button>
-          </div>
-
-          <div className="Content__filter">
-            <SortBar />
-          </div>
-          <div className="ContentProduct grid__row">
-            {a.map(() => (
-              <ProductCard info={info} />
-            ))}
+    <div className="grid__row">
+      <div className="wraper">
+        <div className="bor"></div>
+        <div className="scrollContainer">
+          <div className="Content_Catergory">
+            {objectTitle.map((title, index) => {
+              return (
+                <a
+                  href="#"
+                  alt=""
+                  key={index}
+                  onClick={() => setChoose(index)}
+                  onMouseOut={() => setHovered(undefined)}
+                  onMouseOver={() => setHovered(index)}
+                  className={
+                    choose === index
+                      ? "categoryBold"
+                      : hovered === index
+                      ? "categoryHovered"
+                      : ""
+                  }
+                >
+                  {title}
+                </a>
+              );
+            })}
           </div>
         </div>
+        <button className="fixedButton"> Adding </button>
       </div>
-      );
+
+      <div className="Content__filter">
+        <SortBar />
+      </div>
+      <div className="ContentProduct grid__row">
+        {a.map(() => (
+          <ProductCard info={info} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 // SortBar.js

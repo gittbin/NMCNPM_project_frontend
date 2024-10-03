@@ -6,9 +6,9 @@
     min-width: 100vw;
     box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
     background-color: #fff;
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    z-index:100;
   }
   
   .header__right{
