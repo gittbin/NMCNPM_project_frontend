@@ -33,8 +33,7 @@ function Content() {
   const [choose, setChoose] = useState(undefined);
   const [hovered, setHovered] = useState(undefined);
   return (
-    <div className="Content">
-      <div className="grid__column10">
+      <div className="Content">
         <div className="grid__row">
           <div className="wraper">
             <div className="bor"></div>
@@ -76,8 +75,7 @@ function Content() {
           </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }
 
 // SortBar.js

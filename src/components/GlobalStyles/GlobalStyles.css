@@ -8,7 +8,7 @@
     padding: 0;
     box-sizing: border-box;
 }
-html {
+/* html {
     font-size: 62.5%;
 }
 body {
@@ -16,12 +16,11 @@ body {
     font-size: 1.6rem;
     line-height: 1.5;
     text-rendering: optimizeSpeed;
-}
+} */
 .grid{
     /* voi man to hon 1200 thi chi hien thi 1200 thoi con nho hon thi co th dieu chinh theo cho dung  */
     /* width:1200px; */
     max-width: 100%;
-    margin:0 auto;
     /* can giua */
 }
 .grid__full-width{
@@ -31,8 +30,6 @@ body {
     display: flex;
     flex-wrap:wrap;
     /* cung nam tren hang ngang do main asis=row co xuong dong   */
-    margin-left:-5px;
-    margin-right: -5px;
     /* tao khoang cach */
 }
 .grid__column2{

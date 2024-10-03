@@ -1,8 +1,9 @@
 
 .Content {
-    height: 100vh; /* Đảm bảo chiếm toàn bộ chiều cao màn hình */
-    overflow-y: auto; /* Cho phép cuộn khi nội dung vượt quá chiều cao */
+    height: 100vh; 
   }
+  
+
   
 .Content_Catergory {
     height: 28px;
@@ -10,6 +11,7 @@
     justify-content: space-between;
     flex-wrap: nowrap;
     position: relative;
+
 }
 
 .Content_Catergory a {
@@ -18,16 +20,17 @@
     color: red;
     padding: 5px 15px;
     border-radius: 12px;
-    line-height: 100%;
+    line-height: 1.2rem;
+    font-size: 1.2rem;
 }
 
 .scrollContainer {
     background-color: #555;
-    overflow: hidden;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none; /* Hide scrollbar on Firefox */
     position: relative;
+
 }
 
 .scrollContainer::-webkit-scrollbar {
@@ -58,6 +61,7 @@
     width: 100%; /* Đảm bảo nó không làm thay đổi chiều rộng của thẻ con */
     overflow: hidden; /* Ngăn tràn theo chiều dọc nếu có */
     display: flex;
+    border-top:2px solid blueviolet;
 }
 .bor{
     background-color: #555;
@@ -67,12 +71,14 @@
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
 }
-.ContentProduct.grid__row{
-    display: flex;
+.ContentProduct.grid__row {
+  display: flex;
   flex-wrap: wrap;
-  overflow-y: auto;
-  max-height: 100%; /* Đặt giới hạn chiều cao để bật tính năng cuộn */
+  max-height: calc(100vh - 200px); /* Ví dụ: trừ đi 200px để còn khoảng trống cho các phần tử khác */
+  width: 100%;
+  margin: 6px 0;
 }
+
 .Content__filter{
     width:100%;
 }
