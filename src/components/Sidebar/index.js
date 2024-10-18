@@ -66,7 +66,7 @@ function Sidebar() {
           </Link>
         </li>
         <li className="sidebar__add">
-          <Link className={`sidebar__link ${selected === 5 ? 'active' : ''}`} to='/home/add'>
+          <Link className={`sidebar__link ${selected === 5 ? 'active' : ''}`} to='/home/user-role'>
             <div className="sidebar__icon"><IoAddCircleOutline /></div>
             Thêm
           </Link>

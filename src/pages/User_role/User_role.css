@@ -1,0 +1,172 @@
+/* Container for the entire order management component */
+.order-mgmt-container {
+  width: 100%;
+  color: #333; /* Changed from black to dark gray */
+  background-color: #ffffff; /* White background */
+  border-radius: 15px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05); /* Softer shadow */
+}
+
+/* Header styling */
+.order-mgmt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f0f4f8; /* Light background */
+  border-radius: 10px;
+}
+
+.order-mgmt-title {
+  font-size: 24px;
+  color: #2c3e50; /* Navy color for better contrast */
+  font-weight: 600;
+}
+
+.order-mgmt-header-controls {
+  display: flex;
+  align-items: center;
+}
+
+.order-mgmt-search {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 20px;
+  background-color: #ffffff; /* White for clean look */
+  color: #2c3e50; /* Navy for contrast */
+  width: 250px;
+  outline: none;
+}
+
+.order-mgmt-search::placeholder {
+  color: #999;
+}
+
+.order-mgmt-date-picker {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 20px;
+  background-color: #ffffff; /* White */
+  color: #2c3e50; /* Navy */
+  outline: none;
+}
+
+.order-mgmt-create-btn {
+  background-color: #007bff; /* Bright blue for visibility */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.2); /* Blue shadow */
+}
+
+.order-mgmt-create-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Table styling */
+.order-mgmt-table {
+  width: 80%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.order-mgmt-table th, .order-mgmt-table td {
+  padding: 15px 20px;
+  border: 1px solid #ddd; /* Softer border */
+}
+
+.order-mgmt-table th {
+  background-color: #f0f4f8; /* Light gray background for headers */
+  font-weight: 600;
+  color: #2c3e50; /* Navy */
+  text-align: left;
+}
+
+.order-mgmt-table td {
+  background-color: #ffffff; /* White background for rows */
+  color: #2c3e50; /* Navy text for contrast */
+  text-align: left;
+}
+
+.order-mgmt-table td small {
+  font-size: 12px;
+  color: #999; /* Lighter gray for secondary text */
+}
+
+/* Status styles */
+.order-mgmt-status {
+  padding: 5px 15px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.order-mgmt-status.delivered {
+  background-color: #28a745;
+  color: white;
+}
+
+.order-mgmt-status.canceled {
+  background-color: #dc3545;
+  color: white;
+}
+
+.order-mgmt-status.pending {
+  background-color: #ffc107;
+  color: black;
+}
+
+/* Action buttons */
+.order-mgmt-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-right: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.order-mgmt-button.edit {
+  color: #007bff;
+}
+
+.order-mgmt-button.edit:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.order-mgmt-button.delete {
+  color: #dc3545;
+}
+
+.order-mgmt-button.delete:hover {
+  background-color: #dc3545;
+  color: white;
+}
+/* Small checkbox style */
+.order-mgmt-checkbox {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+  cursor: pointer;
+  accent-color: #007bff; /* Blue color for checked state */
+  border-radius: 3px; /* Slight rounding for modern look */
+}
+
+.order-mgmt-table th:first-child, 
+.order-mgmt-table td:first-child {
+  width: 40px;
+  text-align: center; /* Centering the checkbox */
+}

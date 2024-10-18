@@ -30,6 +30,7 @@ import Profile from './pages/Profile/index.js';
 
 import ProtectedRoute from "../src/components/introduce/protect.js";
 import Cookies from 'js-cookie';
+import User_role from './pages/User_role/index.js';
 function App() {
   return (
     <>
