@@ -16,24 +16,28 @@ const ProductManager = () => {
   const [sortByA, setSortByA] = useState("default"); // Mặc định
   const [sortByB, setSortByB] = useState("Từ thấp lên cao"); // Mặc định
   const categoriesRef = useRef(null);
-  const scrollAmount = 125 * 3;
-  const handleScrollLeft = () => {
-    if (categoriesRef.current) {
-      categoriesRef.current.scrollBy({
-        left: -scrollAmount,
-        behavior: 'smooth',
-      });
-    }
-  };
+const handleScrollLeft = () => {
+  if (categoriesRef.current) {
+    categoriesRef.current.scrollBy({
+      left: -100,
+      behavior: 'smooth',
+    });
+  }
+};
 
-  const handleScrollRight = () => {
-    if (categoriesRef.current) {
-      categoriesRef.current.scrollBy({
-        left: scrollAmount,
-        behavior: 'smooth',
-      });
-    }
-  };
+const handleScrollRight = () => {
+  if (categoriesRef.current) {
+    categoriesRef.current.scrollBy({
+      left: 100,
+      behavior: 'smooth',
+    });
+  }
+};
+
+  
+  
+  
+  
   const turnonA = () => {
     setA(true);
   };
@@ -58,6 +62,7 @@ const ProductManager = () => {
       setTimeout(() => {setC(true);stopLoading()}, 100); // Có thể thay đổi thời gian tùy ý
     }
   }, [c]);
+
   return (
     <div className="product-manager">
       {a && <ProductForm turnoff={turnoffA} refresh={refresh} />}
@@ -66,9 +71,11 @@ const ProductManager = () => {
               <div className="filter-bar">
         <button className="scroll-button" onClick={handleScrollLeft}>◀</button>
         <div className="scrollable-categories" ref={categoriesRef}>
-          {categories.map((category) => (
+          {categories.length>1&&categories.map((category) => (
             <button
-              style={{ width: "115px", marginRight: "9px" }}
+              style={{ 
+                // width: "115px",
+                 marginRight: "9px" }}
               key={category}
               className={`category-button ${selectedCategory === category ? 'active' : ''}`}
               onClick={() => {
@@ -84,6 +91,9 @@ const ProductManager = () => {
               {category}
             </button>
           ))}
+          {
+            categories.length<=1&& <h1 style={{textAlign:"center"}}>đây là nơi chọn lọc sản phẩm theo categories, hãy thử add từ 2 sản phẩm có catcategpries khác nhau trở lên</h1>
+          }
         </div>
         <button className="scroll-button" onClick={handleScrollRight}>▶</button>
         <button className="create-button" onClick={turnonA}>Add</button>

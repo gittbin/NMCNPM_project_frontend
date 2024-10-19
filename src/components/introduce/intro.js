@@ -310,7 +310,6 @@ setIsforgot(true);
               </button>
               <p style={{color:"red"}}>{error}</p>
             </form>
-
             {!isSignup && (
               <p className="signup-text">
                 New to Myapp? <a style={{cursor:"pointer"}} onClick={()=>{off(2)}}>Sign Up</a>

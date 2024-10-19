@@ -12,7 +12,11 @@
     align-items: center;
     z-index: 1000;
 }
-
+.product-image-show{
+    width: 150px;
+    border-radius: 10px;
+    object-fit: cover; /* Giữ tỉ lệ ảnh, cắt phần thừa để ảnh vừa khung */
+}
 .product-detail-container {
     position: relative;
     width: 80%;
@@ -140,4 +144,20 @@
 
 .cancel-button:hover {
     background-color: #5a6268;
+}
+.change_image{
+    height: 40px;
+    width: 150px;
+    margin-top: 3px;
+    background-color: #000;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.change_image:hover{
+    background-color: #000;
+    color: rgba(255, 255, 255, 0.564);
 }

@@ -1,31 +1,10 @@
-.sidebar {
-  padding: 10px;
-  border-right: 2px #b7b7b7 solid;
-  width: 20%;
-  max-height: 85vh; 
-  overflow-y: auto;
-  scrollbar-width: thin; 
-  position: sticky;
+.sidebar{
+    min-height: 100vh;
+    padding: 10px;
+    border-right: 2px #b7b7b7 solid;
+    width: 20%;
+    position: fixed;
 }
-
-/* Tinh chỉnh thêm cho thanh cuộn nếu cần */
-.sidebar::-webkit-scrollbar {
-  width: 8px; /* Chiều rộng thanh cuộn cho Chrome, Safari và Opera */
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background-color: #888; /* Màu của thanh cuộn */
-  border-radius: 10px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background-color: #555; /* Màu thanh cuộn khi hover */
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Màu nền track của thanh cuộn */
-}
-
   
   .sidebar>li{
     font-size: 20px;

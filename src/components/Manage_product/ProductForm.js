@@ -1,7 +1,9 @@
 import React, { useState ,useRef} from "react";
 import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
+import {useLoading} from "../introduce/Loading"
 const ProductForm = ({turnoff,refresh}) => {
+  const {startLoading,stopLoading}=useLoading()
     const CLOUD_NAME = "ddgrjo6jr";
     const UPLOAD_PRESET = "my-app";
     const { user,loading} = useAuth();
@@ -51,6 +53,7 @@ const ProductForm = ({turnoff,refresh}) => {
           const dataTransfer = new DataTransfer();
           dataTransfer.items.add(file);
           fileInputRef.current.files = dataTransfer.files;
+          console.log(file)
           setFormData(prevData => ({
             ...prevData,
             image: file // Lưu trữ file vào state
@@ -85,12 +88,25 @@ const ProductForm = ({turnoff,refresh}) => {
     });
     
   };
+  const handleChange_link=(e) => {setError("")
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    fileInputRef.current.value = ""; 
+    setImage(value);
+  };
  const handleChangeimage=(e)=>{
     setFormData({
         ...formData,
         image: e.target.files[0]
       });
-    
+      const file = e.target.files[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setImage(imageUrl);
+      }
  }
  const handleChangedetails=(e)=>{
     const {  value } = e.target;
@@ -98,13 +114,13 @@ const ProductForm = ({turnoff,refresh}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(9999)
     console.log(formData.image);
     let body = {
 user:user,
 newPr:{...formData},
 detail:details
     };
+    startLoading();
     if(formData.image){
             const imageData = new FormData();
             imageData.append('file', formData.image);
@@ -144,7 +160,7 @@ detail:details
       body: JSON.stringify(body),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then((data) => {stopLoading()
         console.log(data.message)
       if(data.message==="Success"){turnoff();  alert("Sản phẩm đã được thêm thành công!");refresh();}
       else{setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
@@ -247,9 +263,12 @@ detail:details
                 <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange}></textarea>
             </div>
             <div className="form-group">
-      <label htmlFor="image">Image</label>
+      <label htmlFor="image">Image (3 cách để nhập ảnh)</label>
+      <p style={{marginBottom:"3px"}}>1. tải ảnh lên từ máy</p>
       <input type="file" ref={fileInputRef} name="image" onChange={handleChangeimage}/>
-
+      <p style={{marginBottom:"3px",marginTop:"3px"}}>2. link ảnh trên mạng</p>
+      <input type="text" id="image" name="image" value={formData.image} onChange={handleChange_link} />
+      <p style={{marginBottom:"3px",marginTop:"3px"}}>3. chụp ảnh trực tiếp</p>
       <div className="capture" onClick={startCamera}>Chụp ảnh</div>
 
       {/* Modal hiển thị camera */}
@@ -267,7 +286,7 @@ detail:details
 
       {image && (
         <div>
-          <h3>Ảnh đã chụp:</h3>
+          <h3>Ảnh :</h3>
           <img src={image} alt="Captured" style={{ width: '300px' }} />
         </div>
       )}

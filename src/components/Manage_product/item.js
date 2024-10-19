@@ -50,7 +50,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
     }, [user,x]); // Thêm user vào dependency array
   
     const show=async (a)=>{
-      console.log('http://localhost:5000/products/show/'+a)
+      startLoading();
       const response = await fetch('http://localhost:5000/products/show/'+a, {
         method: 'GET',
         headers: {
@@ -58,9 +58,11 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
         },
       });
       const data = await response.json();
+      stopLoading();
       setProduct({...data})
     }
     const onDelete=async (a,b)=>{
+      startLoading();
         const response = await fetch('http://localhost:5000/products/deletes', {
           method: 'POST',
           headers: {
@@ -73,6 +75,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
           }),
         });
         const data = await response.json();
+        stopLoading()
         if(data.message=="Product deleted successfully") {alert(`Sản phẩm "${a.name}" đã được xóa thành công!`);setX((a)=>{if(a=="edit") return "";else{return "edit"}} );}
         else{alert("Thất bại")}
     }
@@ -100,20 +103,29 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
     if(sortByB=="Từ cao đến thấp"){
       filteredProducts.reverse()
     }
-  const onUpdate=async(a,b)=>{
+  const onUpdate=async(a,b,c)=>{
+    let body={
+      user:user,
+      product_edit:a,
+      detail:b,
+      check:c
+    }
+    startLoading()
     const response = await fetch('http://localhost:5000/products/edit', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        user:user,
-        product_edit:a,
-        detail:b
-      }),
+      body: JSON.stringify(body),
     });
     const data = await response.json();
-    if(data.message=="success") {alert(`Sản phẩm "${a.name}" đã được cập nhật thành công!`);setX((a)=>{if(a=="edit") return "";else{return "edit"}} );setProduct(false)}
+    stopLoading()
+    if(data.message=="success") { setProduct(false);
+      setX((a)=>{if(a=="edit") return "";else{return "edit"}} );
+      setTimeout(() => {
+        alert(`Sản phẩm "${a.name}" đã được cập nhật thành công!`)
+      }, 100);
+    ;}
     else{alert("Thất bại")}
   }
     return (
