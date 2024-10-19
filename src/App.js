@@ -30,10 +30,14 @@ import Profile from './pages/Profile/index.js';
 
 import ProtectedRoute from "../src/components/introduce/protect.js";
 import Cookies from 'js-cookie';
-import User_role from './pages/User_role/index.js';
+import {Loading} from './components/introduce/Loading.js'
+import ManageAccount from './pages/ManageAccount/index.js';
+import RolesGroup from './pages/RolesGroup/index.js';
+import Permissions from './pages/Permission/index.js';
 function App() {
   return (
     <>
+    <Loading />
       <Routes>
       <Route path="/" element={<Main />} /> 
         <Route path='/home' element={
@@ -42,6 +46,9 @@ function App() {
           <Route path='/home' element={<Home/>}/>
           <Route path='profile' element={<Profile/>}/>
           <Route path = 'manage-product' element={<ManageProduct/>}/>
+          <Route path = 'manage-account' element={<ManageAccount/>}/>
+          <Route path = 'roles-group' element={<RolesGroup/>}/>
+          <Route path = 'permissions' element={<Permissions/>}/>
           <Route path = 'import' element={<Import/>}/>
           <Route path = 'export' element={<Export/>}/>
           <Route path = '*' element={<Page404/>}/>

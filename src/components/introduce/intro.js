@@ -7,17 +7,22 @@ import facebook from '../introduce/facebook.png';
 import {jwtDecode} from 'jwt-decode';
 import  { useNavigate }  from 'react-router-dom';
 import {useAuth} from '../introduce/useAuth'
-
+import Forgot_password from "./forgot_password"
+import Change_password from "./resetpassword"
+import {useLoading} from "./Loading"
 function LoginModal({ off, isSignup }) {
-  var data
   // Sử dụng state để điều khiển hiển thị modal và form
+  const { startLoading, stopLoading } = useLoading();
   const [error,setError]=useState('')
+  const [confirm,setConfirm]=useState(false)
+  const [isforgot,setIsforgot]=useState(false)
+  const [isreset,setIsreset]=useState(false)
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    ...(isSignup && { username: "", confirmPassword: "" }), // Thêm confirmPassword nếu là đăng ký
+    ...(isSignup && { username: "", confirmPassword: "",code:"" }), // Thêm confirmPassword nếu là đăng ký
   });
   // const isFormValid = formData.email && formData.password;
   const handleChange = (e) => {
@@ -34,8 +39,11 @@ function LoginModal({ off, isSignup }) {
           email: formData.email,
           password: formData.password,
           name: formData.username,
+          confirm:confirm,
+          code:formData.code
         };
         console.log(body);
+        startLoading();
         fetch("http://localhost:5000/login/sign_up", {
           method: "POST",
           headers: {
@@ -45,12 +53,17 @@ function LoginModal({ off, isSignup }) {
         })
           .then((response) => response.json())
           .then((data) => {
-            console.log(data.user);
+            stopLoading();
             if (data.message === "User created successfully") {
               // Lưu dữ liệu user vào Cookies
+              if(confirm){
               Cookies.set("user", JSON.stringify(data.user), { expires: 7, secure: true, sameSite: 'Strict' });
               login(data.user)
               navigate('/home');
+              }else{
+                setConfirm(true)
+              }
+
             } else {
               setError(data.message);
             }
@@ -64,7 +77,8 @@ function LoginModal({ off, isSignup }) {
         email: formData.email,
         password: formData.password,
       };
-      console.log(body);
+      console.log(formData);
+      startLoading();
       fetch("http://localhost:5000/login/login_raw", {
         method: "POST",
         headers: {
@@ -74,7 +88,9 @@ function LoginModal({ off, isSignup }) {
       })
         .then((response) => response.json())
         .then((data) => {
+          stopLoading();
           console.log(data.user);
+          console.log(data.message)
           if (data.message === "Login successful") {
             // Lưu dữ liệu user vào Cookies
             Cookies.set("user", JSON.stringify(data.user), { expires: 7, secure: true, sameSite: 'Strict' });
@@ -103,6 +119,7 @@ function LoginModal({ off, isSignup }) {
       email: decoded.email,
     };
     console.log(JSON.stringify(body));
+    startLoading();
     fetch("http://localhost:5000/login/login_google", {
       method: "POST",
       headers: {
@@ -112,6 +129,7 @@ function LoginModal({ off, isSignup }) {
     })
       .then((response) => response.json())
       .then((data) => {
+        stopLoading()
         console.log(data);
         if (data.message === "Login successful"||data.message === "User created successfully") {
           // Lưu dữ liệu user vào Cookies
@@ -139,7 +157,44 @@ function LoginModal({ off, isSignup }) {
   const handleError = (error) => {
     console.error(error); 
   };
-  return (
+  const forgot=()=>{
+setIsforgot(true);
+  }
+  const sentagain = ()=>{
+    setConfirm(false)
+    const body = {
+      email: formData.email,
+      password: formData.password,
+      name: formData.username,
+      confirm:false,
+      code:formData.code
+    };
+    console.log(body);
+    startLoading();
+    fetch("http://localhost:5000/login/sign_up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        stopLoading();
+        if (data.message === "User created successfully") {
+          // Lưu dữ liệu user vào Cookies
+            setConfirm(true)
+        } else {
+          setError(data.message);
+        }
+      })
+      .catch((error) => {
+        console.error('Lỗi:', error);
+      });
+  }
+  return (<> 
+  {isreset&&<Change_password off={()=>{setIsreset(false)}} email={isreset}/>} 
+  {isforgot&&<Forgot_password off={()=>{setIsforgot(false)}} turnon={(email)=>{setIsreset(email)}}/>} 
       <GoogleOAuthProvider clientId="1039484967279-b0uv9c8m0t6v453c7im8f0jiopq82v3j.apps.googleusercontent.com">
         <div className="login">
           <div className="login-modal">
@@ -232,9 +287,21 @@ function LoginModal({ off, isSignup }) {
                   />
                 </div>
               )}
-
+{confirm && (<>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="code"
+                    placeholder="điền mã xác nhận "
+                    value={formData.code}
+                    onChange={handleChange}
+                    required
+                  />
+                </div> 
+                <p className="sentagain" onClick={sentagain} >Gửi lại mã</p></>
+              )}
               {!isSignup && (
-                <a href="#" className="forgot-password">
+                <a className="forgot-password" onClick={forgot} style={{cursor:"pointer"}}>
                   Forgot password?
                 </a>
               )}
@@ -246,12 +313,12 @@ function LoginModal({ off, isSignup }) {
 
             {!isSignup && (
               <p className="signup-text">
-                New to Reddit? <a style={{cursor:"pointer"}} onClick={()=>{off(2)}}>Sign Up</a>
+                New to Myapp? <a style={{cursor:"pointer"}} onClick={()=>{off(2)}}>Sign Up</a>
               </p>
             )}
           </div>
         </div>
-      </GoogleOAuthProvider>
+      </GoogleOAuthProvider>  </>
     )
 }
 export default LoginModal;

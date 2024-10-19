@@ -2,14 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import './Sidebar.css';
 import { MdOutlineHome } from "react-icons/md";
 import { LuClipboardCheck } from "react-icons/lu";
-import { TbPackageImport } from "react-icons/tb";
-import { TbPackageExport } from "react-icons/tb";
+import { TbPackageImport, TbPackageExport } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { useState, useEffect } from "react";
 
 function Sidebar() {
   const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
   const [selected, setSelected] = useState();  // Lưu trạng thái của mục được chọn
+  const [isAddOpen, setIsAddOpen] = useState(false);  // Trạng thái mở/đóng dropdown của mục "Thêm"
 
   useEffect(() => {
     // Kiểm tra đường dẫn hiện tại và cập nhật trạng thái `selected`
@@ -26,7 +26,10 @@ function Sidebar() {
       case '/home/export':
         setSelected(4);
         break;
-      case '/home/add':
+      case '/home/user-role':
+      case '/home/manage-account':
+      case '/home/permissions':
+      case '/home/roles-group':
         setSelected(5);
         break;
       default:
@@ -34,9 +37,10 @@ function Sidebar() {
     }
   }, [location.pathname]); // Chạy lại khi `pathname` thay đổi
 
-  // const handleSelect = (index) => {
-  //   setSelected(index);  // Thay đổi trạng thái khi click
-  // };
+  // Toggle trạng thái mở/đóng của mục "Thêm"
+  const toggleAddDropdown = () => {
+    setIsAddOpen(!isAddOpen);
+  };
 
   return (
     <>
@@ -47,7 +51,7 @@ function Sidebar() {
             Home
           </Link>
         </li>
-        <li className="sidebar__product" >
+        <li className="sidebar__product">
           <Link className={`sidebar__link ${selected === 2 ? 'active' : ''}`} to='/home/manage-product'>
             <div className="sidebar__icon"><LuClipboardCheck /></div>
             Quản lí hàng hóa
@@ -66,10 +70,32 @@ function Sidebar() {
           </Link>
         </li>
         <li className="sidebar__add">
-          <Link className={`sidebar__link ${selected === 5 ? 'active' : ''}`} to='/home/user-role'>
+          {/* Khi nhấn vào mục "Thêm", sẽ toggle trạng thái mở/đóng */}
+          <div className={`sidebar__link ${selected === 5 ? 'active' : ''}`} onClick={toggleAddDropdown}>
             <div className="sidebar__icon"><IoAddCircleOutline /></div>
             Thêm
-          </Link>
+          </div>
+
+          {/* Dropdown hiển thị các mục con nếu `isAddOpen` là true */}
+          {isAddOpen && (
+            <ul className="sidebar__submenu">
+              <li>
+                <Link className="sidebar__link" to='/home/manage-account'>
+                  Quản lí tài khoản
+                </Link>
+              </li>
+              <li>
+                <Link className="sidebar__link" to='/home/permissions'>
+                  Phân quyền
+                </Link>
+              </li>
+              <li>
+                <Link className="sidebar__link" to='/home/roles-group'>
+                  Nhóm quyền
+                </Link>
+              </li>
+            </ul>
+          )}
         </li>
       </ul>
     </>

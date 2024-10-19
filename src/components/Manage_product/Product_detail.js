@@ -5,7 +5,8 @@ import '../Manage_product/Product_detail.css';
 const ProductDetail = ({ product, onClose, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({ ...product });
-
+    const [products,Setproduct ] = useState(product)
+    const [details,Setdetails]= useState('')
     const handleChange = (e) => {
         const { name, value } = e.target;
         setEditData({
@@ -13,7 +14,10 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
             [name]: value
         });
     };
-
+    const handleChangedetail=(e)=>{
+        const {value} = e.target;
+        Setdetails(value);
+    }
     const handleEditToggle = () => {
         setIsEditing(!isEditing);
     };
@@ -21,7 +25,8 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
     const handleUpdate = (e) => {
         e.preventDefault();
         // Gọi hàm onUpdate để cập nhật sản phẩm
-        onUpdate(editData);
+        onUpdate(editData,details);
+        Setproduct(editData)
         setIsEditing(false);
     };
 
@@ -31,20 +36,21 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                 <span className="close-button" onClick={onClose}>&times;</span>
                 {!isEditing ? (
                     <div className="product-info">
-                        <h2>{product.name}</h2>
-                        <p><strong>Category:</strong> {product.category}</p>
-                        <p><strong>Brand:</strong> {product.brand}</p>
-                        <p><strong>SKU:</strong> {product.sku}</p>
-                        <p><strong>Price:</strong> ${product.price}</p>
-                        <p><strong>Stock:</strong> {product.stock}</p>
-                        <p><strong>Reorder Level:</strong> {product.reorderLevel}</p>
-                        <p><strong>Supplier:</strong> {product.supplier}</p>
-                        <p><strong>Purchase Date:</strong> {new Date(product.purchaseDate).toLocaleDateString()}</p>
-                        <p><strong>Location:</strong> {product.location}</p>
-                        <p><strong>Status:</strong> {product.status}</p>
-                        <p><strong>Unit:</strong> {product.unit}</p>
-                        <p><strong>Purchase Price:</strong> ${product.purchasePrice}</p>
-                        <p><strong>Notes:</strong> {product.notes}</p>
+                        <h2>name : {products.name}</h2>
+                        <p><strong>Category:</strong> {products.category}</p>
+                        <p><strong>Brand:</strong> {products.brand}</p>
+                        <p><strong>SKU:</strong> {products.sku}</p>
+                        <p><strong>Price:</strong> ${products.price}</p>
+                        <p><strong>Stock:</strong> {products.stock}</p>
+                        <p><strong>Reorder Level:</strong> {products.reorderLevel}</p>
+                        <p><strong>Supplier:</strong> {products.supplier}</p>
+                        <p><strong>Purchase Date:</strong> {new Date(products.purchaseDate).toLocaleDateString()}</p>
+                        <p><strong>Location:</strong> {products.location}</p>
+                        <p><strong>Status:</strong> {products.status}</p>
+                        <p><strong>Unit:</strong> {products.unit}</p>
+                        <p><strong>Purchase Price:</strong> ${products.purchasePrice}</p>
+                        <p><strong>Notes:</strong> {products.notes}</p>
+                        <p><strong>Link image :</strong> {products.image?products.image.secure_url:""}</p>
                         <button className="edit-button-detail" onClick={handleEditToggle}>Edit</button>
                     </div>
                 ) : (
@@ -110,6 +116,14 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                             <div className="form-group">
                                 <label htmlFor="notes">Notes</label>
                                 <textarea id="notes" name="notes" value={editData.notes} onChange={handleChange}></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="image">Image:</label>
+                                <textarea id="image" name="image" value={editData.image?editData.image.secure_url:""} onChange={handleChange}></textarea>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="detail">Thông tin chi tiết thay đổi</label>
+                                <textarea id="detail" name="detail" value={details} onChange={handleChangedetail}></textarea>
                             </div>
                             <div className="submit-row">
                                 <button type="submit" className="save-button">Save</button>

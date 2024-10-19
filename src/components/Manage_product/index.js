@@ -1,20 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef,useEffect } from "react";
 import "../Manage_product/index.css"; // Để tạo kiểu
 import ProductGrid from "./item.js";
 import ProductForm from '../../components/Manage_product/ProductForm';
 import History from "../../components/Manage_product/history.js"
+import {useLoading} from "../introduce/Loading"
 const ProductManager = () => {
+  const { startLoading, stopLoading } = useLoading();
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [unselectedCategory, unsetSelectedCategory] = useState('');
   const [a, setA] = useState(false);
   const [b, setB] = useState(false);
+  const [c, setC] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("default"); // Mặc định
-
+  const [sortByA, setSortByA] = useState("default"); // Mặc định
+  const [sortByB, setSortByB] = useState("Từ thấp lên cao"); // Mặc định
   const categoriesRef = useRef(null);
   const scrollAmount = 125 * 3;
-
   const handleScrollLeft = () => {
     if (categoriesRef.current) {
       categoriesRef.current.scrollBy({
@@ -32,7 +34,6 @@ const ProductManager = () => {
       });
     }
   };
-
   const turnonA = () => {
     setA(true);
   };
@@ -48,10 +49,18 @@ const ProductManager = () => {
   const reload_categorie = (a) => {
     setCategories(a);
   };
-
+  const refresh=()=>{
+ setC(false);
+  }
+  useEffect(() => {
+    if (!c) {
+      startLoading();
+      setTimeout(() => {setC(true);stopLoading()}, 100); // Có thể thay đổi thời gian tùy ý
+    }
+  }, [c]);
   return (
     <div className="product-manager">
-      {a && <ProductForm turnoff={turnoffA} />}
+      {a && <ProductForm turnoff={turnoffA} refresh={refresh} />}
       {b && <History turnoff={turnoffB} />}
       <div className="x">
               <div className="filter-bar">
@@ -89,13 +98,23 @@ const ProductManager = () => {
           className="search-input"
         />
         <select 
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
+          value={sortByA}
+          onChange={(e) => setSortByA(e.target.value)}
           className="sort-select"
         >
           <option value="default">Sắp xếp theo</option>
-          <option value="price">Giá</option>
-          <option value="name">Tên</option>
+          <option value="Giá nhập">Giá nhập</option>
+          <option value="Giá bán">Giá bán</option>
+          <option value="Tên">Tên</option>
+          {/* Thêm các tùy chọn khác nếu cần */}
+        </select>
+        <select 
+          value={sortByB}
+          onChange={(e) => setSortByB(e.target.value)}
+          className="sort-select"
+        >
+          <option value="Từ thấp đến cao">Từ thấp đến cao</option>
+          <option value="Từ cao đến thấp">Từ cao đến thấp</option>
           {/* Thêm các tùy chọn khác nếu cần */}
         </select>
         <button className="history-button" onClick={turnonB}>Xem lịch sử</button>
@@ -106,7 +125,7 @@ const ProductManager = () => {
 
 
       {/* Hiển thị grid sản phẩm */}
-      <ProductGrid selectedCategory={selectedCategory} reload={reload_categorie} searchTerm={searchTerm} sortBy={sortBy} />
+      {c&&<ProductGrid  selectedCategory={selectedCategory} reload={reload_categorie} searchTerm={searchTerm} sortByA={sortByA} sortByB={sortByB}/>}
     </div>
   );
 };

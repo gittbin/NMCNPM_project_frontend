@@ -27,8 +27,9 @@
 
 .product-image {
   width: 100%;
-  height: auto;
+  height: 200px; /* Bạn có thể tùy chỉnh chiều cao theo nhu cầu */
   border-radius: 10px;
+  object-fit: cover; /* Giữ tỉ lệ ảnh, cắt phần thừa để ảnh vừa khung */
 }
 
 .product-name {

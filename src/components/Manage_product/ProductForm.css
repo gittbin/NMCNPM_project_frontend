@@ -116,3 +116,85 @@
     border-radius: 5px;
     transition: background-color 0.3s;
 }
+input[type="file"] {
+    padding: 10px 0px;
+    background-color: #f8f9fa;
+    border: 2px dashed #6c757d;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="file"]:hover {
+    background-color: #e9ecef;
+    border-color: #007bff;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #0056b3;
+}
+.capture{
+    margin-top: 5px;
+    height: 40px;
+    width: 150px;
+    border-radius: 5px;
+    background-color: yellow;
+    font-size: 18px;  /* Kích thước chữ */
+    font-family: 'Arial', sans-serif;  /* Kiểu chữ */
+    font-weight: bold;  /* Độ đậm của chữ */
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 5px black solid;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+}
+.capture:hover{
+    background-color: rgba(0, 255, 234, 0.5);
+}
+.camera-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .camera-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  
+  video {
+    border: 2px solid black;
+    border-radius: 10px;
+  }
+  
+  .button-capture {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  

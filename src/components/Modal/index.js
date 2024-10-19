@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './Modal.css'; 
 import { FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
+import {useAuth} from "../introduce/useAuth"
 const Modal = () => {
+  const {user,logout} =useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleModal = () => {
@@ -32,8 +33,8 @@ const Modal = () => {
           <div className="user-info">
             <img className="avatar" src="https://via.placeholder.com/50" alt="avatar" />
             <div className="user-details">
-              <strong>John Carter</strong>
-              <span className="email">john@example.com</span>
+              <strong>{user.name}</strong>
+              <span className="email">{user.email}</span>
             </div>
           </div>
           <div className="menu-items">
@@ -55,7 +56,7 @@ const Modal = () => {
             <div className="menu-item">
               <i className="icon fa fa-question-circle"></i> Help Center
             </div>
-            <div className="menu-item">
+            <div className="menu-item" onClick={logout}>
               <i className="icon fa fa-sign-out-alt"></i> Logout
             </div>
           </div>

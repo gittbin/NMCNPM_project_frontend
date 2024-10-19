@@ -1,0 +1,75 @@
+.permissions-container {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+h3 {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.tabs button.active {
+  background-color: #e0e0e0;
+  border-color: #333;
+}
+
+.permissions-table {
+  margin-top: 20px;
+}
+
+.permissions-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.permissions-table th, .permissions-table td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.permissions-table th {
+  background-color: #f4f4f4;
+}
+
+.select-all {
+  margin-bottom: 10px;
+}
+
+.update-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.update-btn:hover {
+  background-color: #45a049;
+}

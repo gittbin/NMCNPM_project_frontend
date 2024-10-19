@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from "react";
 import '../Manage_product/history.css';
 import { useAuth } from "../../components/introduce/useAuth";
-// const initialOrders = [
-//   { id: 1532, client: "John Carter", email: "hello@johncarter.com", date: "Jan 30, 2024", status: "Delivered", country: "United States", total: 1099.24 },
-//   { id: 1531, client: "Sophie Moore", email: "contact@sophiemoore.com", date: "Jan 27, 2024", status: "Canceled", country: "United Kingdom", total: 5870.32 },
-//   { id: 1530, client: "Matt Cannon", email: "info@mattcannon.com", date: "Jan 24, 2024", status: "Delivered", country: "Australia", total: 13899.48 },
-//   { id: 1529, client: "Graham Hills", email: "hi@grahamhills.com", date: "Jan 21, 2024", status: "Pending", country: "India", total: 1569.12 },
-//   { id: 1528, client: "Sandy Houston", email: "contact@sandyhouston.com", date: "Jan 18, 2024", status: "Delivered", country: "Canada", total: 899.16 },
-//   { id: 1527, client: "Andy Smith", email: "hello@andysmith.com", date: "Jan 15, 2024", status: "Pending", country: "United States", total: 2449.64 },
-//   { id: 1527, client: "Andy Smith", email: "hello@andysmith.com", date: "Jan 15, 2024", status: "Pending", country: "United States", total: 2449.64 },
-// ];
-
-
-let count=0;
+import {useLoading} from '../introduce/Loading'
 const History = ({turnoff}) => {
+  const {startLoading,stopLoading}=useLoading();
     const [initialOrders,setInitialOrders]=useState([])
     const {user} =useAuth()
 useEffect(()=>{
     const response =async ()=>{
-        try{
+        try{startLoading();
            const response= await fetch('http://localhost:5000/products/history', {
         method: 'POST',
         headers: {
@@ -33,7 +23,9 @@ useEffect(()=>{
       }
 
       const data = await response.json();
+      console.log(data)
       setInitialOrders(data);
+      stopLoading()
       ;}catch(error){
 console.log(error)
       } 
@@ -100,7 +92,7 @@ response();
             <th>Date</th>
             <th>Status</th>
             <th>Product</th>
-            <th>Actions</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -115,7 +107,7 @@ response();
               </td>
               <td>{order.product}</td>
               <td>
-
+              {order.details}
               </td>
             </tr>
           ))}

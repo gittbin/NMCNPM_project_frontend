@@ -3,36 +3,22 @@ import React,{useState,useEffect} from "react";
 import "../Manage_product/item.css";
 import { useAuth } from "../introduce/useAuth";
 import ProductDetail from "./Product_detail"
-const ProductGrid = ({ selectedCategory ,reload, searchTerm}) => {
+import DeleteProductModal from "./Form_delete"
+import {useLoading} from "../introduce/Loading"
+const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) => {
+  const { startLoading, stopLoading } = useLoading();
   const { user ,loading} = useAuth();
   const[products,setProducts] = useState([])
   const[product,setProduct] = useState()
   const[x,setX] = useState()
-    // Dữ liệu giả định cho các sản phẩm
-    // const products = [
-    //   { id: 1, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 8, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 9, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 10, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 11, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 12, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 13, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 14, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 15, name: 'Sản phẩm 1', category: 'Dấu',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 2, name: 'Sản phẩm 2', category: 'Hằng',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 3, name: 'Sản phẩm 3', category: 'Hạng',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 4, name: 'Sản phẩm 4', category: 'Nâng',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 5, name: 'Sản phẩm 5', category: 'Dẫn dắt',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 6, name: 'Sản phẩm 6', category: 'Đường',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 7, name: 'Sản phẩm 7', category: 'Dẫn vào',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' },
-    //   { id: 16, name: 'Sản phẩm 2', category: 'Hằng',image:'https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lvmsy4z9mq6p19.webp' }
-    // ];
+  const [fdelete,SetFdelete]=useState(false)
     useEffect(() => {
       const fetchProducts = async () => {
-        if (loading) { console.log("Loading user data.");
-          return <div>Loading user data...</div>; // Hiển thị khi đang tải dữ liệu người dùng
+        if (loading) { 
+          startLoading();
+          return;
         }
-        try {console.log("render")
+        try {console.log("render");startLoading();
           const response = await fetch('http://localhost:5000/products/show', {
             method: 'POST',
             headers: {
@@ -54,6 +40,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm}) => {
           }
           reload(o);
           setProducts(data);
+          stopLoading()
         } catch (error) {
           console.error("Lỗi khi gọi API:", error);
         }
@@ -73,9 +60,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm}) => {
       const data = await response.json();
       setProduct({...data})
     }
-    const dlt=async (a)=>{
-      const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${a.name}" không?`);
-      if (isConfirmed) {
+    const onDelete=async (a,b)=>{
         const response = await fetch('http://localhost:5000/products/deletes', {
           method: 'POST',
           headers: {
@@ -83,29 +68,39 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm}) => {
           },
           body: JSON.stringify({
             user:user,
-            product_delete:a
+            product_delete:a,
+            detail:b
           }),
         });
         const data = await response.json();
-        if(data.message=="Product deleted successfully") {alert(`Sản phẩm "${a.name}" đã được xóa thành công!`);setX("delete");}
+        if(data.message=="Product deleted successfully") {alert(`Sản phẩm "${a.name}" đã được xóa thành công!`);setX((a)=>{if(a=="edit") return "";else{return "edit"}} );}
         else{alert("Thất bại")}
-      }
     }
     const onClose=()=>{
-      console.log("onClose")
       setProduct(false);
     }
-    let filteredProducts;
+    const onClose2=()=>{
+      SetFdelete(false);
+    }
+    let filteredProducts= products.slice();
     if (selectedCategory) {
       filteredProducts = products.filter(product => product.category === selectedCategory);
-    } else {
-      filteredProducts = products;
-    }
+    } 
     if(searchTerm!=""){
-      filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchTerm));
+      filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchTerm));
     }
-  const onUpdate=async(a)=>{
-    console.log(a)
+    
+    if(sortByA=="Giá bán"){console.log(1)
+      filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
+    }else if(sortByA=="Giá nhập"){
+      filteredProducts.sort((a, b) => Number(a.purchasePrice) - Number(b.purchasePrice));
+    }else if(sortByA=="Tên"){
+      filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if(sortByB=="Từ cao đến thấp"){
+      filteredProducts.reverse()
+    }
+  const onUpdate=async(a,b)=>{
     const response = await fetch('http://localhost:5000/products/edit', {
       method: 'POST',
       headers: {
@@ -113,26 +108,27 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm}) => {
       },
       body: JSON.stringify({
         user:user,
-        product_edit:a
+        product_edit:a,
+        detail:b
       }),
     });
     const data = await response.json();
-    console.log(data)
-    if(data.message=="success") {alert(`Sản phẩm "${a.name}" đã được cập nhật thành công!`);setX("edit");}
+    if(data.message=="success") {alert(`Sản phẩm "${a.name}" đã được cập nhật thành công!`);setX((a)=>{if(a=="edit") return "";else{return "edit"}} );setProduct(false)}
     else{alert("Thất bại")}
   }
     return (
       <>
       {product&& <ProductDetail product={product} onClose={onClose} onUpdate={onUpdate}/>}
+      {fdelete&& <DeleteProductModal product={fdelete} onClose2={onClose2} onDelete={(a,b)=>onDelete(a,b)}/>}
       <div className="product-grid">
         {filteredProducts.map((product,index) => (
           <div className="item" key={index}>
             <div className="product-card">
-              <img src={product.image} alt="Product Image" className="product-image" />
+              <img src={product.image?product.image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"} alt="Product Image" className="product-image" />
               <h3 className="product-name">{product.name}</h3>
               <div className="actions">
                 <button className="action-button edit-button" onClick={()=>show(product._id)}>chi tiết</button>
-                <button className="action-button delete-button" onClick={()=>dlt(product)}>Xóa</button>
+                <button className="action-button delete-button" onClick={()=>SetFdelete(product)}>Xóa</button>
               </div>
             </div>
           </div>
