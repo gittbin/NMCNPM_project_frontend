@@ -1,67 +1,51 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './RolesGroup.css';
+import {useLoading} from "../../components/introduce/Loading"
+import { useAuth } from '../../components/introduce/useAuth';
 
-const roles = [
-  {
-    role: "quản lý bán hàng",
-    description: "Quản lý các tác vụ liên quan đến bán hàng.",
-    permissions: ["view_product", "edit_product"],
-    createAt: "2024-10-19T09:00:00Z",
-    deleteAt: null,
-    delete: {
-      boolean: false
-    }
-  },
-  {
-    role: "nhân viên kho",
-    description: "Quản lý hàng tồn kho và các tác vụ liên quan đến kho.",
-    permissions: ["view_inventory", "edit_inventory"],
-    createAt: "2024-10-19T10:30:00Z",
-    deleteAt: null,
-    delete: {
-      boolean: false
-    }
-  },
-  {
-    role: "quản lý nhân sự",
-    description: "Quản lý các hoạt động nhân sự, tuyển dụng và chấm công.",
-    permissions: ["view_employee", "edit_employee"],
-    createAt: "2024-10-19T11:15:00Z",
-    deleteAt: null,
-    delete: {
-      boolean: false
-    }
-  },
-  {
-    role: "quản lý marketing",
-    description: "Quản lý các chiến dịch marketing và quảng cáo.",
-    permissions: ["view_campaign", "edit_campaign"],
-    createAt: "2024-10-19T12:00:00Z",
-    deleteAt: null,
-    delete: {
-      boolean: false
-    }
-  }
-];
+var roles_data = [];
 
 function RolesGroup() {
-  const [selectedUser, setSelectedUser] = useState([]); // Quản lý lựa chọn người dùng
-  const [selectAll, setSelectAll] = useState(false); // Quản lý chọn tất cả
-  const [showMenuIndex, setShowMenuIndex] = useState(null); // Quản lý dropdown
-  const [searchTerm, setSearchTerm] = useState(""); // Quản lý tìm kiếm
+  const {startLoading,stopLoading}=useLoading()
+  const { user,loading} = useAuth();
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showMenuIndex, setShowMenuIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [newRole, setNewRole] = useState({ role: "", description: "" });
+
+  useEffect(() => {
+      //Lấy API nhả ra giao diện
+      const getAPIRoles = async()=>{
+        const res = await fetch('http://localhost:5000/roles/show',{
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if(!res.ok){
+          throw new Error("Network response was not ok");
+        }
+        roles_data = await res.json();
+      };
+
+    getAPIRoles();
+  }, []); 
+
 
   const toggleMenu = (index) => {
     setShowMenuIndex(showMenuIndex === index ? null : index);
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Cập nhật điều kiện tìm kiếm
+    setSearchTerm(e.target.value);
   };
 
-  const handleSelectAll = (e) => {
+  const handleSelectAll = (e) => {    
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
-    setSelectedUser(isChecked ? roles.map((_, index) => index) : []);
+    setSelectedUser(isChecked ? roles_data.map((_, index) => index) : []);
   };
 
   const handleSelectedUser = (accountId) => {
@@ -69,11 +53,63 @@ function RolesGroup() {
       ? selectedUser.filter((id) => id !== accountId)
       : [...selectedUser, accountId];
     setSelectedUser(updatedSelectedUser);
-    setSelectAll(updatedSelectedUser.length === roles.length);
+    setSelectAll(updatedSelectedUser.length === roles_data.length);
   };
 
-  // Lọc các vai trò dựa trên điều kiện tìm kiếm
-  const filteredAccounts = roles.filter((role) =>
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewRole((prevRole) => ({
+      ...prevRole,
+      [name]: value
+    }));
+  };
+
+  // Thêm hàm gửi dữ liệu tới backend
+  const sendRoleToBackend = async (newRoleData) => {
+    try {
+      const response = await fetch("http://localhost:5000/roles/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newRoleData),
+      });
+      console.log(newRoleData);
+      const data = await response.json();
+      if (data.success) {
+        alert("Role created successfully!");
+        // Làm mới danh sách roles nếu cần thiết
+      } else {
+        alert("Error creating role!");
+      }
+    } catch (error) {
+      console.error("Error sending role to backend:", error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    startLoading();
+    e.preventDefault();
+    if (newRole.role && newRole.description) {
+      const newRoleData = {
+        role: newRole.role,
+        description: newRole.description,
+        permissions: [],
+        createAt: new Date().toISOString(),
+        deleteAt: null,
+        delete: { boolean: false }
+      };
+
+      // Gửi vai trò mới về server
+      sendRoleToBackend(newRoleData);
+
+      setIsFormVisible(false);
+      setNewRole({ role: "", description: "" });
+      stopLoading();
+    }
+  };
+
+  const filteredAccounts = roles_data.filter((role) =>
     role.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -89,7 +125,9 @@ function RolesGroup() {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="create-role-btn">Create Role</button>
+          <button className="create-role-btn" onClick={() => setIsFormVisible(true)}>
+            Create Role
+          </button>
         </div>
       </div>
 
@@ -146,6 +184,43 @@ function RolesGroup() {
           </tbody>
         </table>
       </div>
+
+      {isFormVisible && (
+        <div className="modal">
+          <div className="modal-content">
+            <button className="close-btn" onClick={() => setIsFormVisible(false)}>X</button>
+            <form className="create-role-form" onSubmit={handleSubmit}>
+              <h3>Create New Role</h3>
+              <div className="form-group">
+                <label htmlFor="role">Role Name:</label>
+                <input
+                  type="text"
+                  id="role"
+                  name="role"
+                  value={newRole.role}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Description:</label>
+                <input
+                  type="text"
+                  id="description"
+                  name="description"
+                  value={newRole.description}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <button type="submit" className="submit-btn">Create</button>
+              <button type="button" className="cancel-btn" onClick={() => setIsFormVisible(false)}>
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
