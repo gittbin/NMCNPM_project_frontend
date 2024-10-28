@@ -1,38 +1,31 @@
 import { useEffect, useState } from 'react';
 import './RolesGroup.css';
-import {useLoading} from "../../components/introduce/Loading"
+import { useLoading } from "../../components/introduce/Loading";
 import { useAuth } from '../../components/introduce/useAuth';
-
-var roles_data = [];
+import { getRoles, createRole, deleteRole } from '../../services/Roles/rolesService';
 
 function RolesGroup() {
-  const {startLoading,stopLoading}=useLoading()
-  const { user,loading} = useAuth();
+  const { startLoading, stopLoading } = useLoading();
+  const { user, loading } = useAuth();
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [showMenuIndex, setShowMenuIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [newRole, setNewRole] = useState({ role: "", description: "" });
+  const [rolesData, setRolesData] = useState([]);
 
   useEffect(() => {
-      //Lấy API nhả ra giao diện
-      const getAPIRoles = async()=>{
-        const res = await fetch('http://localhost:5000/roles/show',{
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        if(!res.ok){
-          throw new Error("Network response was not ok");
-        }
-        roles_data = await res.json();
-      };
-
-    getAPIRoles();
-  }, []); 
-
+    const fetchRoles = async () => {
+      if (user) {
+        startLoading();
+        const roles = await getRoles(); // Thêm await
+        setRolesData(roles); // Đảm bảo dữ liệu đã được lấy
+        stopLoading();
+      }
+    };
+    fetchRoles();
+  }, [user]);
 
   const toggleMenu = (index) => {
     setShowMenuIndex(showMenuIndex === index ? null : index);
@@ -42,10 +35,10 @@ function RolesGroup() {
     setSearchTerm(e.target.value);
   };
 
-  const handleSelectAll = (e) => {    
+  const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
-    setSelectedUser(isChecked ? roles_data.map((_, index) => index) : []);
+    setSelectedUser(isChecked ? rolesData.map((_, index) => index) : []);
   };
 
   const handleSelectedUser = (accountId) => {
@@ -53,7 +46,7 @@ function RolesGroup() {
       ? selectedUser.filter((id) => id !== accountId)
       : [...selectedUser, accountId];
     setSelectedUser(updatedSelectedUser);
-    setSelectAll(updatedSelectedUser.length === roles_data.length);
+    setSelectAll(updatedSelectedUser.length === rolesData.length);
   };
 
   const handleInputChange = (e) => {
@@ -64,32 +57,22 @@ function RolesGroup() {
     }));
   };
 
-  // Thêm hàm gửi dữ liệu tới backend
   const sendRoleToBackend = async (newRoleData) => {
-    try {
-      const response = await fetch("http://localhost:5000/roles/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newRoleData),
-      });
-      console.log(newRoleData);
-      const data = await response.json();
-      if (data.success) {
-        alert("Role created successfully!");
-        // Làm mới danh sách roles nếu cần thiết
-      } else {
-        alert("Error creating role!");
-      }
-    } catch (error) {
-      console.error("Error sending role to backend:", error);
-    }
+    await createRole(newRoleData); // Thêm await
+    const updatedRoles = await getRoles();
+    setRolesData(updatedRoles);
+  };
+
+  const handleDeleteRole = async (roleId) => {
+    await deleteRole(roleId, user); // Thêm await
+    // Gọi lại fetchRoles để cập nhật danh sách sau khi xóa
+    const updatedRoles = await getRoles();
+    setRolesData(updatedRoles);
   };
 
   const handleSubmit = (e) => {
-    startLoading();
     e.preventDefault();
+    startLoading();
     if (newRole.role && newRole.description) {
       const newRoleData = {
         role: newRole.role,
@@ -97,19 +80,17 @@ function RolesGroup() {
         permissions: [],
         createAt: new Date().toISOString(),
         deleteAt: null,
-        delete: { boolean: false }
+        delete: false,
       };
 
-      // Gửi vai trò mới về server
       sendRoleToBackend(newRoleData);
-
       setIsFormVisible(false);
       setNewRole({ role: "", description: "" });
       stopLoading();
     }
   };
 
-  const filteredAccounts = roles_data.filter((role) =>
+  const filteredAccounts = rolesData.filter((role) =>
     role.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -173,7 +154,7 @@ function RolesGroup() {
                         <ul>
                           <li>View Details</li>
                           <li>Edit</li>
-                          <li>Delete</li>
+                          <li onClick={() => handleDeleteRole(role._id)}>Delete</li>
                         </ul>
                       </div>
                     )}

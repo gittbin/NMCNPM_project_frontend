@@ -1,110 +1,126 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Permission.css';
+import { useAuth } from '../../components/introduce/useAuth';
+import { useLoading } from "../../components/introduce/Loading";
+import { getRoles } from '../../services/Roles/rolesService';
 
 const Permissions = () => {
-  const roles = [
-    {
-      "role": "quản lý sản phẩm",
-      "description": "Quản lý các tác vụ liên quan đến sản phẩm.",
-      "permissions": ["product_edit", "product_create"],
-      "createAt": "2024-10-19T09:00:00Z",
-      "deleteAt": null,
-      "delete": {
-        "boolean": false
+  const rights = ["add_product", "edit_product", "delete_product", "create_order", "import_goods",
+"create_user"];
+  const [rolesData, setRolesData] = useState([]);
+  const { user } = useAuth();
+  const { startLoading, stopLoading } = useLoading();
+  const [permissions, setPermissions] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [rolePermission, setRolePermission] = useState([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      if (user) {
+        startLoading();
+        const roles = await getRoles();
+        setRolesData(roles);
+        const initialPermissions = {};
+        roles.forEach((role) => {
+          initialPermissions[role.role] = {
+            permissions: role.permissions || [],
+          };
+        });
+        setPermissions(initialPermissions);
+        stopLoading();
       }
-    },
-    {
-      "role": "quản lý bán hàng",
-      "description": "Quản lý các tác vụ liên quan đến bán hàng.",
-      "permissions": ["sales_view", "sales_edit"],
-      "createAt": "2024-10-19T09:00:00Z",
-      "deleteAt": null,
-      "delete": {
-        "boolean": false
-      }
-    },
-    {
-      "role": "quản lý người dùng",
-      "description": "Quản lý các tác vụ liên quan đến người dùng.",
-      "permissions": ["user_create", "user_edit"],
-      "createAt": "2024-10-19T09:00:00Z",
-      "deleteAt": null,
-      "delete": {
-        "boolean": false
-      }
-    },
-    {
-      "role": "quản lý kho",
-      "description": "Quản lý các tác vụ liên quan đến kho hàng.",
-      "permissions": ["inventory_view", "inventory_edit"],
-      "createAt": "2024-10-19T09:00:00Z",
-      "deleteAt": null,
-      "delete": {
-        "boolean": false
-      }
-    }
-  ]
+    };
+    fetchRoles();
+  }, [user]);
+
+  const handleCheckboxChange = (role, permission, checked) => {
+    setPermissions((prev) => {
+      // Lấy các quyền hiện tại của vai trò này từ `prev`
+      const rolePermissions = prev[role]?.permissions || [];
   
+      // Tạo một bản sao của các quyền đã có, sau đó cập nhật
+      const updatedPermissions = checked
+        ? [...rolePermissions, permission] // Thêm quyền nếu checkbox được chọn
+        : rolePermissions.filter((perm) => perm !== permission); // Xóa quyền nếu checkbox bỏ chọn
+  
+      // Trả về đối tượng cập nhật với quyền của vai trò đã được thay đổi
+      return {
+        ...prev,
+        [role]: { permissions: updatedPermissions },
+      };
+    });
+  };  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const rolesWithPermissions = rolesData.map((role) => ({
+      _id: role._id,
+      permissions: permissions[role.role]?.permissions || [],
+    }));
+
+    await updatePermissions(rolesWithPermissions);
+  };
+
+  const updatePermissions = async (rolesWithPermissions) => {
+    try {
+      const response = await fetch("http://localhost:5000/roles/edit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rolesWithPermissions),
+      });
+      console.log(rolesWithPermissions);
+      
+      const data = await response.json();
+      console.log(data);
+      setSuccessMessage("Cập nhật thành công!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật phân quyền:", error);
+    }
+  };
+
   return (
-    <div className="permissions-container">
+    <form className="permissions-container" onSubmit={handleSubmit}>
       <h2>Permission</h2>
       <h3>Thiết lập phân quyền</h3>
-      
-      {/* Tab buttons */}
+
+      {successMessage && <div className="success-message">{successMessage}</div>}
+
       <div className="tabs">
         <table>
           <thead>
             <tr>
               <th>Tính năng</th>
-              {roles.map((role,index)=>(
-                <th key={index}>{role.role}</th> 
+              {rolesData.map((role, index) => (
+                <th key={index}>{role.role}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Xem</td>
-              {roles.map((role,index)=>(
-                <td key={index}><input type="checkbox" /></td> 
-              ))}
-            </tr>
-
-            <tr>
-              <td>Chỉnh sửa</td>
-              {roles.map((role,index)=>(
-                <td key={index}><input type="checkbox" /></td> 
-              ))}
-            </tr>
-
-            <tr>
-              <td>Xóa</td>
-              {roles.map((role,index)=>(
-                <td key={index}><input type="checkbox" /></td> 
-              ))}
-            </tr>
-
-            <tr>
-              <td>Thêm tài khoản</td>
-              {roles.map((role,index)=>(
-                <td key={index}><input type="checkbox" /></td> 
-              ))}
-            </tr>
-            {/* Thêm các quyền khác */}
+            {rights.map((perm) => (
+              <tr key={perm}>
+                <td>{perm.charAt(0).toUpperCase() + perm.slice(1)}</td>
+                {rolesData.map((role, index) => (
+                  <td key={index}>
+                    <input
+                      type="checkbox"
+                      onChange={(e) => handleCheckboxChange(role.role, perm, e.target.checked)}
+                      checked={permissions[role.role]?.permissions.includes(perm) || false}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
-      {/* Permissions table */}
-      <div className="permissions-table">
-        <div className="select-all">
-          <input type="checkbox" /> Chọn tất cả
-        </div>
-        
-      </div>
-      
-      {/* Nút cập nhật */}
-      <button className="update-btn">Cập nhật</button>
-    </div>
+      <button type="submit" className="update-btn">
+        Cập nhật
+      </button>
+    </form>
   );
 };
 
