@@ -4,6 +4,7 @@
     border-right: 2px #b7b7b7 solid;
     width: 20%;
     position: fixed;
+    background-color: #2a2f5b;
 }
   
   .sidebar>li{
@@ -30,7 +31,22 @@
   .sidebar__icon{
     font-size: 24px;
     margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .sidebar__link.active {
-    color: #1514ef;  /* Đổi màu text thành xanh */
+    color: #8686d6;  /* Đổi màu text thành xanh */
+  }
+  .logo-header{
+    height: 57px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+  .add_jus{
+    justify-content: center;
   }

@@ -179,11 +179,11 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                             </div>
                             <div className="form-group">
                                 <label htmlFor="price">Giá bán *</label>
-                                <input type="number" id="price" name="price" value={editData.price} onChange={handleChange} required />
+                                <input type="text" id="price" name="price" value={editData.price} onChange={handleChange} required />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="purchasePrice">Giá nhập</label>
-                                <input type="number" id="purchasePrice" name="purchasePrice" value={editData.purchasePrice} onChange={handleChange} />
+                                <input type="text" id="purchasePrice" name="purchasePrice" value={editData.purchasePrice} onChange={handleChange} />
                             </div>
                             <div className="form-group">
                                 <label htmlFor="stock_in_shelf">Số lượng trên kệ</label>

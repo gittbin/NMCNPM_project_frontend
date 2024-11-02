@@ -6,7 +6,7 @@ import {useAuth} from "../introduce/useAuth"
 const Modal = () => {
   const {user,logout} =useAuth();
   const [isOpen, setIsOpen] = useState(false);
-
+  console.log(user)
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };

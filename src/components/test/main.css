@@ -58,10 +58,8 @@
   }
    */
    .billing-container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
   }
@@ -205,4 +203,15 @@ color: white;
   }
   .history:hover{
     background-color: #727221;
+  }
+  .create_user{
+    padding: 10px 15px;
+    background-color: #33e717;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .create_user:hover{
+    background-color: #33e7178e;
   }

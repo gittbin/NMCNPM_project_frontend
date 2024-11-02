@@ -84,7 +84,7 @@ const ProductForm = ({turnoff,refresh}) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: typeof value === "string" ? value.toLowerCase().replace(/,/g, '.') : value.replace(/,/g, '.'),
     });
     
   };
@@ -212,7 +212,7 @@ detail:details
             </div>
             <div className="form-group">
                 <label htmlFor="purchasePrice">Giá nhập</label>
-                <input type="text" id="purchasePrice" name="purchasePrice" value={formData.purchasePrice} onChange={handleChange} />
+                <input type="text" id="purchasePrice" name="purchasePrice" value={formData.purchasePrice.toLocaleString('vi-VN', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} onChange={handleChange} />
             </div>
         </div>
 

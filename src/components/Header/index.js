@@ -4,9 +4,9 @@ import { FaRegUser } from "react-icons/fa";
 import '../Header/Header.css'
 import Modal from "../Modal/index.js";
 
-function Header() {
+function Header({size}) {
   return(
-    <div className="header">
+    <div className="header" style={{width:`${size}%`,marginLeft:`${100-size}%`}}>
       <div className="header__logo">Logo</div>
       <div className="header__right">
         <div className="header__setting"><RiSettings4Line /></div>
