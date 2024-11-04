@@ -1,30 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './ManageAccount.css';
-
-const accounts = [
-  { id: 1, employeeId: "NV001", name: "Nguyen Van A", role: "Admin", email: "a@example.com", status: "Active", salary: "15,000,000 VND" },
-  { id: 2, employeeId: "NV002", name: "Le Thi B", role: "Nhân viên", email: "b@example.com", status: "Inactive", salary: "12,000,000 VND" },
-  { id: 3, employeeId: "NV003", name: "Tran Van C", role: "Quản lý", email: "c@example.com", status: "Delete", salary: "18,000,000 VND" },
-];
+import { getRoles } from "../../services/Roles/rolesService";
+import { useAuth } from "../../components/introduce/useAuth";
+import { useLoading } from "../../components/introduce/Loading";
 
 function AccountTable() {
-  const [selectedUser, setSelectedUser] = useState([]); // Manages selected users
-  const [selectAll, setSelectAll] = useState(false); // Manages select-all state
-  const [showMenuIndex, setShowMenuIndex] = useState(null); // Manages dropdown menu visibility
-  const [searchTerm, setSearchTerm] = useState(""); // Manages the search input
+  const [accounts, setAccounts] = useState([]);
+  const [rolesData, setRolesData] = useState([]);
+  const { startLoading, stopLoading } = useLoading();
+  const { user, loading } = useAuth();
+  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  const [showMenuIndex, setShowMenuIndex] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "",
+    id_owner: user? user._id:"",
+  });
+
+  const getAccounts = async (userId) => {
+    if (!userId) {
+      console.error("Lỗi: userId không hợp lệ!");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/accounts/show?userId=${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.log("Response status:", response.status);
+        throw new Error(`Network response was not ok: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      setAccounts(data);
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+        if (user) {
+            startLoading();
+            await getAccounts(user._id);
+            const roles = await getRoles();
+            setRolesData(roles);
+            stopLoading();
+            setFormData((prevData) => ({ ...prevData, id_owner: user._id })); // cập nhật id_owner
+        }
+    };
+    fetchRoles();
+  }, [user]);
+
+
 
   const toggleMenu = (index) => {
     setShowMenuIndex(showMenuIndex === index ? null : index);
   };
 
   const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value); // Updates search term
+    setSearchTerm(e.target.value);
   };
 
   const handleSelectAll = (e) => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
-    setSelectedUser(isChecked ? accounts.map((acc) => acc.id) : []);
+    setSelectedUser(isChecked ? accounts.map((acc) => acc._id) : []);
   };
 
   const handleSelectedUser = (accountId) => {
@@ -35,12 +89,105 @@ function AccountTable() {
     setSelectAll(updatedSelectedUser.length === accounts.length);
   };
 
-  // Filter accounts based on search term
-  const filteredAccounts = accounts.filter((account) =>
-    account.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    account.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    account.role.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAccounts = accounts.filter((account) => {
+    const name = account.name ? account.name.toLowerCase() : "";
+    const email = account.email ? account.email.toLowerCase() : "";
+    const role = account.role ? account.role.toLowerCase() : "";
+
+    return (
+      name.includes(searchTerm.toLowerCase()) ||
+      email.includes(searchTerm.toLowerCase()) ||
+      role.includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const handleCreateAccount = async (e) => {
+    e.preventDefault();
+    try {
+      startLoading();
+      const response = await fetch("http://localhost:5000/accounts/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      console.log("Success:", data);
+      stopLoading();
+      await getAccounts(user._id); // Use await here as handleCreateAccount is async
+      setShowModal(false); // Hide modal on success
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleDeleteAccount = async (accountId) => {
+    if (window.confirm("Are you sure you want to delete this account?")) {
+      try {
+        startLoading();
+        const response = await fetch(`http://localhost:5000/accounts/delete/${accountId}`, {
+          method: "DELETE",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to delete account: ${response.statusText}`);
+        }
+
+        await getAccounts(user._id); // Refresh the accounts list
+        stopLoading();
+      } catch (error) {
+        console.error("Error deleting account:", error);
+        stopLoading();
+      }
+    }
+  };
+
+  const handleOpenEditModal = (account) => {
+    setFormData({
+      id: account._id,
+      name: account.name,
+      email: account.email,
+      role: account.role,
+      password: "", // Assuming password can be left blank for editing
+    });
+    setShowEditModal(true);
+  };
+
+  const handleEditAccount = async (e) => {
+    e.preventDefault();
+    try {
+      startLoading();
+      const response = await fetch(`http://localhost:5000/accounts/edit/${formData.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      console.log("Success:", data);
+      stopLoading();
+      await getAccounts(user._id); // Use await here as handleCreateAccount is async
+      setShowModal(false); // Hide modal on success
+    } catch (error) {
+      console.error("Error edit:",error);
+    }
+  };
+
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleCloseModal = (e) => {
+    if (e.target.className === "modal-overlay") {
+      setShowModal(false);
+    }
+  };
 
   return (
     <div className="account-table">
@@ -52,11 +199,107 @@ function AccountTable() {
             className="search-input"
             placeholder="Search for..."
             value={searchTerm}
-            onChange={handleSearchChange} // Handle input change
+            onChange={handleSearchChange}
           />
-          <button className="create-order-btn">Create Order</button>
+          <button className="create-order-btn" onClick={() => setShowModal(true)}>Create Staff Account</button>
         </div>
       </div>
+
+      {showModal && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content">
+            <button className="close-modal" onClick={() => setShowModal(false)}>✖</button>
+            <form className="create-account-form" onSubmit={handleCreateAccount}>
+              <h3>Create Staff Account</h3>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              />
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="" disabled>Select Role</option>
+                {rolesData.map((role) => (
+                  <option key={role._id} value={role.role}>{role.role}</option>
+                ))}
+              </select>
+              <button type="submit">Submit</button>
+              <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showEditModal && (
+        <div className="modal-overlay" onClick={handleCloseModal}>
+          <div className="modal-content">
+            <button className="close-modal" onClick={() => setShowEditModal(false)}>✖</button>
+            <form className="create-account-form" onSubmit={handleEditAccount}> {/* Changed class name here */}
+              <h3>Edit Staff Account</h3>
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Password (leave blank to keep current)"
+                value={formData.password}
+                onChange={handleInputChange}
+              />
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="" disabled>Select Role</option>
+                {rolesData.map((role) => (
+                  <option key={role._id} value={role.role}>{role.role}</option>
+                ))}
+              </select>
+              <button type="submit">Submit</button>
+              <button type="button" onClick={() => setShowEditModal(false)}>Cancel</button>
+            </form>
+          </div>
+        </div>
+      )}
+
       <table>
         <thead>
           <tr>
@@ -65,7 +308,7 @@ function AccountTable() {
                 type="checkbox"
                 className="checkbox-all"
                 checked={selectAll}
-                onChange={handleSelectAll} // Handle select all
+                onChange={handleSelectAll} 
               />
             </th>
             <th>Họ Tên</th>
@@ -78,38 +321,37 @@ function AccountTable() {
         </thead>
         <tbody>
           {filteredAccounts.map((account) => (
-            <tr key={account.id}>
+            <tr key={account._id}>
               <td>
                 <input
                   type="checkbox"
                   className="checkbox-user"
-                  checked={selectedUser.includes(account.id)}
-                  onChange={() => handleSelectedUser(account.id)} // Handle individual selection
+                  checked={selectedUser.includes(account._id)}
+                  onChange={() => handleSelectedUser(account._id)} 
                 />
               </td>
               <td>{account.name}</td>
               <td>{account.role}</td>
               <td>{account.email}</td>
               <td>
-                <span className={`status ${account.status.toLowerCase()}`}>
-                  {account.status}
+                <span className={`status ${account.status ? account.status.toLowerCase() : 'active'}`}>
+                  {account.status || 'Acctive'}
                 </span>
               </td>
-              <td>{account.salary}</td>
+              <td>{account.salary || 'N/A'}</td>
               <td>
                 <div className="action">
                   <button
-                    onClick={() => toggleMenu(account.id)}
+                    onClick={() => toggleMenu(account._id)}
                     className="menu-btn"
                   >
                     ⋮
                   </button>
-                  {showMenuIndex === account.id && (
+                  {showMenuIndex === account._id && (
                     <div className="dropdown-menu">
                       <ul>
-                        <li>Chi tiết</li>
-                        <li>Chỉnh sửa</li>
-                        <li>Xóa</li>
+                        <li onClick={() => handleOpenEditModal(account)}>Chỉnh sửa</li>
+                        <li onClick={() => handleDeleteAccount(account._id)}>Xóa</li>
                       </ul>
                     </div>
                   )}

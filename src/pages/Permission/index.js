@@ -12,7 +12,6 @@ const Permissions = () => {
   const { startLoading, stopLoading } = useLoading();
   const [permissions, setPermissions] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
-  const [rolePermission, setRolePermission] = useState([]);
 
   useEffect(() => {
     const fetchRoles = async () => {
