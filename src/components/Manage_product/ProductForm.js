@@ -1,4 +1,4 @@
-import React, { useState ,useRef} from "react";
+import React, { useState ,useRef,useEffect} from "react";
 import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from "../introduce/Loading"
@@ -15,6 +15,7 @@ const ProductForm = ({turnoff,refresh}) => {
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
     const streamRef = useRef(null);
+    const [suppliers, setSuppliers] = useState([]); // state for suppliers list
     // Bắt đầu hiển thị video từ camera
     const scrollableRef = useRef(null);
     const scrollToTop = () => {
@@ -27,7 +28,28 @@ const ProductForm = ({turnoff,refresh}) => {
       streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = streamRef.current;
     };
-  
+    useEffect(() => {
+      const fetchSuppliers = async () => {
+        let body={
+          user: user
+              }
+        try {
+          let response = await fetch('http://localhost:5000/products/get_supplier', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          });
+          const data = await response.json();
+          console.log(data.suppliers)
+          setSuppliers(data.suppliers);
+        } catch (error) {
+          console.error("Error fetching suppliers:", error);
+        }
+      };
+      fetchSuppliers();
+    }, []);
     // Chụp ảnh từ video
     const captureImage = () => {
       const video = videoRef.current;
@@ -80,14 +102,25 @@ const ProductForm = ({turnoff,refresh}) => {
     image:""
   });
 
-  const handleChange = (e) => {setError("")
+  const handleChange = (e) => {
+    setError("");
     const { name, value } = e.target;
+
+    // Xóa dấu phân tách cũ và chuyển thành số
+    const numericValue = Number(value.replace(/,/g, '').replace(/\./g, ''));
+    
+    // Định dạng lại nếu là số hợp lệ
+    const formattedValue = !Number.isNaN(numericValue) ? numericValue.toLocaleString() : value;
+    
+    // Cập nhật formData với giá trị đã chuyển đổi
     setFormData({
       ...formData,
-      [name]: typeof value === "string" ? value.toLowerCase().replace(/,/g, '.') : value.replace(/,/g, '.'),
+      [name]: typeof formattedValue === "string" 
+                ? formattedValue.toLowerCase().replace(/,/g, '.')
+                : value.replace(/,/g, '.')
     });
-    
-  };
+};
+
   const handleChange_link=(e) => {setError("")
     const { name, value } = e.target;
     setFormData({
@@ -114,6 +147,11 @@ const ProductForm = ({turnoff,refresh}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.supplier) {
+      alert('Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm');
+      return;
+    }
+    console.log(formData.supplier)
     console.log(formData.image);
     let body = {
 user:user,
@@ -178,6 +216,18 @@ detail:details
     }
     setShowCamera(false); // Đóng modal hoặc ẩn camera
   };
+  const handleSupplierChange = (e) => {
+    setFormData({
+      ...formData,
+      supplier: e.target.value
+    });
+  };
+  const handleCodeChange = (e) => {
+    setFormData({
+      ...formData,
+      sku: e.target.value
+    });
+  };
   return (
     <div className="form-container" ref={scrollableRef}>
         <span className="close-button" onClick={turnoff}>&times;</span> {/* Dấu X để tắt form */}
@@ -201,7 +251,7 @@ detail:details
             </div>
             <div className="form-group">
                 <label htmlFor="sku">Mã *</label>
-                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleChange} required />
+                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleCodeChange} required />
             </div>
         </div>
 
@@ -230,7 +280,12 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="supplier">Nhà cung cấp</label>
-                <input type="text" id="supplier" name="supplier" value={formData.supplier} onChange={handleChange} />
+                <select id="supplier" name="supplier" value={formData.supplier} onChange={handleSupplierChange}>
+              <option value="">Chọn nhà cung cấp</option>
+              {suppliers.map((supplier) => (
+                <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
+              ))}
+            </select>
             </div>
             <div className="form-group">
                 <label htmlFor="purchaseDate">Ngày nhập hàng</label>

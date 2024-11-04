@@ -145,3 +145,16 @@
   margin-bottom: 20px;
   overflow: hidden;
 }
+.supplier-button {
+  padding: 10px 20px;
+  background-color: #45da0a;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.supplier-button:hover {
+  background-color: #45da0a8a;
+}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import '../test/history.css';
-import { useAuth } from "../../components/introduce/useAuth";
+import './history.css';
+import { useAuth } from "../introduce/useAuth";
 import {useLoading} from '../introduce/Loading'
 import CustomerForm from "./formcustomer";
 const History = ({turnoff}) => {
@@ -118,7 +118,7 @@ response();
         <tbody>
           {filteredOrders.map((order, index) => (
             <tr key={index}>
-              <td>{order.owner.name} <br /> <small>{order.owner.email}</small></td>
+              <td>{order.creater.name} <br /> <small>{order.creater.email}</small></td>
               <td>{formatDateTime(order.orderDate)}</td>
               <td>
                 <span className={`history-mgmt-status`} style={{display:"block"}}>

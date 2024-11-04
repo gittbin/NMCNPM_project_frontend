@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 import "./thanh_toan.css";
 import { useLoading } from "../introduce/Loading";
+import { useAuth } from "../introduce/useAuth";
 function PaymentComponent({close,products,totalAmount,customers,discount,vat}) {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerPaid, setCustomerPaid] = useState(0);
@@ -10,6 +11,7 @@ function PaymentComponent({close,products,totalAmount,customers,discount,vat}) {
   const [selectedBank, setSelectedBank] = useState("");
   const [suggestions, setSuggestion] = useState([])
   const {startLoading, stopLoading} = useLoading()
+  const { user ,loading} = useAuth();
   const handleCustomerPaidChange = (e) => {
     const amount = parseFloat(e.target.value) || 0;
     setCustomerPaid(amount);
@@ -24,6 +26,7 @@ function PaymentComponent({close,products,totalAmount,customers,discount,vat}) {
     try {
       console.log(String(discount),String(vat))
       const billData = {
+        creater:user._id,
         discount:String(discount),
         vat:String(vat),
         owner: products[0].owner,

@@ -1,6 +1,6 @@
 // import ImageUpload from "../../components/Manage_product/image"
 // import Change_password from"../../components/introduce/resetpassword.js"
-import OrderManagement from '../../components/test/index'
+import OrderManagement from '../../components/export/index'
 import React, { useState } from 'react';
 function Import(){
   const [selectedImage, setSelectedImage] = useState(null);

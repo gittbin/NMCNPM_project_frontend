@@ -1,178 +1,3 @@
-// import React, { useState } from 'react';
-// import './form.css'; // Nhúng file CSS
-
-// const CreateOrderForm = () => {
-//   const [orderNumber, setOrderNumber] = useState('');
-//   const [orderDate, setOrderDate] = useState('');
-//   const [clientName, setClientName] = useState('');
-//   const [clientEmail, setClientEmail] = useState('');
-//   const [clientAddress, setClientAddress] = useState('');
-//   const [country, setCountry] = useState('');
-//   const [products, setProducts] = useState([{ name: '', quantity: 1, price: 0 }]);
-//   const [status, setStatus] = useState('Pending');
-//   const [paymentMethod, setPaymentMethod] = useState('');
-
-//   const handleAddProduct = () => {
-//     setProducts([...products, { name: '', quantity: 1, price: 0 }]);
-//   };
-
-//   const handleProductChange = (index, field, value) => {
-//     const newProducts = products.map((product, i) =>
-//       i === index ? { ...product, [field]: value } : product
-//     );
-//     setProducts(newProducts);
-//   };
-
-//   const calculateTotal = () => {
-//     return products.reduce((total, product) => total + product.quantity * product.price, 0);
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     console.log({
-//       orderNumber,
-//       orderDate,
-//       clientName,
-//       clientEmail,
-//       clientAddress,
-//       country,
-//       products,
-//       status,
-//       paymentMethod,
-//       totalAmount: calculateTotal(),
-//     });
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="create-order-form-container">
-//       <h2 className="create-order-form-title">Tạo Đơn Hàng</h2>
-
-//       <label className="create-order-form-label">Mã Đơn Hàng:</label>
-//       <input className="input-sell"
-//         type="text"
-//         value={orderNumber}
-//         onChange={(e) => setOrderNumber(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Ngày Đặt Hàng:</label>
-//       <input
-//         type="date"
-//         value={orderDate}
-//         onChange={(e) => setOrderDate(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <h3>Thông Tin Khách Hàng</h3>
-//       <label className="create-order-form-label">Tên Khách Hàng:</label>
-//       <input
-//         type="text"
-//         value={clientName}
-//         onChange={(e) => setClientName(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Email Khách Hàng:</label>
-//       <input
-//         type="email"
-//         value={clientEmail}
-//         onChange={(e) => setClientEmail(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Địa Chỉ Khách Hàng:</label>
-//       <textarea
-//         value={clientAddress}
-//         onChange={(e) => setClientAddress(e.target.value)}
-//         className="create-order-form-textarea"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Quốc Gia:</label>
-//       <select value={country} onChange={(e) => setCountry(e.target.value)} className="create-order-form-select" required>
-//         <option value="">Chọn quốc gia</option>
-//         <option value="VN">Việt Nam</option>
-//         <option value="US">Hoa Kỳ</option>
-//         <option value="UK">Anh</option>
-//         <option value="AU">Úc</option>
-//       </select>
-
-//       <h3>Sản Phẩm</h3>
-//       {products.map((product, index) => (
-//         <div key={index}>
-//           <label className="create-order-form-label">Tên Sản Phẩm:</label>
-//           <input
-//             type="text"
-//             value={product.name}
-//             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           />
-
-//           <label className="create-order-form-label">Số Lượng:</label>
-//           <input
-//             type="number"
-//             value={product.quantity}
-//             min="1"
-//             onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           />
-
-//           {/* <label className="create-order-form-label">Giá:</label>
-//           <input
-//             type="number"
-//             value={product.price}
-//             min="0"
-//             onChange={(e) => handleProductChange(index, 'price', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           /> */}
-//         </div>
-//       ))}
-//       <button type="button" onClick={handleAddProduct} className="create-order-form-button">
-//         Thêm Sản Phẩm
-//       </button>
-
-//       <label className="create-order-form-label">Trạng Thái:</label>
-//       <select value={status} onChange={(e) => setStatus(e.target.value)} className="create-order-form-select">
-//         <option value="Pending">Chờ Xử Lý</option>
-//         <option value="Delivered">Đã Giao</option>
-//         <option value="Canceled">Đã Hủy</option>
-//       </select>
-
-//       <label className="create-order-form-label">Phương Thức Thanh Toán:</label>
-//       <select
-//         value={paymentMethod}
-//         onChange={(e) => setPaymentMethod(e.target.value)}
-//         className="create-order-form-select"
-//         required
-//       >
-//         <option value="">Chọn phương thức thanh toán</option>
-//         <option value="Credit Card">Thẻ Tín Dụng</option>
-//         <option value="PayPal">PayPal</option>
-//         <option value="Bank Transfer">Chuyển Khoản Ngân Hàng</option>
-//       </select>
-
-//       <h4 className="create-order-form-total-amount">Tổng Tiền: ${calculateTotal().toFixed(2)}</h4>
-
-//       <div className="create-order-form-button-container">
-//         <button type="submit" className="create-order-form-button">
-//           Tạo Đơn Hàng
-//         </button>
-//         <button type="reset" className="create-order-form-button create-order-form-reset-button">
-//           Hủy
-//         </button>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default CreateOrderForm;
 import React, { useState ,useRef, useEffect} from "react";
 import "./main.css";
 import History from "./history"
@@ -180,7 +5,7 @@ import Quagga from 'quagga';
 import { useLoading } from "../introduce/Loading";
 import { useAuth } from "../introduce/useAuth";
 import PaymentComponent from "./thanh_toan"
-import CustomerForm from "./formcustomer"
+import CustomerInfo from "./form_show"
 const Billing = () => {
   const {startLoading,stopLoading}=useLoading();
   const [invoices, setInvoices] = useState([{ products: [] }]);
@@ -203,7 +28,6 @@ const Billing = () => {
   useEffect( ()=>{
     const a=async()=>{
           if (loading) { 
-      startLoading();
       return;
     }
     let body={
@@ -231,7 +55,6 @@ const Billing = () => {
     });
      datas = await response.json();
     if(datas.message=="success") {
-      console.log(datas.customers)
       setCustomers(datas.customers)
     ;}
     else{alert("Load sản phẩm thất bại")}
@@ -274,7 +97,9 @@ const Billing = () => {
 
 }
   };
-
+  const adds=(x)=>{console.log(x)
+    setCustomers((a)=>[...a,x]);
+  }
   const addInvoice = () => {
     setInvoices([...invoices, { products: [] }]);
     setCurrentInvoice(invoices.length);
@@ -397,7 +222,9 @@ const Billing = () => {
     setForm(false)
   }
   const onformcustomer=()=>{
-    setFormcustomer(true)
+          setFormcustomer(true)
+    
+
   }
   const onclosecustomer=()=>{
     setFormcustomer(false)
@@ -410,7 +237,7 @@ const Billing = () => {
   }
   return (<>
   {form_history&&<History turnoff={onclosehistory}/>}
-  {formcustomer&&<CustomerForm close={onclosecustomer}/>}
+  {formcustomer&&<CustomerInfo turnoff={onclosecustomer} customer={customers} adds={adds} supplier={false}/>}
    {form&&<PaymentComponent close={onclose} totalAmount={total} products={invoices[currentInvoice].products} customers={customers} discount={taxall} vat={tax}/>}
    {camera&&(<div className="camera-sell"><video ref={videoRef} autoPlay   width="400px" height="300px"/>
 
@@ -457,7 +284,7 @@ const Billing = () => {
         <div className="xx">
         <button onClick={()=>addProduct()} style={{color:"white"}}  className="button-sell">Thêm sản phẩm</button><br/>
         <button   className="history" onClick={onform_history}>Lịch sử</button><br/>
-        <button   className="create_user" onClick={onformcustomer}>Thêm khách hàng</button></div>
+        <button   className="create_user" onClick={onformcustomer}>Danh sách khách hàng</button></div>
       </div>
       <div className="product-list">
         <h2>Danh sách sản phẩm</h2>

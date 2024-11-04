@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './formcustomer.css';
 import { useLoading } from '../introduce/Loading';
 import { useAuth } from "../introduce/useAuth";
-function CustomerForm({close,show_customer,show_bill}) {
+function CustomerForm({close,show_customer,show_bill,supplier,change}) {
     const { user ,loading} = useAuth();
     const {stopLoading,startLoading} =useLoading();
     const [customer, setCustomer] = useState({
@@ -13,48 +13,50 @@ function CustomerForm({close,show_customer,show_bill}) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name.includes('address.')) {
-            const addressField = name.split('.')[1];
-            setCustomer({
-                ...customer,
-                address: {
-                    ...customer.address,
-                    [addressField]: value
-                }
-            });
-        } else {
-            setCustomer({ ...customer, [name]: value });
-        }
+        setCustomer({ ...customer, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         startLoading();
-      const response = await fetch('http://localhost:5000/sell/create_customer', {
+        let response;
+        if(!supplier){
+          response = await fetch('http://localhost:5000/sell/create_customer', {
         method: 'Post',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({...customer,user: user}),
-      });
+      });  
+        }else{
+            response = await fetch('http://localhost:5000/products/create_supplier', {
+                method: 'Post',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({...customer,user: user}),
+              });  
+        }
+      
       const data = await response.json();
       stopLoading();
       if(data.message=="success"||data.message=="Số điện thoại này đã được đăng ký"){
         alert(data.message);
+        console.log(data)
+        change()
       }
 
     };
-    console.log(show_bill)
     return (
         <div className='customer'>
         <div className="customer-form">
-        {!show_customer&&!show_bill ? (<h2>Thêm Khách Hàng Mới</h2>):(show_customer? <h2>Thông tin khách hàng</h2>:<h2>Thông tin hóa đơn</h2>)}
+        {!show_customer&&!show_bill ? (!supplier?(<h2>Thêm Khách Hàng Mới</h2>):(<h2>Thêm nhà cung cấp mới</h2>)):(show_customer? <h2>Thông tin khách hàng</h2>:<h2>Thông tin hóa đơn</h2>)}
             <p className='close-customer' onClick={close}>x</p>
             <form onSubmit={handleSubmit}>
                 {!show_customer&&!show_bill ? (
                     <>
                    <label>
-                    Tên khách hàng:
+                    {!supplier ?("Tên khách hàng:"):("Tên nhà cung cấp")}
                     <input
                         type="text"
                         name="name"
@@ -81,7 +83,7 @@ function CustomerForm({close,show_customer,show_bill}) {
                         required
                     />
                 </label>
-                <button type="submit">Thêm Khách Hàng</button> 
+                <button type="submit">{!supplier ?("Thêm khách hàng"):("Thêm nhà cung cấp")}</button> 
                 </>
                 ):(
     show_customer ? (
@@ -111,6 +113,8 @@ function CustomerForm({close,show_customer,show_bill}) {
 <>  
 {show_bill.map((item,index)=>{
     return(<>
+            
+                    <img src={item.productID.image.secure_url} height="80px"/>
         <label key={index}>
                     Tên sản phẩm:
                     <p style={{display:"inline-block"}}>{item.name}</p>

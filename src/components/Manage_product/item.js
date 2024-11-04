@@ -59,6 +59,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
       });
       const data = await response.json();
       stopLoading();
+      console.log(data);
       setProduct({...data})
     }
     const onDelete=async (a,b)=>{
@@ -93,10 +94,11 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
       filteredProducts = filteredProducts.filter(product => product.name.toLowerCase().includes(searchTerm));
     }
     
-    if(sortByA=="Giá bán"){console.log(1)
-      filteredProducts.sort((a, b) => Number(a.price) - Number(b.price));
+    if(sortByA=="Giá bán"){
+      filteredProducts.sort((a, b) => {
+        return Number(a.price.replace(/\./g, '')) - Number(b.price.replace(/\./g, ''))});
     }else if(sortByA=="Giá nhập"){
-      filteredProducts.sort((a, b) => Number(a.purchasePrice) - Number(b.purchasePrice));
+      filteredProducts.sort((a, b) => Number(a.purchasePrice.replace(/\./g, '')) - Number(b.purchasePrice.replace(/\./g, '')));
     }else if(sortByA=="Tên"){
       filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
     }
