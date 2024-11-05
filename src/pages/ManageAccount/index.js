@@ -105,16 +105,21 @@ function AccountTable() {
     e.preventDefault();
     try {
       startLoading();
+      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/accounts/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
       console.log("Success:", data);
+      if(data.message == 'Không có quyền truy cập'){
+        alert("Bạn không đủ trình để làm cái này");
+        }
       stopLoading();
       await getAccounts(user._id); // Use await here as handleCreateAccount is async
       setShowModal(false); // Hide modal on success

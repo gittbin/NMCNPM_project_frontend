@@ -73,7 +73,7 @@ function Sidebar() {
           {/* Khi nhấn vào mục "Thêm", sẽ toggle trạng thái mở/đóng */}
           <div className={`sidebar__link ${selected === 5 ? 'active' : ''}`} onClick={toggleAddDropdown}>
             <div className="sidebar__icon"><IoAddCircleOutline /></div>
-            Thêm
+            Quản lí quyền người dùng
           </div>
 
           {/* Dropdown hiển thị các mục con nếu `isAddOpen` là true */}

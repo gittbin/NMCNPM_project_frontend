@@ -90,9 +90,11 @@ function LoginModal({ off, isSignup }) {
         .then((data) => {
           stopLoading();
           console.log(data.user);
+          console.log(data.token);
           console.log(data.message)
           if (data.message === "Login successful") {
             // Lưu dữ liệu user vào Cookies
+            localStorage.setItem("token", data.token);
             Cookies.set("user", JSON.stringify(data.user), { expires: 7, secure: true, sameSite: 'Strict' });
             login(data.user)
             navigate('/home');
@@ -133,6 +135,7 @@ function LoginModal({ off, isSignup }) {
         console.log(data);
         if (data.message === "Login successful"||data.message === "User created successfully") {
           // Lưu dữ liệu user vào Cookies
+          localStorage.setItem("token", data.token);
           Cookies.set("user", JSON.stringify(data.user), { expires: 7, secure: true, sameSite: 'Strict' });
           login(data.user)
           navigate('/home');
