@@ -1,6 +1,6 @@
 /* src/ProductManager.css */
 .product-manager {
-  padding: 20px;
+  padding: 0px 20px;
   display: flex;
   flex-direction: column;
   position: relative;

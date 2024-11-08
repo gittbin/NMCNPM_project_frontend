@@ -3,13 +3,20 @@ import '../Manage_product/history.css';
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from '../introduce/Loading'
 import CustomerForm from "./formcustomer"
+import { notify } from '../../components/Notification/notification';
+import { default as HistoryComponent } from "../Manage_product/history.js";
+import DeleteProductModal from "../Manage_product/Form_delete.js"
 const History = ({turnoff,supplier}) => {
   const {startLoading,stopLoading}=useLoading();
     const [initialOrders,setInitialOrders]=useState([])
     const [formcustomer,setFormcustomer]=useState(false)
+    const [editingIndex, setEditingIndex] = useState(null);
+    const [editedOrder, setEditedOrder] = useState(null);
+    const [deletedOrder, setdeletedOrder] = useState(null);
     const {user} =useAuth()
     const [x,setX]=useState(true)
-
+    const [showhistory,Setshowhistory]=useState(false)
+    const [showdelete,Setshowdelete]=useState(false)
 useEffect(()=>{
   let body={
     user: user
@@ -88,9 +95,88 @@ const filteredOrders = initialOrders.filter(order =>
     
     return `${hours}:${minutes}:${seconds}, ngày ${day}/${month}/${year}`;
 }
+const handleEditClick = (index, order) => {
+  setEditingIndex(index);
+  setEditedOrder({ ...order });
+};
+let count=0;
+const handleSaveClick =async () => {
+  startLoading()
+    let url='http://localhost:5000/sell/edit_customer'
+  if(supplier){url='http://localhost:5000/products/edit_supplier'}
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user:user,
+        ...(supplier ? { supplier_edit: editedOrder } : { customer_edit: editedOrder })
+      }),
+    });
+    const data = await response.json();
+    if(data.message=="success"){
+      if(supplier) notify(1,"supplier đã được cập nhật","Thành công");else{
+        notify(1,"khách hàng đã được cập nhật","Thành công")
+      }
+    }else{
+      notify(2,data.message,"Thất bại")
+    };
+    stopLoading()
+  const updatedOrders = [...initialOrders];
+  updatedOrders[editingIndex] = editedOrder;
+  setInitialOrders(updatedOrders);
+  setEditingIndex(null); // Thoát khỏi chế độ chỉnh sửa
+
+};
+
+const handleCancelClick = () => {
+  setEditingIndex(null); // Hủy chỉnh sửa
+};
+const handleEditChange = (e) => {
+  const { name, value } = e.target;
+  setEditedOrder(prevOrder => ({ ...prevOrder, [name]: value }));
+};
+const handleEditmoneyChange = (e) => {
+  const { name, value } = e.target;
+  if(value==""){setEditedOrder(prevOrder => ({ ...prevOrder, [name]: 0 }));return}
+  let x=value.replace(/,/g,'').replace(/\./g, '')
+  x=parseFloat(x).toLocaleString("vi-VN")
+  setEditedOrder(prevOrder => ({ ...prevOrder, [name]: x }));
+};
+const delete_action=async(supplier,reason)=>{
+  startLoading()
+  let url='http://localhost:5000/sell/delete_customer'
+if(supplier){url='http://localhost:5000/products/delete_supplier'}
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+   },
+    body: JSON.stringify({
+      user:user,
+      ...(supplier ? { supplier_delete: initialOrders[deletedOrder] } : { customer_delete: initialOrders[deletedOrder] }),
+      detail:reason,
+    }),
+  });
+  const data = await response.json();
+  if(data.message=="success"){
+    if(supplier) notify(1,"supplier đã xóa","Thành công");else{
+      notify(1,"khách hàng đã xóa","Thành công")
+    }
+  }else{
+    notify(2,data.message,"Thất bại")
+  };
+  stopLoading()
+  let updatedOrders = [...initialOrders];
+  updatedOrders=updatedOrders.filter((item,index)=>index!=deletedOrder);
+  setInitialOrders(updatedOrders);
+}
   return (<>
+  {showdelete&&<DeleteProductModal supplier={supplier ? showdelete : undefined} customer={supplier ? undefined : showdelete}  onClose2={()=>{Setshowdelete(false)}} onDelete={delete_action}/>}
+{showhistory && <HistoryComponent turnoff={()=>{Setshowhistory(false)}} supplier={supplier ? supplier : undefined} customer={supplier ? undefined : true}   />}
     {formcustomer&&<CustomerForm close={onclosecustomer} change={change} supplier={supplier}/>}
-    <div className="history-mgmt-main">
+    <div className="history-mgmt-main" style={{zIndex:999}}>
     <div className="history-mgmt-container">
     <div className="close" onClick={turnoff}>x</div>
       <div className="history-mgmt-header">
@@ -103,7 +189,8 @@ const filteredOrders = initialOrders.filter(order =>
             value={searchTerm}
             onChange={handleSearch}
           />
-          <button className="order-mgmt-history-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={onformcustomer}>{!supplier?"Create customer":"Create supplier"}</button>
+                    <button className="order-mgmt-history-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={()=>{Setshowhistory(true)}}>Lịch sử thanh đối</button>
+          <button className="order-mgmt-create-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={onformcustomer}>{!supplier?"Create customer":"Create supplier"}</button>
         </div>
         
       </div>
@@ -117,23 +204,85 @@ const filteredOrders = initialOrders.filter(order =>
             <th>phone</th>
             {!supplier?(<><th>rate</th>
                        <th>money</th></>):(<></>)}
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredOrders.map((order, index) => (
             <tr key={index}>
-              <td>{order.creater.name}<br /> <small>{order.creater.email}</small></td>
+              <td>{order.creater.name}<br /> <small>{order.creater.email}</small>
+                </td>
               <td>{formatDateTime(order.createdAt)}</td>
-              <td>{order.name} <br /> <small>{order.email}</small></td>
+              <td>
+              {editingIndex === index ? (
+                 <div>
+                 <input
+                   type="text"
+                   name="name"
+                   value={editedOrder.name}
+                   onChange={handleEditChange}
+                 />
+                 <input
+                   type="text"
+                   name="email"
+                   value={editedOrder.email}
+                   onChange={handleEditChange}
+                 />
+               </div>
+             ) : (<div>{order.name} <br /> <small>{order.email}</small></div>)}</td>
               <td>
                 <span className={`history-mgmt-status ${order.action}`}>
-                  {order.phone}
+                {editingIndex === index ? (
+                 <div>
+                 <input
+                   type="text"
+                   name="phone"
+                   value={editedOrder.phone}
+                   onChange={handleEditChange}
+                 />
+               </div>
+             ) : (<div>{order.phone}</div>)}
                 </span>
               </td>
-              {!supplier?(<><td>{order.rate}</td>
+              {!supplier?(<><td>
+                {editingIndex === index ? (
+                 <div>
+                 <input
+                   type="text"
+                   name="rate"
+                   value={editedOrder.rate}
+                   onChange={handleEditChange}
+                 />
+               </div>
+             ) : (<div>
+                {order.rate}</div>)}
+                </td>
               <td>
-              {order.money}
+              {editingIndex === index ? (
+                 <div>
+                 <input
+                   type="text"
+                   name="money"
+                   value={editedOrder.money}
+                   onChange={handleEditmoneyChange}
+                 />
+               </div>
+             ) : (<div>
+                {order.money}</div>)}
               </td></>):(<></>)}
+              <td>
+                {editingIndex === index ? (
+                  <>
+                    <button className="order-mgmt-button save" onClick={handleSaveClick}>Save</button>
+                    <button className="order-mgmt-button cancel" onClick={handleCancelClick}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <button className="order-mgmt-button edit" onClick={() => handleEditClick(index, order)}>✏️</button>
+                    <button className="order-mgmt-button delete" onClick={()=>{Setshowdelete(order);setdeletedOrder(index)}}>🗑️</button>
+                  </>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

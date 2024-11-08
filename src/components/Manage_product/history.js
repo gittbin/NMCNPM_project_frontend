@@ -2,14 +2,21 @@ import React, { useState, useEffect } from "react";
 import '../Manage_product/history.css';
 import { useAuth } from "../../components/introduce/useAuth";
 import {useLoading} from '../introduce/Loading'
-const History = ({turnoff}) => {
+const History = ({turnoff,customer,supplier}) => {
   const {startLoading,stopLoading}=useLoading();
     const [initialOrders,setInitialOrders]=useState([])
     const {user} =useAuth()
 useEffect(()=>{
     const response =async ()=>{
         try{startLoading();
-           const response= await fetch('http://localhost:5000/products/history', {
+          let url='http://localhost:5000/products/history'
+          if(customer){
+            url='http://localhost:5000/sell/get_history_customer'
+          }else if(supplier){
+            url='http://localhost:5000/products/get_history_supplier'
+          }
+          
+           const response= await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -23,7 +30,6 @@ useEffect(()=>{
       }
 
       const data = await response.json();
-      console.log(data)
       setInitialOrders(data);
       stopLoading()
       ;}catch(error){
@@ -37,10 +43,21 @@ response();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrders, setSelectedOrders] = useState([]);
 //   Lọc các đơn hàng theo tìm kiếm
-  const filteredOrders = initialOrders.filter(order => 
-    order.employee.name.toLowerCase().includes(searchTerm) ||
-    order.product.toLowerCase().includes(searchTerm) 
-  );
+  const filteredOrders = initialOrders.filter(order => {
+    if(supplier){
+return order.employee.name.toLowerCase().includes(searchTerm) ||
+order.supplier.toLowerCase().includes(searchTerm) ||
+order.action.toLowerCase().includes(searchTerm)
+    }
+    if(customer){
+      return order.employee.name.toLowerCase().includes(searchTerm) ||
+order.customer.toLowerCase().includes(searchTerm) ||
+order.action.toLowerCase().includes(searchTerm)
+    }
+    return order.employee.name.toLowerCase().includes(searchTerm) ||
+    order.product.toLowerCase().includes(searchTerm) ||
+    order.action.toLowerCase().includes(searchTerm)
+ } );
   // Cập nhật selectedOrders mỗi khi filteredOrders thay đổi
   useEffect(() => {
     setSelectedOrders(new Array(filteredOrders.length).fill(false));
@@ -91,7 +108,7 @@ response();
             <th>Name</th>
             <th>Date</th>
             <th>Status</th>
-            <th>Product</th>
+            {!supplier&&!customer?<th>Product</th>:(!supplier?<th>customer</th>:<th>supplier</th>)}
             <th>Details</th>
           </tr>
         </thead>
@@ -105,7 +122,7 @@ response();
                   {order.action}
                 </span>
               </td>
-              <td>{order.product}</td>
+              {!supplier&&!customer?<td>{order.product}</td>:(!supplier?<td>{order.customer}</td>:<td>{order.supplier}</td>)}
               <td>
               {order.details}
               </td>

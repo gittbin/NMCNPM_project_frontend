@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { useAuth } from "../../components/introduce/useAuth";
 import Sales_daily from "./sale_daily"
 import Useronline from "./useronlinecard"
@@ -17,25 +17,119 @@ import {
 
 import "./x1.css";
 function Home() {
-  const { user, logout } = useAuth();
+  const { user, loading } = useAuth();
+  const [totalrevenue,setTotalrevenue] =useState({percentChange:"0%",totalRevenueToday:"0",state:""});
+  const [totalincome,setTotalincome] =useState({
+    profitToday:0,
+    profitYesterday:0,
+    percentChange:"0%",
+    message: "notchange",
+});
+const [newcustomer,setNewcustomer] =useState({
+  customerToday:0,
+  customerYesterday:0,
+  percentChange:"0%",
+  state: "notchange",
+});
   const data = [
-    { name: "Jan", Subscribers: 270, "New Visitors": 150, "Active Users": 542 },
-    { name: "Feb", Subscribers: 310, "New Visitors": 180, "Active Users": 520 },
-    { name: "Mar", Subscribers: 350, "New Visitors": 200, "Active Users": 560 },
-    { name: "Apr", Subscribers: 330, "New Visitors": 220, "Active Users": 480 },
-    { name: "May", Subscribers: 450, "New Visitors": 260, "Active Users": 550 },
-    { name: "Jun", Subscribers: 400, "New Visitors": 290, "Active Users": 580 },
-    { name: "Jul", Subscribers: 460, "New Visitors": 320, "Active Users": 620 },
-    { name: "Aug", Subscribers: 510, "New Visitors": 340, "Active Users": 680 },
-    { name: "Sep", Subscribers: 252, "New Visitors": 360, "Active Users": 740 },
-    { name: "Oct", Subscribers: 680, "New Visitors": 390, "Active Users": 820 },
-    { name: "Nov", Subscribers: 780, "New Visitors": 420, "Active Users": 890 },
-    { name: "Dec", Subscribers: 900, "New Visitors": 450, "Active Users": 980 },
+    { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
+    { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
+    { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
+    { name: "Apr", "Khách hàng trung thành": 330, "khách hàng mới": 220, "Khách hàng quay lại": 480 },
+    { name: "May", "Khách hàng trung thành": 450, "khách hàng mới": 260, "Khách hàng quay lại": 550 },
+    { name: "Jun", "Khách hàng trung thành": 400, "khách hàng mới": 290, "Khách hàng quay lại": 580 },
+    { name: "Jul", "Khách hàng trung thành": 460, "khách hàng mới": 320, "Khách hàng quay lại": 620 },
+    { name: "Aug", "Khách hàng trung thành": 510, "khách hàng mới": 340, "Khách hàng quay lại": 680 },
+    { name: "Sep", "Khách hàng trung thành": 252, "khách hàng mới": 360, "Khách hàng quay lại": 740 },
+    { name: "Oct", "Khách hàng trung thành": 680, "khách hàng mới": 390, "Khách hàng quay lại": 820 },
+    { name: "Nov", "Khách hàng trung thành": 780, "khách hàng mới": 420, "Khách hàng quay lại": 890 },
+    { name: "Dec", "Khách hàng trung thành": 900, "khách hàng mới": 450, "Khách hàng quay lại": 980 },
   ];
 
   // if (!user) {
   //   return <div>Không có người dùng nào đăng nhập.</div>;
   // }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (loading) return;
+  
+      const get_revenue = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/home/total_revenue', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("Revenue:", data);
+          setTotalrevenue(data);
+        } catch (error) {
+          console.error("Error fetching revenue:", error);
+        }
+      };
+  
+      const get_income = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/home/today_income', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("Income:", data);
+          setTotalincome(data);
+        } catch (error) {
+          console.error("Error fetching income:", error);
+        }
+      };
+      const get_customer = async () => {
+        try {
+          const response = await fetch('http://localhost:5000/home/new_customer', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("customer:", data);
+          setNewcustomer(data);
+        } catch (error) {
+          console.error("Error fetching income:", error);
+        }
+      };
+      // Chạy cả hai hàm đồng thời
+      await Promise.all([get_revenue(), get_income(),get_customer()]);
+    };
+  
+    fetchData();
+  }, [loading]); // Thêm 'user' vào dependencies nếu cần
+  
   return (<>
     <div class="container">
       <div class="page-inner">
@@ -59,18 +153,18 @@ function Home() {
                       <b>Todays Income</b>
                     </h6>
                     <p class="text-muted">All Customs Value</p>
-                  </div><h4 class="text-info fw-bold">$170</h4>
+                  </div><h4 class="text-info fw-bold">{totalincome.profitToday}</h4>
                 </div>
                 <div class="progress progress-sm">
                   <div
                     class="progress-bar bg-info"
                     role="progressbar"
-                    style={{ width: "75%" }}
+                    style={{ width: `${totalincome.percentChange}` }}
                   ></div>
                 </div>
                 <div class="d-flex justify-content-between">
                   <p class="text-muted">Change</p>
-                  <p class="text-muted">75%</p>
+                  <p class="text-muted">{totalincome.percentChange}<small>{' '+totalincome.state}</small></p>
                 </div>
               </div>
             </div>
@@ -85,18 +179,19 @@ function Home() {
                       
                     </h6>
                     <p class="text-muted">All Customs Value</p>
-                  </div><h4 class="text-success fw-bold">$120</h4>
+                  </div><h4 class="text-success fw-bold">{totalrevenue.totalRevenueToday}</h4>
                 </div>
                 <div class="progress progress-sm">
                   <div
                     class="progress-bar bg-success"
                     role="progressbar"
-                    style={{ width: "25%" }}
+                    style={{ width: `${totalrevenue.percentChange}` }}
                   ></div>
+                  
                 </div>
                 <div class="d-flex justify-content-between">
                   <p class="text-muted">Change</p>
-                  <p class="text-muted">25%</p>
+                  <p class="text-muted">{totalrevenue.percentChange}<small>{' '+totalrevenue.state}</small></p>
                 </div>
               </div>
             </div>
@@ -107,7 +202,7 @@ function Home() {
                 <div class="d-flex justify-content-between">
                   <div>
                     <h6>
-                      <b>New Orders</b>
+                      <b>Pending order</b>
                       
                     </h6>
                     <p class="text-muted">Fresh Order Amount</p>
@@ -133,22 +228,22 @@ function Home() {
                 <div class="d-flex justify-content-between">
                   <div>
                     <h6>
-                      <b>New Users</b>
+                      <b>New Customer</b>
                       
                     </h6>
                     <p class="text-muted">Joined New User</p>
-                  </div><h4 class="text-secondary fw-bold">12</h4>
+                  </div><h4 class="text-secondary fw-bold">{newcustomer.customerToday}</h4>
                 </div>
                 <div class="progress progress-sm">
                   <div
                     class="progress-bar bg-secondary"
                     role="progressbar"
-                    style={{ width: "25%" }}
+                    style={{ width: `${newcustomer.percentChange}` }}
                   ></div>
                 </div>
                 <div class="d-flex justify-content-between">
                   <p class="text-muted">Change</p>
-                  <p class="text-muted">25%</p>
+                  <p class="text-muted">{newcustomer.percentChange}<small>{' '+newcustomer.state}</small></p>
                 </div>
               </div>
             </div>
@@ -159,7 +254,7 @@ function Home() {
             <div class="card">
               <div class="card-header">
                 <div class="card-head-row">
-                  <div class="card-title">User Statistics</div>
+                  <div class="card-title">Thống kê khách hàng</div>
                   <div class="card-tools">
                     <a
                       href="#"
@@ -190,21 +285,21 @@ function Home() {
                       <Legend />
                       <Area
                         type="monotone"
-                        dataKey="New Visitors"
+                        dataKey="khách hàng mới"
                         stroke="#ffa726"
                         fill="#1e88e5"
                         fillOpacity={0.8}
                       />
                       <Area
                         type="monotone"
-                        dataKey="Subscribers"
+                        dataKey="Khách hàng trung thành"
                         stroke="#ff6b6b"
                         fill="red"
                         fillOpacity={0.6}
                       />
                       <Area
                         type="monotone"
-                        dataKey="Active Users"
+                        dataKey="Khách hàng quay lại"
                         stroke="#2196f3"
                         fill="#0277bd"
                         fillOpacity={0.4}

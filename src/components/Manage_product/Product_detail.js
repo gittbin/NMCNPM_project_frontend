@@ -3,6 +3,7 @@ import React, { useState, useRef,useEffect } from "react";
 import "../Manage_product/Product_detail.css";
 import { useLoading } from "../introduce/Loading";
 import { useAuth } from "../introduce/useAuth";
+import { notify } from '../../components/Notification/notification';
 const ProductDetail = ({ product, onClose, onUpdate }) => {
   const { startLoading, stopLoading } = useLoading();
   const { user,loading} = useAuth();
@@ -126,7 +127,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
         };
       } catch (error) {
         console.error("Error uploading image:", error);
-        alert("Đã xảy ra lỗi khi tải lên hình ảnh.");
+        notify(2,"Đã xảy ra lỗi khi tải lên hình ảnh.","Thất bại")
       }
     }
     onUpdate(x, details, editData.image != product.image && editData.image);
@@ -181,16 +182,11 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
     }
     setShowCamera(false); // Đóng modal hoặc ẩn camera
   };
-  const handleSupplierChange = (e) => {
+  const handleNChange = (e) => {
+    const { name, value } = e.target;
     setEditData({
       ...editData,
-      supplier: e.target.value
-    });
-  };
-  const handleCodeChange = (e) => {
-    setEditData({
-      ...editData,
-      sku: e.target.value
+      [name]: value
     });
   };
   return (
@@ -274,7 +270,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="name"
                   name="name"
                   value={editData.name}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                   required
                 />
               </div>
@@ -285,7 +281,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="category"
                   name="category"
                   value={editData.category}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                   required
                 />
               </div>
@@ -296,7 +292,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="brand"
                   name="brand"
                   value={editData.brand}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -306,7 +302,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="sku"
                   name="sku"
                   value={editData.sku}
-                  onChange={handleCodeChange}
+                  onChange={handleNChange}
                   required
                 />
               </div>
@@ -359,7 +355,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="supplier"
                   name="supplier"
                   value={editData.supplier ? editData.supplier._id : ""}
-                  onChange={handleSupplierChange}
+                  onChange={handleNChange}
                 >
                   {suppliers.map((supplier) => (
                     <option key={supplier._id} value={supplier._id}>
@@ -375,7 +371,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="purchaseDate"
                   name="purchaseDate"
                   value={editData.purchaseDate}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -385,7 +381,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="location"
                   name="location"
                   value={editData.location}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -407,7 +403,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="unit"
                   name="unit"
                   value={editData.unit}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -416,7 +412,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="notes"
                   name="notes"
                   value={editData.notes}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 ></textarea>
               </div>
               <div className="form-group">

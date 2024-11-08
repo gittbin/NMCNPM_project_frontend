@@ -6,6 +6,7 @@ import { useLoading } from "../introduce/Loading";
 import { useAuth } from "../introduce/useAuth";
 import PaymentComponent from "./thanh_toan"
 import CustomerInfo from "./form_show"
+import { notify } from '../../components/Notification/notification';
 const Billing = () => {
   const {startLoading,stopLoading}=useLoading();
   const [invoices, setInvoices] = useState([{ products: [] }]);
@@ -45,7 +46,7 @@ const Billing = () => {
       console.log(datas.product)
       setData(datas.product)
     ;}
-    else{alert("Load sản phẩm thất bại")}
+    else{notify(2,"Load sản phẩm thất bại","Thất bại")}
      response = await fetch('http://localhost:5000/sell/get_customer', {
       method: 'POST',
       headers: {
@@ -57,7 +58,7 @@ const Billing = () => {
     if(datas.message=="success") {
       setCustomers(datas.customers)
     ;}
-    else{alert("Load sản phẩm thất bại")}
+    else{notify(2,"Load sản phẩm thất bại","Thất bại")}
     }
     a();
   },[loading])
@@ -91,7 +92,7 @@ const Billing = () => {
     setInvoices(updatedInvoices);
     ;
       }else{
-        alert("Sản phẩm không tồn tại")
+        notify(2,"Sản phẩm không tồn tại","Thất bại")
       }
     
 

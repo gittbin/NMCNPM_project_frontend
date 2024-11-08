@@ -26,4 +26,6 @@ main{
   flex-grow: 1; 
   overflow-y: auto;
 }
-
+button:focus {
+  outline: none;
+}

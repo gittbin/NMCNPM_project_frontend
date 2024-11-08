@@ -2,6 +2,7 @@ import React, { useState ,useRef,useEffect} from "react";
 import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from "../introduce/Loading"
+import { notify } from '../../components/Notification/notification';
 const ProductForm = ({turnoff,refresh}) => {
   const {startLoading,stopLoading}=useLoading()
     const CLOUD_NAME = "ddgrjo6jr";
@@ -45,6 +46,7 @@ const ProductForm = ({turnoff,refresh}) => {
           console.log(data.suppliers)
           setSuppliers(data.suppliers);
         } catch (error) {
+          
           console.error("Error fetching suppliers:", error);
         }
       };
@@ -110,7 +112,7 @@ const ProductForm = ({turnoff,refresh}) => {
     const numericValue = Number(value.replace(/,/g, '').replace(/\./g, ''));
     
     // Định dạng lại nếu là số hợp lệ
-    const formattedValue = !Number.isNaN(numericValue) ? numericValue.toLocaleString() : value;
+    const formattedValue = !Number.isNaN(numericValue) ? numericValue.toLocaleString('vn-VI')  : value;
     
     // Cập nhật formData với giá trị đã chuyển đổi
     setFormData({
@@ -148,7 +150,7 @@ const ProductForm = ({turnoff,refresh}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.supplier) {
-      alert('Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm');
+      notify(3,'Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm','Cảnh báo');
       return;
     }
     console.log(formData.supplier)
@@ -186,7 +188,7 @@ detail:details
             console.log(secure_url)
     }catch (error) {
         console.error("Error uploading image:", error);
-        alert("Đã xảy ra lỗi khi tải lên hình ảnh.");
+        notify(2,"Đã xảy ra lỗi khi tải lên hình ảnh.","Thất bại")
       }
 }
     console.log(JSON.stringify(body));
@@ -200,10 +202,13 @@ detail:details
       .then((response) => response.json())
       .then((data) => {stopLoading()
         console.log(data.message)
-      if(data.message==="Success"){turnoff();  alert("Sản phẩm đã được thêm thành công!");refresh();}
-      else{setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
+      if(data.message==="Success"){turnoff();  notify(1,"thêm sản phẩm thành công","Thành công");refresh();}
+      else{
+        notify(2,'SKUD bạn điền đã xuất hiện ở sản phẩm khác','Thất bại');
+        setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
       })
       .catch((error) => {
+        notify(2,"thêm sản phẩm thất bại","Thất bại")
         console.log("Lỗi:", error);
       });
   };
@@ -216,18 +221,26 @@ detail:details
     }
     setShowCamera(false); // Đóng modal hoặc ẩn camera
   };
-  const handleSupplierChange = (e) => {
+  // const handleSupplierChange = (e) => {
+  //   setFormData({
+  //     ...formData,
+  //     supplier: e.target.value
+  //   });
+  // };
+  // const handleCodeChange = (e) => {
+
+  //   setFormData({
+  //     ...formData,
+  //     sku: e.target.value
+  //   });
+  // };
+  const handleNChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      supplier: e.target.value
+      [name]: value
     });
-  };
-  const handleCodeChange = (e) => {
-    setFormData({
-      ...formData,
-      sku: e.target.value
-    });
-  };
+  }; 
   return (
     <div className="form-container" ref={scrollableRef}>
         <span className="close-button" onClick={turnoff}>&times;</span> {/* Dấu X để tắt form */}
@@ -236,22 +249,22 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="name">Tên hàng hóa *</label>
-                <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                <input type="text" id="name" name="name" value={formData.name} onChange={handleNChange} required />
             </div>
             <div className="form-group">
                 <label htmlFor="category">Loại hàng hóa *</label>
-                <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} required />
+                <input type="text" id="category" name="category" value={formData.category} onChange={handleNChange} required />
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="brand">Thương hiệu</label>
-                <input type="text" id="brand" name="brand" value={formData.brand} onChange={handleChange} />
+                <input type="text" id="brand" name="brand" value={formData.brand} onChange={handleNChange} />
             </div>
             <div className="form-group">
                 <label htmlFor="sku">Mã *</label>
-                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleCodeChange} required />
+                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleNChange} required />
             </div>
         </div>
 
@@ -262,7 +275,7 @@ detail:details
             </div>
             <div className="form-group">
                 <label htmlFor="purchasePrice">Giá nhập</label>
-                <input type="text" id="purchasePrice" name="purchasePrice" value={formData.purchasePrice.toLocaleString('vi-VN', { minimumFractionDigits: 3, maximumFractionDigits: 3 })} onChange={handleChange} />
+                <input type="text" id="purchasePrice" name="purchasePrice" value={formData.purchasePrice} onChange={handleChange} />
             </div>
         </div>
 
@@ -280,7 +293,7 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="supplier">Nhà cung cấp</label>
-                <select id="supplier" name="supplier" value={formData.supplier} onChange={handleSupplierChange}>
+                <select id="supplier" name="supplier" value={formData.supplier} onChange={handleNChange}>
               <option value="">Chọn nhà cung cấp</option>
               {suppliers.map((supplier) => (
                 <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
@@ -296,7 +309,7 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="location">Vị trí</label>
-                <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} />
+                <input type="text" id="location" name="location" value={formData.location} onChange={handleNChange} />
             </div>
             <div className="form-group">
             <label htmlFor="stock_in_Warehouse">Số lượng trong kho</label>
@@ -307,11 +320,11 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="unit">đơn vị</label>
-                <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleChange} />
+                <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleNChange} />
             </div>
             <div className="form-group">
                 <label htmlFor="notes">Notes</label>
-                <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange}></textarea>
+                <textarea id="notes" name="notes" value={formData.notes} onChange={handleNChange}></textarea>
             </div>
             <div className="form-group">
       <label htmlFor="image">Image (3 cách để nhập ảnh)</label>

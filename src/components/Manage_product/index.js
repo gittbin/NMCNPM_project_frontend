@@ -69,12 +69,12 @@ const handleScrollRight = () => {
       startLoading();
       setTimeout(() => {setC(true);stopLoading()}, 100); // Có thể thay đổi thời gian tùy ý
     }
-  }, [c]);
+  }, [c])
 
   return (
     <div className="product-manager">
       {a && <ProductForm turnoff={turnoffA} refresh={refresh} />}
-      {b && <History turnoff={turnoffB} />};
+      {b && <History turnoff={turnoffB} />}
       {d && <Historys turnoff={turnoffD} supplier={true} />}
       <div className="x">
               <div className="filter-bar">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './formcustomer.css';
 import { useLoading } from '../introduce/Loading';
 import { useAuth } from "../introduce/useAuth";
+import { notify } from '../../components/Notification/notification';
 function CustomerForm({close,show_customer,show_bill,supplier,change}) {
     const { user ,loading} = useAuth();
     const {stopLoading,startLoading} =useLoading();
@@ -40,9 +41,12 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
       
       const data = await response.json();
       stopLoading();
-      if(data.message=="success"||data.message=="Số điện thoại này đã được đăng ký"){
-        alert(data.message);
-        console.log(data)
+      if(data.message=="success"){
+        notify(1,"thêm supplier thành công","Thành công");
+        change()
+        close()
+      }else if(data.message=="Số điện thoại này đã được đăng ký"){
+        notify(2,data.message,"Thất bại");
         change()
       }
 
@@ -113,8 +117,9 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
 <>  
 {show_bill.map((item,index)=>{
     return(<>
+    
             
-                    <img src={item.productID.image.secure_url} height="80px"/>
+                   {item.productID?(<img src={item.productID.image.secure_url} height="80px"/>):(<h1></h1>)} 
         <label key={index}>
                     Tên sản phẩm:
                     <p style={{display:"inline-block"}}>{item.name}</p>
@@ -137,7 +142,7 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
                 </label></>
     )
 })}
-                   
+                
                 </>
     )
 

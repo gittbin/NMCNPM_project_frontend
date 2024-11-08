@@ -5,6 +5,7 @@ import { useAuth } from "../introduce/useAuth";
 import ProductDetail from "./Product_detail"
 import DeleteProductModal from "./Form_delete"
 import {useLoading} from "../introduce/Loading"
+import { notify } from '../../components/Notification/notification';
 const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) => {
   const { startLoading, stopLoading } = useLoading();
   const { user ,loading} = useAuth();
@@ -15,10 +16,9 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
     useEffect(() => {
       const fetchProducts = async () => {
         if (loading) { 
-          startLoading();
           return;
         }
-        try {console.log("render");startLoading();
+        try {console.log("render")
           const response = await fetch('http://localhost:5000/products/show', {
             method: 'POST',
             headers: {
@@ -40,7 +40,6 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
           }
           reload(o);
           setProducts(data);
-          stopLoading()
         } catch (error) {
           console.error("Lỗi khi gọi API:", error);
         }
@@ -77,8 +76,9 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
         });
         const data = await response.json();
         stopLoading()
-        if(data.message=="Product deleted successfully") {alert(`Sản phẩm "${a.name}" đã được xóa thành công!`);setX((a)=>{if(a=="edit") return "";else{return "edit"}} );}
-        else{alert("Thất bại")}
+        if(data.message=="Product deleted successfully") {
+          notify(1,`Sản phẩm "${a.name}" đã được xóa thành công!`,"Thành công");setX((a)=>{if(a=="edit") return "";else{return "edit"}} );}
+        else{notify(2,`Sản phẩm "${a.name}" xóa thất bại`,"Thất bại")}
     }
     const onClose=()=>{
       setProduct(false);
@@ -125,10 +125,10 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
     if(data.message=="success") { setProduct(false);
       setX((a)=>{if(a=="edit") return "";else{return "edit"}} );
       setTimeout(() => {
-        alert(`Sản phẩm "${a.name}" đã được cập nhật thành công!`)
+        notify(1,`Sản phẩm "${a.name}" đã được cập nhật thành công!`,"Thành công")
       }, 100);
     ;}
-    else{alert("Thất bại")}
+    else{notify(2,`Sản phẩm "${a.name}" cập nhật thất bại!`,"Thất bại")}
   }
     return (
       <>

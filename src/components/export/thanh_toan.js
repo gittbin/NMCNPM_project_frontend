@@ -2,6 +2,7 @@ import React, { useState,useEffect } from "react";
 import "./thanh_toan.css";
 import { useLoading } from "../introduce/Loading";
 import { useAuth } from "../introduce/useAuth";
+import { notify } from '../../components/Notification/notification';
 function PaymentComponent({close,products,totalAmount,customers,discount,vat}) {
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerPaid, setCustomerPaid] = useState(0);
@@ -53,14 +54,15 @@ function PaymentComponent({close,products,totalAmount,customers,discount,vat}) {
       });
       stopLoading()
       if (response.ok) {
-        alert('Success');
+        
+        notify(1,'lưu hóa đơn thành công',"Thành công");
         await close();
       } else {
-        alert('Failed to save bill');
+        notify(2,'Failed to save bill',"Thất bại");
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('An error occurred');
+      notify(2,'',"Có lỗi xảy ra");
     }
   }
   return (

@@ -13,7 +13,7 @@ const change=()=>{
       <Header size={size}/>
       <main>
         <Sidebar change={change}/>
-        <div style={{width:`${size}%`,marginLeft:`${100-size}%`,marginTop:"84px"}}>
+        <div style={{width:`${size}%`,marginLeft:`${100-size}%`,marginTop:"82px"}}>
 <Outlet className="main__content"/>
         </div>
         
