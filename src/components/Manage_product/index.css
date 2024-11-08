@@ -1,6 +1,6 @@
 /* src/ProductManager.css */
 .product-manager {
-  padding: 20px;
+  padding: 0px 20px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -144,4 +144,17 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
   margin-bottom: 20px;
   overflow: hidden;
+}
+.supplier-button {
+  padding: 10px 20px;
+  background-color: #45da0a;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.supplier-button:hover {
+  background-color: #45da0a8a;
 }

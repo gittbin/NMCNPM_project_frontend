@@ -4,14 +4,19 @@ import LoginModal from './intro'
 import './main.css'
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { notify } from '../../components/Notification/notification';
 function Main(){
     const [a,setA]= useState(0)
     const handle=(x)=>{setA(x)}
     const location = useLocation();
-    const message = location.state?.message;
     const storedUser = Cookies.get("user");
     let user = null;
-  
+    useEffect(()=>{
+      if(location.state){
+      notify(2,"bạn phải đăng nhập","Thất bại")
+    }
+    },[])
+    
     if (storedUser) {
       try {
         const decodedString = decodeURIComponent(storedUser);
@@ -48,9 +53,6 @@ function Main(){
     </header>
 
     <section className="content">
-        <p style={{color:"red",
-    fontweight: "bold"}}>{message}</p>
-        
         <p>Chào mừng đến với trang web của chúng tôi! Đây là nơi giới thiệu các tính năng và dịch vụ mà chúng tôi cung cấp.</p>
     </section></div>
     </>) 

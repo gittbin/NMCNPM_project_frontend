@@ -32,4 +32,6 @@ main{
   scroll-behavior: smooth;
   position: sticky;
 }
-
+button:focus {
+  outline: none;
+}

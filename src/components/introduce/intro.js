@@ -60,6 +60,7 @@ function LoginModal({ off, isSignup }) {
               Cookies.set("user", JSON.stringify(data.user), { expires: 7, secure: true, sameSite: 'Strict' });
               login(data.user)
               navigate('/home');
+              // notify(1,"đăng nhập thành công","Thành công")
               }else{
                 setConfirm(true)
               }

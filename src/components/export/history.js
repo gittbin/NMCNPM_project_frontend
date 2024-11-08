@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
-import '../Manage_product/history.css';
-import { useAuth } from "../../components/introduce/useAuth";
+import './history.css';
+import { useAuth } from "../introduce/useAuth";
 import {useLoading} from '../introduce/Loading'
-const History = ({turnoff,customer,supplier}) => {
+import CustomerForm from "./formcustomer";
+const History = ({turnoff}) => {
   const {startLoading,stopLoading}=useLoading();
+  const [showcustomer,FormShowcustomer] = useState(false);
+  const [showBill,FormShowbill] = useState(false);
     const [initialOrders,setInitialOrders]=useState([])
     const {user} =useAuth()
 useEffect(()=>{
     const response =async ()=>{
         try{startLoading();
-          let url='http://localhost:5000/products/history'
-          if(customer){
-            url='http://localhost:5000/sell/get_history_customer'
-          }else if(supplier){
-            url='http://localhost:5000/products/get_history_supplier'
-          }
-          
-           const response= await fetch(url, {
+           const response= await fetch('http://localhost:5000/sell/get_history', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,6 +26,7 @@ useEffect(()=>{
       }
 
       const data = await response.json();
+      console.log(data)
       setInitialOrders(data);
       stopLoading()
       ;}catch(error){
@@ -44,20 +41,17 @@ response();
   const [selectedOrders, setSelectedOrders] = useState([]);
 //   Lọc các đơn hàng theo tìm kiếm
   const filteredOrders = initialOrders.filter(order => {
-    if(supplier){
-return order.employee.name.toLowerCase().includes(searchTerm) ||
-order.supplier.toLowerCase().includes(searchTerm) ||
-order.action.toLowerCase().includes(searchTerm)
+    if(order.customerId&&order.customerId.phone){
+      return order.owner.name.toLowerCase().includes(searchTerm) ||
+    formatDateTime(order.orderDate).toLowerCase().includes(searchTerm) ||
+    order.customerId.phone.toLowerCase().includes(searchTerm)
+    }else{
+      return order.owner.name.toLowerCase().includes(searchTerm) ||
+    formatDateTime(order.orderDate).toLowerCase().includes(searchTerm) 
     }
-    if(customer){
-      return order.employee.name.toLowerCase().includes(searchTerm) ||
-order.customer.toLowerCase().includes(searchTerm) ||
-order.action.toLowerCase().includes(searchTerm)
-    }
-    return order.employee.name.toLowerCase().includes(searchTerm) ||
-    order.product.toLowerCase().includes(searchTerm) ||
-    order.action.toLowerCase().includes(searchTerm)
- } );
+  }
+    
+  );
   // Cập nhật selectedOrders mỗi khi filteredOrders thay đổi
   useEffect(() => {
     setSelectedOrders(new Array(filteredOrders.length).fill(false));
@@ -66,6 +60,9 @@ order.action.toLowerCase().includes(searchTerm)
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
+  const show_bill = (a) => {
+    FormShowbill(a)
+  }
   function formatDateTime(isoString) {
     const date = new Date(isoString);
     
@@ -79,7 +76,13 @@ order.action.toLowerCase().includes(searchTerm)
     
     return `${hours}:${minutes}:${seconds}, ngày ${day}/${month}/${year}`;
 }
+  function show_customer(a){
+    FormShowcustomer(a)
+  }
   return (
+    <>
+    {showBill&&<CustomerForm show_bill={showBill} close={()=>{FormShowbill(false)}}/>}
+    {showcustomer&&<CustomerForm show_customer={showcustomer} close={()=>{FormShowcustomer(false)}}/>}
     <div className="history-mgmt-main">
     <div className="history-mgmt-container">
     <div className="close" onClick={turnoff}>x</div>
@@ -107,30 +110,33 @@ order.action.toLowerCase().includes(searchTerm)
           <tr>
             <th>Name</th>
             <th>Date</th>
-            <th>Status</th>
-            {!supplier&&!customer?<th>Product</th>:(!supplier?<th>customer</th>:<th>supplier</th>)}
-            <th>Details</th>
+            <th>Money</th>
+            <th>Product</th>
+            <th>customer</th>
           </tr>
         </thead>
         <tbody>
           {filteredOrders.map((order, index) => (
             <tr key={index}>
-              <td>{order.employee.name} <br /> <small>{order.employee.email}</small></td>
-              <td>{formatDateTime(order.timestamp)}</td>
+              <td>{order.creater.name} <br /> <small>{order.creater.email}</small></td>
+              <td>{formatDateTime(order.orderDate)}</td>
               <td>
-                <span className={`history-mgmt-status ${order.action}`}>
-                  {order.action}
+                <span className={`history-mgmt-status`} style={{display:"block"}}>
+                  {order.totalAmount+" đồng"} 
                 </span>
+                 <span className={`history-mgmt-status`} style={{display:"block"}}>{"discount : "+order.discount+" % "}</span>
+                 <span className={`history-mgmt-status`} style={{display:"block"}}>{"vat : "+order.vat+" % "}</span>
               </td>
-              {!supplier&&!customer?<td>{order.product}</td>:(!supplier?<td>{order.customer}</td>:<td>{order.supplier}</td>)}
-              <td>
-              {order.details}
+              <td className="have_phone" onClick={()=>{show_bill(order.items)}}>Click để xem chi tiết </td>
+              <td onClick={()=>{show_customer(order.customerId)}} className={order.customerId&&order.customerId.phone? "have_phone":""}>
+              {order.customerId&&order.customerId.phone}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div></div>
+    </>
   );
 };
 

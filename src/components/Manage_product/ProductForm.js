@@ -1,7 +1,11 @@
-import React, { useState ,useRef} from "react";
+import React, { useState ,useRef,useEffect} from "react";
 import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from "../introduce/Loading"
+<<<<<<< HEAD
+=======
+import { notify } from '../../components/Notification/notification';
+>>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
 const ProductForm = ({turnoff,refresh}) => {
   const {startLoading,stopLoading}=useLoading()
     const CLOUD_NAME = "ddgrjo6jr";
@@ -15,6 +19,7 @@ const ProductForm = ({turnoff,refresh}) => {
     const canvasRef = useRef(null);
     const fileInputRef = useRef(null);
     const streamRef = useRef(null);
+    const [suppliers, setSuppliers] = useState([]); // state for suppliers list
     // Bắt đầu hiển thị video từ camera
     const scrollableRef = useRef(null);
     const scrollToTop = () => {
@@ -27,7 +32,29 @@ const ProductForm = ({turnoff,refresh}) => {
       streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = streamRef.current;
     };
-  
+    useEffect(() => {
+      const fetchSuppliers = async () => {
+        let body={
+          user: user
+              }
+        try {
+          let response = await fetch('http://localhost:5000/products/get_supplier', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+          });
+          const data = await response.json();
+          console.log(data.suppliers)
+          setSuppliers(data.suppliers);
+        } catch (error) {
+          
+          console.error("Error fetching suppliers:", error);
+        }
+      };
+      fetchSuppliers();
+    }, []);
     // Chụp ảnh từ video
     const captureImage = () => {
       const video = videoRef.current;
@@ -68,25 +95,45 @@ const ProductForm = ({turnoff,refresh}) => {
     description: "",
     sku: "",
     price: "",
-    stock: 0,
+    stock_in_shelf: 0,
     reorderLevel: 10,
     supplier: "",
     purchaseDate: "",
     location: "",
-    status: "in_stock",
+    stock_in_Warehouse: 0,
     unit: "pcs",
     purchasePrice: "",
     notes: "",
     image:""
   });
 
-  const handleChange = (e) => {setError("")
+  const handleChange = (e) => {
+    setError("");
+    const { name, value } = e.target;
+
+    // Xóa dấu phân tách cũ và chuyển thành số
+    const numericValue = Number(value.replace(/,/g, '').replace(/\./g, ''));
+    
+    // Định dạng lại nếu là số hợp lệ
+    const formattedValue = !Number.isNaN(numericValue) ? numericValue.toLocaleString('vn-VI')  : value;
+    
+    // Cập nhật formData với giá trị đã chuyển đổi
+    setFormData({
+      ...formData,
+      [name]: typeof formattedValue === "string" 
+                ? formattedValue.toLowerCase().replace(/,/g, '.')
+                : value.replace(/,/g, '.')
+    });
+};
+
+  const handleChange_link=(e) => {setError("")
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    
+    fileInputRef.current.value = ""; 
+    setImage(value);
   };
   const handleChange_link=(e) => {setError("")
     const { name, value } = e.target;
@@ -114,6 +161,14 @@ const ProductForm = ({turnoff,refresh}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
+=======
+    if (!formData.supplier) {
+      notify(3,'Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm','Cảnh báo');
+      return;
+    }
+    console.log(formData.supplier)
+>>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
     console.log(formData.image);
     let body = {
 user:user,
@@ -148,7 +203,7 @@ detail:details
             console.log(secure_url)
     }catch (error) {
         console.error("Error uploading image:", error);
-        alert("Đã xảy ra lỗi khi tải lên hình ảnh.");
+        notify(2,"Đã xảy ra lỗi khi tải lên hình ảnh.","Thất bại")
       }
 }
     console.log(JSON.stringify(body));
@@ -162,10 +217,13 @@ detail:details
       .then((response) => response.json())
       .then((data) => {stopLoading()
         console.log(data.message)
-      if(data.message==="Success"){turnoff();  alert("Sản phẩm đã được thêm thành công!");refresh();}
-      else{setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
+      if(data.message==="Success"){turnoff();  notify(1,"thêm sản phẩm thành công","Thành công");refresh();}
+      else{
+        notify(2,'SKUD bạn điền đã xuất hiện ở sản phẩm khác','Thất bại');
+        setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
       })
       .catch((error) => {
+        notify(2,"thêm sản phẩm thất bại","Thất bại")
         console.log("Lỗi:", error);
       });
   };
@@ -178,6 +236,26 @@ detail:details
     }
     setShowCamera(false); // Đóng modal hoặc ẩn camera
   };
+  // const handleSupplierChange = (e) => {
+  //   setFormData({
+  //     ...formData,
+  //     supplier: e.target.value
+  //   });
+  // };
+  // const handleCodeChange = (e) => {
+
+  //   setFormData({
+  //     ...formData,
+  //     sku: e.target.value
+  //   });
+  // };
+  const handleNChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  }; 
   return (
     <div className="form-container" ref={scrollableRef}>
         <span className="close-button" onClick={turnoff}>&times;</span> {/* Dấu X để tắt form */}
@@ -185,82 +263,83 @@ detail:details
     <form onSubmit={handleSubmit}>
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="name">Name *</label>
-                <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
+                <label htmlFor="name">Tên hàng hóa *</label>
+                <input type="text" id="name" name="name" value={formData.name} onChange={handleNChange} required />
             </div>
             <div className="form-group">
-                <label htmlFor="category">Category *</label>
-                <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} required />
-            </div>
-        </div>
-
-        <div className="form-row">
-            <div className="form-group">
-                <label htmlFor="brand">Brand</label>
-                <input type="text" id="brand" name="brand" value={formData.brand} onChange={handleChange} />
-            </div>
-            <div className="form-group">
-                <label htmlFor="sku">SKU *</label>
-                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleChange} required />
+                <label htmlFor="category">Loại hàng hóa *</label>
+                <input type="text" id="category" name="category" value={formData.category} onChange={handleNChange} required />
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="price">Price *</label>
+                <label htmlFor="brand">Thương hiệu</label>
+                <input type="text" id="brand" name="brand" value={formData.brand} onChange={handleNChange} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="sku">Mã *</label>
+                <input type="text" id="sku" name="sku" value={formData.sku} onChange={handleNChange} required />
+            </div>
+        </div>
+
+        <div className="form-row">
+            <div className="form-group">
+                <label htmlFor="price">Giá bán *</label>
                 <input type="text" id="price" name="price" value={formData.price} onChange={handleChange} required />
             </div>
             <div className="form-group">
-                <label htmlFor="purchasePrice">Purchase Price</label>
+                <label htmlFor="purchasePrice">Giá nhập</label>
                 <input type="text" id="purchasePrice" name="purchasePrice" value={formData.purchasePrice} onChange={handleChange} />
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="stock">Stock</label>
-                <input type="number" id="stock" name="stock" value={formData.stock} onChange={handleChange} />
+                <label htmlFor="stock_in_shelf">Số lượng trên kệ</label>
+                <input type="number" id="stock_in_shelf" name="stock_in_shelf" value={formData.stock_in_shelf} onChange={handleChange} />
             </div>
             <div className="form-group">
-                <label htmlFor="reorderLevel">Reorder Level</label>
+                <label htmlFor="reorderLevel">Thông báo cần nhập hàng nếu số lượng dưới:</label>
                 <input type="number" id="reorderLevel" name="reorderLevel" value={formData.reorderLevel} onChange={handleChange} />
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="supplier">Supplier</label>
-                <input type="text" id="supplier" name="supplier" value={formData.supplier} onChange={handleChange} />
+                <label htmlFor="supplier">Nhà cung cấp</label>
+                <select id="supplier" name="supplier" value={formData.supplier} onChange={handleNChange}>
+              <option value="">Chọn nhà cung cấp</option>
+              {suppliers.map((supplier) => (
+                <option key={supplier._id} value={supplier._id}>{supplier.name}</option>
+              ))}
+            </select>
             </div>
             <div className="form-group">
-                <label htmlFor="purchaseDate">Purchase Date</label>
+                <label htmlFor="purchaseDate">Ngày nhập hàng</label>
                 <input type="date" id="purchaseDate" name="purchaseDate" value={formData.purchaseDate} onChange={handleChange} />
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="location">Location</label>
-                <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} />
+                <label htmlFor="location">Vị trí</label>
+                <input type="text" id="location" name="location" value={formData.location} onChange={handleNChange} />
             </div>
             <div className="form-group">
-                <label htmlFor="status">Status</label>
-                <select id="status" name="status" value={formData.status} onChange={handleChange}>
-                    <option value="in_stock">In Stock</option>
-                    <option value="low_stock">Low Stock</option>
-                    <option value="out_of_stock">Out of Stock</option>
-                </select>
+            <label htmlFor="stock_in_Warehouse">Số lượng trong kho</label>
+            <input type="number" id="stock_in_Warehouse" name="stock_in_Warehouse" value={formData.stock_in_Warehouse} onChange={handleChange}/>
             </div>
         </div>
 
         <div className="form-row">
             <div className="form-group">
-                <label htmlFor="unit">Unit</label>
-                <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleChange} />
+                <label htmlFor="unit">đơn vị</label>
+                <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleNChange} />
             </div>
             <div className="form-group">
                 <label htmlFor="notes">Notes</label>
-                <textarea id="notes" name="notes" value={formData.notes} onChange={handleChange}></textarea>
+                <textarea id="notes" name="notes" value={formData.notes} onChange={handleNChange}></textarea>
             </div>
             <div className="form-group">
       <label htmlFor="image">Image (3 cách để nhập ảnh)</label>
