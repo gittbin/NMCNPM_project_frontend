@@ -35,7 +35,6 @@ import ManageAccount from './pages/ManageAccount/index.js';
 import RolesGroup from './pages/RolesGroup/index.js';
 import Permissions from './pages/Permission/index.js';
 import Notification from './components/Notification/notification.js';
-import Notification from './components/Notification/notification.js';
 function App() {
   return (
     <>

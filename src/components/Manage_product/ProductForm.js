@@ -2,10 +2,7 @@ import React, { useState ,useRef,useEffect} from "react";
 import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from "../introduce/Loading"
-<<<<<<< HEAD
-=======
 import { notify } from '../../components/Notification/notification';
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
 const ProductForm = ({turnoff,refresh}) => {
   const {startLoading,stopLoading}=useLoading()
     const CLOUD_NAME = "ddgrjo6jr";
@@ -135,15 +132,6 @@ const ProductForm = ({turnoff,refresh}) => {
     fileInputRef.current.value = ""; 
     setImage(value);
   };
-  const handleChange_link=(e) => {setError("")
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    fileInputRef.current.value = ""; 
-    setImage(value);
-  };
  const handleChangeimage=(e)=>{
     setFormData({
         ...formData,
@@ -161,14 +149,11 @@ const ProductForm = ({turnoff,refresh}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-=======
     if (!formData.supplier) {
       notify(3,'Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm','Cảnh báo');
       return;
     }
     console.log(formData.supplier)
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
     console.log(formData.image);
     let body = {
 user:user,

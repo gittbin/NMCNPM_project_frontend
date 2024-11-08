@@ -4,10 +4,7 @@
     border-right: 2px #b7b7b7 solid;
     width: 20%;
     position: fixed;
-<<<<<<< HEAD
-=======
     background-color: #0e0f28;
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
 }
   
   .sidebar>li{
@@ -41,26 +38,6 @@
   .sidebar__link.active {
     color: #8686d6;  /* Đổi màu text thành xanh */
   }
-<<<<<<< HEAD
-
-  .sidebar__submenu {
-    list-style: none;
-    padding-left: 20px; /* Tạo thụt vào để phân biệt với các mục chính */
-  }
-  
-  .sidebar__submenu li {
-    margin-top: 5px;
-  }
-  
-  .sidebar__submenu .sidebar__link {
-    color: #888; /* Đổi màu cho các mục con */
-  }
-  
-  .sidebar__submenu .sidebar__link:hover {
-    color: #000; /* Màu khi hover */
-  }
-  
-=======
   .logo-header{
     height: 57px;
     width: 100%;
@@ -73,4 +50,3 @@
   .add_jus{
     justify-content: center;
   }
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c

@@ -69,11 +69,7 @@ const handleScrollRight = () => {
       startLoading();
       setTimeout(() => {setC(true);stopLoading()}, 100); // Có thể thay đổi thời gian tùy ý
     }
-<<<<<<< HEAD
-  }, [c]);
-=======
   }, [c])
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
 
   return (
     <div className="product-manager">

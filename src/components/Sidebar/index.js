@@ -4,21 +4,21 @@ import { MdOutlineHome } from "react-icons/md";
 import { LuClipboardCheck } from "react-icons/lu";
 import { TbPackageImport, TbPackageExport } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { GrGroup } from "react-icons/gr";
+import { FaKeycdn } from "react-icons/fa";
 import { useState, useEffect } from "react";
+import { MdManageAccounts } from "react-icons/md";
 import a from "./my_crush-removebg-preview.png";
 
-<<<<<<< HEAD
-function Sidebar() {
-  const location = useLocation(); // Lấy thông tin đường dẫn hiện tại
-  const [selected, setSelected] = useState();  // Lưu trạng thái của mục được chọn
-  const [isAddOpen, setIsAddOpen] = useState(false);  // Trạng thái mở/đóng dropdown của mục "Thêm"
-=======
 function Sidebar({ change }) {
   const location = useLocation();  // Lấy thông tin đường dẫn hiện tại
   const [selected, setSelected] = useState(1);  // Trạng thái mặc định cho mục được chọn
   const [isExpanded, setIsExpanded] = useState(true);  // Trạng thái cho sidebar có mở rộng hay không
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
+  const [isAddOpen, setIsAddOpen] = useState(false); 
 
+  const toggleAddDropdown = () => {
+    setIsAddOpen(!isAddOpen);
+  };
   // Cập nhật trạng thái `selected` dựa trên đường dẫn hiện tại
   useEffect(() => {
     switch (location.pathname) {
@@ -45,70 +45,6 @@ function Sidebar({ change }) {
     }
   }, [location.pathname]);
 
-<<<<<<< HEAD
-  // Toggle trạng thái mở/đóng của mục "Thêm"
-  const toggleAddDropdown = () => {
-    setIsAddOpen(!isAddOpen);
-  };
-
-  return (
-    <>
-      <ul className="sidebar">
-        <li className="sidebar__home">
-          <Link className={`sidebar__link ${selected === 1 ? 'active' : ''}`} to='/home'>
-            <div className="sidebar__icon"><MdOutlineHome /></div> 
-            Home
-          </Link>
-        </li>
-        <li className="sidebar__product">
-          <Link className={`sidebar__link ${selected === 2 ? 'active' : ''}`} to='/home/manage-product'>
-            <div className="sidebar__icon"><LuClipboardCheck /></div>
-            Quản lí hàng hóa
-          </Link>
-        </li>
-        <li className="sidebar__import">
-          <Link className={`sidebar__link ${selected === 3 ? 'active' : ''}`} to='/home/import'>
-            <div className="sidebar__icon"><TbPackageImport /></div>
-            Quản lý kho
-          </Link>
-        </li>
-        <li className="sidebar__export">
-          <Link className={`sidebar__link ${selected === 4 ? 'active' : ''}`} to='/home/export'>
-            <div className="sidebar__icon"><TbPackageExport /></div>
-            Quản lý đơn hàng
-          </Link>
-        </li>
-        <li className="sidebar__add">
-          {/* Khi nhấn vào mục "Thêm", sẽ toggle trạng thái mở/đóng */}
-          <div className={`sidebar__link ${selected === 5 ? 'active' : ''}`} onClick={toggleAddDropdown}>
-            <div className="sidebar__icon"><IoAddCircleOutline /></div>
-            Quản lí quyền người dùng
-          </div>
-
-          {/* Dropdown hiển thị các mục con nếu `isAddOpen` là true */}
-          {isAddOpen && (
-            <ul className="sidebar__submenu">
-              <li>
-                <Link className="sidebar__link" to='/home/manage-account'>
-                  Quản lí tài khoản
-                </Link>
-              </li>
-              <li>
-                <Link className="sidebar__link" to='/home/permissions'>
-                  Phân quyền
-                </Link>
-              </li>
-              <li>
-                <Link className="sidebar__link" to='/home/roles-group'>
-                  Nhóm quyền
-                </Link>
-              </li>
-            </ul>
-          )}
-        </li>
-      </ul>
-    </>
-=======
   // Hàm để chuyển đổi kích thước sidebar
   const toggleSidebar = () => {
     change();  // Gọi hàm change từ prop
@@ -162,13 +98,36 @@ function Sidebar({ change }) {
         </Link>
       </li>
       <li className="sidebar__add">
-        <Link className={`sidebar__link ${selected === 5 ? 'active' : ''} ${!isExpanded ? "add_jus" : ""}`} style={!isExpanded?{padding:"15px 0px"}:{}} to='/home/add'>
-          <div className="sidebar__icon" style={!isExpanded?{marginRight:"0px"}:{}}><IoAddCircleOutline /></div>
-          {isExpanded && "Thêm"}
-        </Link>
+        <div
+          className={`sidebar__link ${selected === 5 ? 'active' : ''} ${!isExpanded ? "add_jus" : ""}`}
+          onClick={toggleAddDropdown}
+          style={{ cursor: 'pointer' }}
+        >
+          <div className="sidebar__icon"><IoAddCircleOutline /></div>
+          {isExpanded && "Quản lí quyền nhân viên"}
+        </div>
+
+        {isAddOpen && isExpanded && (
+          <ul className="sidebar__submenu">
+            <li>
+              <Link className="sidebar__link" to='/home/manage-account'>
+              <MdManageAccounts /> Quản lí tài khoản
+              </Link>
+            </li>
+            <li>
+              <Link className="sidebar__link" to='/home/permissions'>
+              <FaKeycdn /> Phân quyền
+              </Link>
+            </li>
+            <li>
+              <Link className="sidebar__link" to='/home/roles-group'>
+              <GrGroup /> Nhóm quyền
+              </Link>
+            </li>
+          </ul>
+        )}
       </li>
     </ul>
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
   );
 }
 

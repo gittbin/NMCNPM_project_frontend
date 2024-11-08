@@ -6,11 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const ToastContent = ({ title, message, color }) => (
   <div>
     <h4 style={{ margin: 0, color }}>{title}</h4>
-<<<<<<< HEAD
-    <p style={{ margin: '5px 0 0', color: '#333' }}>{message}</p>
-=======
     <p style={{ margin: '5px 0 0', color: '#333',lineHeight:1.5 }}>{message}</p>
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
   </div>
 );
 
@@ -50,11 +46,7 @@ const Notification = () => (
     autoClose={5000}
     hideProgressBar={false}
     style={{
-<<<<<<< HEAD
-      zIndex: 10000,
-=======
       zIndex: 1000000,
->>>>>>> 81fc8c2fcc69d96f152d525a1c802ffa5bcda62c
       fontFamily: 'Arial, sans-serif',
       fontSize: '14px',
       borderRadius: '8px',
