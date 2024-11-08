@@ -73,13 +73,3 @@ h3 {
 .update-btn:hover {
   background-color: #45a049;
 }
-
-
-.success-message {
-  background-color: #dff0d8; /* Màu nền nhẹ nhàng */
-  color: #3c763d; /* Màu chữ xanh */
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #d6e9c6; /* Viền */
-  border-radius: 4px;
-}

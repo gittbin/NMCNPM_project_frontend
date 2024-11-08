@@ -3,6 +3,7 @@ import './ManageAccount.css';
 import { getRoles } from "../../services/Roles/rolesService";
 import { useAuth } from "../../components/introduce/useAuth";
 import { useLoading } from "../../components/introduce/Loading";
+import { notify } from "../../components/Notification/notification";
 
 function AccountTable() {
   const [accounts, setAccounts] = useState([]);
@@ -117,12 +118,14 @@ function AccountTable() {
 
       const data = await response.json();
       console.log("Success:", data);
-      if(data.message == 'Không có quyền truy cập'){
-        alert("Bạn không đủ trình để làm cái này");
-        }
+      if(data.message === 'Không có quyền truy cập'){
+        notify(2,"Bạn không có quyền tạo tài khoản","Thất bại");
+      }else{
+        notify(1,"Tạo thành công tài khoản","Thành công");
+      }
       stopLoading();
-      await getAccounts(user._id); // Use await here as handleCreateAccount is async
-      setShowModal(false); // Hide modal on success
+      await getAccounts(user._id); 
+      setShowModal(false); 
     } catch (error) {
       console.error("Error:", error);
     }

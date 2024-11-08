@@ -3,6 +3,7 @@ import './Permission.css';
 import { useAuth } from '../../components/introduce/useAuth';
 import { useLoading } from "../../components/introduce/Loading";
 import { getRoles } from '../../services/Roles/rolesService';
+import { notify } from '../../components/Notification/notification'
 
 const Permissions = () => {
   const rights = ["add_product", "edit_product", "delete_product", "create_order", "import_goods",
@@ -11,7 +12,6 @@ const Permissions = () => {
   const { user } = useAuth();
   const { startLoading, stopLoading } = useLoading();
   const [permissions, setPermissions] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -73,9 +73,9 @@ const Permissions = () => {
       
       const data = await response.json();
       console.log(data);
-      setSuccessMessage("Cập nhật thành công!");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      notify(1,"Cập nhật quyền thành công","Thành công");
     } catch (error) {
+      notify(2,"Lỗi khi cập nhật phân quyền","Lỗi rồi ba");
       console.error("Lỗi khi cập nhật phân quyền:", error);
     }
   };
@@ -84,8 +84,6 @@ const Permissions = () => {
     <form className="permissions-container" onSubmit={handleSubmit}>
       <h2>Permission</h2>
       <h3>Thiết lập phân quyền</h3>
-
-      {successMessage && <div className="success-message">{successMessage}</div>}
 
       <div className="tabs">
         <table>
