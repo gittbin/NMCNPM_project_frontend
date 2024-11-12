@@ -34,7 +34,6 @@
   border-radius: 5px;
   border: 1px solid #ccc;
   margin-right: 20px;
-  background-color: #ffffff; /* White for clean look */
   color: #2c3e50; /* Navy for contrast */
   width: 250px;
   outline: none;
@@ -102,14 +101,12 @@
 }
 
 .order-mgmt-table th {
-  background-color: #f0f4f8; /* Light gray background for headers */
   font-weight: 600;
   color: #2c3e50; /* Navy */
   text-align: left;
 }
 
 .order-mgmt-table td {
-  background-color: #ffffff; /* White background for rows */
   color: #2c3e50; /* Navy text for contrast */
   text-align: left;
 }
@@ -128,7 +125,7 @@
   display: inline-block;
 }
 
-.order-mgmt-status.delivered {
+.order-mgmt-status.deliveried {
   background-color: #28a745;
   color: white;
 }
@@ -181,7 +178,10 @@
   accent-color: #007bff; /* Blue color for checked state */
   border-radius: 3px; /* Slight rounding for modern look */
 }
-
+.infoDetail:hover{
+  background: #007bff;
+  border-radius: 8px;
+}
 .order-mgmt-table th:first-child, 
 .order-mgmt-table td:first-child {
   width: 40px;
@@ -220,4 +220,20 @@
   max-width: 100px; /* Chiều rộng tối đa */
   overflow-wrap: break-word; /* Cho phép xuống dòng khi cần thiết */
   white-space: normal; /* Cho phép xuống dòng */
+}
+
+th:nth-child(5), td:nth-child(5) { /* Hành Động */
+ text-align: center;
+}
+th:nth-child(3), td:nth-child(3) { /* Hành Động */
+  text-align: center;
+ }
+ .order-mgmt-table tr:hover {
+  background-color: #f1f1f1; 
+  cursor: pointer;
+}
+
+
+.order-mgmt-table tr {
+  transition: background-color 0.3s ease;
 }
