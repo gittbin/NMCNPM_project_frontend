@@ -150,8 +150,6 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
               <input
                 type="checkbox"
                 className="order-mgmt-checkbox"
-                checked={selectAll}
-                onChange={handleSelectAll}
               />
             </th>
             <th>Order</th>
