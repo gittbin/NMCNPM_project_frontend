@@ -125,10 +125,11 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       hour12: false,
     });
   };
+
   return (
     <div className="order-mgmt-container">
       <div className="order-mgmt-header">
-        <h2 className="order-mgmt-title">Quản lý đơn hàng</h2>
+        <h2 className="order-mgmt-title">Order Status</h2>
         <div className="order-mgmt-header-controls">
           <input
             type="text"
@@ -145,6 +146,14 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       <table className="order-mgmt-table">
         <thead>
           <tr>
+            <th>
+              <input
+                type="checkbox"
+                className="order-mgmt-checkbox"
+                checked={selectAll}
+                onChange={handleSelectAll}
+              />
+            </th>
             <th>Order</th>
             <th>Client</th>
             <th>Date</th>

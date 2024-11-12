@@ -48,7 +48,7 @@
     padding: 10px 15px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    margin-right: 20px;
+    margin-right: 20px!important;
     background-color: #ffffff; /* White for clean look */
     color: #2c3e50; /* Navy for contrast */
     width: 250px;
@@ -190,4 +190,16 @@
     right: 5px;
     cursor: pointer;
     top: 5px;
+  }
+  .history-mgmt-container input[type="text"],
+  .history-mgmt-container input[type="email"],
+  .history-mgmt-container input[type="date"],
+  .history-mgmt-container input[type="String"],
+  .history-mgmt-container select {
+    width: 100%; /* Chiều rộng 100% của ô */
+    padding: 5px; /* Khoảng cách bên trong ô */
+    margin: 5px 0; /* Khoảng cách trên và dưới */
+    border-radius: 4px; /* Bo tròn góc */
+    border: 1px solid #ccc; /* Đường viền cho input */
+    box-sizing: border-box; /* Bao gồm padding và border vào chiều rộng */
   }

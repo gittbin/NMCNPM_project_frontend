@@ -20,10 +20,18 @@ a{text-decoration: none;}
 
 main{
   display: flex;
+  
 }
 
 .main__content{
   flex-grow: 1; 
   overflow-y: auto;
+  max-height: 85vh; 
+  overflow-y: auto;
+  scrollbar-width: thin; 
+  scroll-behavior: smooth;
+  position: sticky;
 }
-
+button:focus {
+  outline: none;
+}

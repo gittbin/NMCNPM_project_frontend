@@ -4,6 +4,7 @@ import ProductGrid from "./item.js";
 import ProductForm from '../../components/Manage_product/ProductForm';
 import History from "../../components/Manage_product/history.js"
 import {useLoading} from "../introduce/Loading"
+import Historys from "../export/form_show.js"
 const ProductManager = () => {
   const { startLoading, stopLoading } = useLoading();
   const [categories, setCategories] = useState([]);
@@ -12,6 +13,7 @@ const ProductManager = () => {
   const [a, setA] = useState(false);
   const [b, setB] = useState(false);
   const [c, setC] = useState(true);
+  const [d, setD] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortByA, setSortByA] = useState("default"); // Mặc định
   const [sortByB, setSortByB] = useState("Từ thấp lên cao"); // Mặc định
@@ -44,11 +46,17 @@ const handleScrollRight = () => {
   const turnonB = () => {
     setB(true);
   }
+  const turnonD =()=>{
+    setD(true)
+  }
   const turnoffA = () => {
     setA(false);
   };
   const turnoffB = () => {
     setB(false);
+  };
+  const turnoffD = () => {
+    setD(false);
   };
   const reload_categorie = (a) => {
     setCategories(a);
@@ -61,12 +69,13 @@ const handleScrollRight = () => {
       startLoading();
       setTimeout(() => {setC(true);stopLoading()}, 100); // Có thể thay đổi thời gian tùy ý
     }
-  }, [c]);
+  }, [c])
 
   return (
     <div className="product-manager">
       {a && <ProductForm turnoff={turnoffA} refresh={refresh} />}
       {b && <History turnoff={turnoffB} />}
+      {d && <Historys turnoff={turnoffD} supplier={true} />}
       <div className="x">
               <div className="filter-bar">
         <button className="scroll-button" onClick={handleScrollLeft}>◀</button>
@@ -128,6 +137,7 @@ const handleScrollRight = () => {
           {/* Thêm các tùy chọn khác nếu cần */}
         </select>
         <button className="history-button" onClick={turnonB}>Xem lịch sử</button>
+        <button className="supplier-button" onClick={turnonD}>Nhà cung cấp</button>
       </div>
       </div>
 

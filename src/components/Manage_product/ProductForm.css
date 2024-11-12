@@ -117,9 +117,9 @@
     transition: background-color 0.3s;
 }
 input[type="file"] {
+    width: 100%;
     padding: 10px 0px;
     background-color: #f8f9fa;
-    border: 2px dashed #6c757d;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease;

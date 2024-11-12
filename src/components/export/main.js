@@ -1,184 +1,12 @@
-// import React, { useState } from 'react';
-// import './form.css'; // Nhúng file CSS
-
-// const CreateOrderForm = () => {
-//   const [orderNumber, setOrderNumber] = useState('');
-//   const [orderDate, setOrderDate] = useState('');
-//   const [clientName, setClientName] = useState('');
-//   const [clientEmail, setClientEmail] = useState('');
-//   const [clientAddress, setClientAddress] = useState('');
-//   const [country, setCountry] = useState('');
-//   const [products, setProducts] = useState([{ name: '', quantity: 1, price: 0 }]);
-//   const [status, setStatus] = useState('Pending');
-//   const [paymentMethod, setPaymentMethod] = useState('');
-
-//   const handleAddProduct = () => {
-//     setProducts([...products, { name: '', quantity: 1, price: 0 }]);
-//   };
-
-//   const handleProductChange = (index, field, value) => {
-//     const newProducts = products.map((product, i) =>
-//       i === index ? { ...product, [field]: value } : product
-//     );
-//     setProducts(newProducts);
-//   };
-
-//   const calculateTotal = () => {
-//     return products.reduce((total, product) => total + product.quantity * product.price, 0);
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     console.log({
-//       orderNumber,
-//       orderDate,
-//       clientName,
-//       clientEmail,
-//       clientAddress,
-//       country,
-//       products,
-//       status,
-//       paymentMethod,
-//       totalAmount: calculateTotal(),
-//     });
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit} className="create-order-form-container">
-//       <h2 className="create-order-form-title">Tạo Đơn Hàng</h2>
-
-//       <label className="create-order-form-label">Mã Đơn Hàng:</label>
-//       <input className="input-sell"
-//         type="text"
-//         value={orderNumber}
-//         onChange={(e) => setOrderNumber(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Ngày Đặt Hàng:</label>
-//       <input
-//         type="date"
-//         value={orderDate}
-//         onChange={(e) => setOrderDate(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <h3>Thông Tin Khách Hàng</h3>
-//       <label className="create-order-form-label">Tên Khách Hàng:</label>
-//       <input
-//         type="text"
-//         value={clientName}
-//         onChange={(e) => setClientName(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Email Khách Hàng:</label>
-//       <input
-//         type="email"
-//         value={clientEmail}
-//         onChange={(e) => setClientEmail(e.target.value)}
-//         className="create-order-form-input"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Địa Chỉ Khách Hàng:</label>
-//       <textarea
-//         value={clientAddress}
-//         onChange={(e) => setClientAddress(e.target.value)}
-//         className="create-order-form-textarea"
-//         required
-//       />
-
-//       <label className="create-order-form-label">Quốc Gia:</label>
-//       <select value={country} onChange={(e) => setCountry(e.target.value)} className="create-order-form-select" required>
-//         <option value="">Chọn quốc gia</option>
-//         <option value="VN">Việt Nam</option>
-//         <option value="US">Hoa Kỳ</option>
-//         <option value="UK">Anh</option>
-//         <option value="AU">Úc</option>
-//       </select>
-
-//       <h3>Sản Phẩm</h3>
-//       {products.map((product, index) => (
-//         <div key={index}>
-//           <label className="create-order-form-label">Tên Sản Phẩm:</label>
-//           <input
-//             type="text"
-//             value={product.name}
-//             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           />
-
-//           <label className="create-order-form-label">Số Lượng:</label>
-//           <input
-//             type="number"
-//             value={product.quantity}
-//             min="1"
-//             onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           />
-
-//           {/* <label className="create-order-form-label">Giá:</label>
-//           <input
-//             type="number"
-//             value={product.price}
-//             min="0"
-//             onChange={(e) => handleProductChange(index, 'price', e.target.value)}
-//             className="create-order-form-input"
-//             required
-//           /> */}
-//         </div>
-//       ))}
-//       <button type="button" onClick={handleAddProduct} className="create-order-form-button">
-//         Thêm Sản Phẩm
-//       </button>
-
-//       <label className="create-order-form-label">Trạng Thái:</label>
-//       <select value={status} onChange={(e) => setStatus(e.target.value)} className="create-order-form-select">
-//         <option value="Pending">Chờ Xử Lý</option>
-//         <option value="Delivered">Đã Giao</option>
-//         <option value="Canceled">Đã Hủy</option>
-//       </select>
-
-//       <label className="create-order-form-label">Phương Thức Thanh Toán:</label>
-//       <select
-//         value={paymentMethod}
-//         onChange={(e) => setPaymentMethod(e.target.value)}
-//         className="create-order-form-select"
-//         required
-//       >
-//         <option value="">Chọn phương thức thanh toán</option>
-//         <option value="Credit Card">Thẻ Tín Dụng</option>
-//         <option value="PayPal">PayPal</option>
-//         <option value="Bank Transfer">Chuyển Khoản Ngân Hàng</option>
-//       </select>
-
-//       <h4 className="create-order-form-total-amount">Tổng Tiền: ${calculateTotal().toFixed(2)}</h4>
-
-//       <div className="create-order-form-button-container">
-//         <button type="submit" className="create-order-form-button">
-//           Tạo Đơn Hàng
-//         </button>
-//         <button type="reset" className="create-order-form-button create-order-form-reset-button">
-//           Hủy
-//         </button>
-//       </div>
-//     </form>
-//   );
-// };
-
-// export default CreateOrderForm;
 import React, { useState ,useRef, useEffect} from "react";
-import "./form.css";
+import "./main.css";
+import History from "./history"
 import Quagga from 'quagga';
 import { useLoading } from "../introduce/Loading";
 import { useAuth } from "../introduce/useAuth";
 import PaymentComponent from "./thanh_toan"
+import CustomerInfo from "./form_show"
+import { notify } from '../../components/Notification/notification';
 const Billing = () => {
   const {startLoading,stopLoading}=useLoading();
   const [invoices, setInvoices] = useState([{ products: [] }]);
@@ -193,32 +21,44 @@ const Billing = () => {
   const { user,loading } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false); 
   const [data,setData]=useState([])
+  const [customers,setCustomers]=useState([])
   const [suggestion,setSuggestion]=useState([])
   const [form,setForm]=useState(false)
+  const [formcustomer,setFormcustomer]=useState(false)
+  const [form_history,setForm_history]=useState(false)
   useEffect( ()=>{
     const a=async()=>{
           if (loading) { 
-      startLoading();
       return;
     }
     let body={
       user: user
           }
-        startLoading()
-    const response = await fetch('http://localhost:5000/sell/findcode', {
+    let response = await fetch('http://localhost:5000/sell/findcode', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
     });
-    const datas = await response.json();
-    stopLoading()
+    let datas = await response.json();
     if(datas.message=="success") {
       console.log(datas.product)
       setData(datas.product)
     ;}
-    else{alert("Sản phẩm không tồn tại")}
+    else{notify(2,"Load sản phẩm thất bại","Thất bại")}
+     response = await fetch('http://localhost:5000/sell/get_customer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+     datas = await response.json();
+    if(datas.message=="success") {
+      setCustomers(datas.customers)
+    ;}
+    else{notify(2,"Load sản phẩm thất bại","Thất bại")}
     }
     a();
   },[loading])
@@ -227,14 +67,12 @@ const Billing = () => {
     if(code!=""){
       i=code;
     }
-    console.log("day la code :")
-    console.log(code)
     if(productCode!="") i=productCode;
     if(i=="") return
     const updatedInvoices = [...invoices];
-    if(updatedInvoices[currentInvoice].products.some((element)=>element.productCode==i)){
-      updatedInvoices[currentInvoice].products.forEach((element)=>{if(element.productCode==i){element.quantity++;
-        element.total = element.quantity * element.price * (1 - element.discount / 100);
+    if(updatedInvoices[currentInvoice].products.some((element)=>element.sku==i)){
+      updatedInvoices[currentInvoice].products.forEach((element)=>{if(element.sku==i){element.quantity++;
+        element.total = element.quantity * parseInt(element.price.replace(/\./g, ""), 10) * (1 - element.discount / 100);
         return}})
         
         setInvoices(updatedInvoices);
@@ -242,23 +80,27 @@ const Billing = () => {
       const result=data.find((element)=>element.sku==i)
       if(result){
         const newProduct = {
-      productCode:i,
+          ...result,
+      // productCode:i,
       quantity:1,
-      price:parseFloat(result.price),
+      // price:parseFloat(result.price),
       discount:0,
-      total:  parseFloat(result.price) ,
+      total:  parseInt(result.price.replace(/\./g, ""), 10) ,
+      // name:result.name
     };
     updatedInvoices[currentInvoice].products.push(newProduct);
     setInvoices(updatedInvoices);
     ;
       }else{
-        alert("Sản phẩm không tồn tại")
+        notify(2,"Sản phẩm không tồn tại","Thất bại")
       }
     
 
 }
   };
-
+  const adds=(x)=>{console.log(x)
+    setCustomers((a)=>[...a,x]);
+  }
   const addInvoice = () => {
     setInvoices([...invoices, { products: [] }]);
     setCurrentInvoice(invoices.length);
@@ -284,7 +126,7 @@ const Billing = () => {
     const product = updatedInvoices[currentInvoice].products[index];
 
     product[field] = value;
-    product.total = product.quantity * product.price * (1 - product.discount / 100);
+    product.total = product.quantity * parseInt(product.price.replace(/\./g, ""), 10)* (1 - product.discount / 100);
     setInvoices(updatedInvoices);
   };
   const delete_prd=(index)=>{
@@ -303,17 +145,19 @@ const Billing = () => {
   )*(1-taxall/100);
 
   const totalTax = totalBeforeTax * (tax / 100);
-  const total = totalBeforeTax + totalTax;
+  const total = Math.round(totalBeforeTax + totalTax);
   const startCamera = async () => {
     setCamera(true);
     setIsProcessing(false);
     streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
-    videoRef.current.srcObject = streamRef.current;
+    if (videoRef.current) {   
+      videoRef.current.srcObject =streamRef.current ;}
     if (Quagga.initialized) {
       Quagga.stop(); // Dừng Quagga và tất cả các sự kiện hiện tại
   }
     // Chạy QuaggaJS để quét mã vạch
-    Quagga.init({
+    if(videoRef.current){
+      Quagga.init({
         inputStream: {
             name: "Live",
             type: "LiveStream",
@@ -333,6 +177,8 @@ const Billing = () => {
         }
         Quagga.initialized = true; // Đánh dấu rằng Quagga đã được khởi động
         Quagga.start(); });
+    }
+    
         Quagga.offDetected(); // Loại bỏ bất kỳ sự kiện onDetected nào trước đó
         Quagga.onDetected(async function  (result) {
           if (isProcessing) return; // Nếu đang xử lý thì bỏ qua các sự kiện tiếp theo
@@ -353,18 +199,47 @@ const Billing = () => {
   const stopCamera=()=>{
     if (streamRef.current) {
       const tracks = streamRef.current.getTracks();
-      tracks.forEach(track => track.stop()); // Dừng từng track trong stream
-      videoRef.current.srcObject = null; // Gán srcObject về null
+      if (Array.isArray(tracks)) {
+        tracks.forEach(track => { if (track && typeof track.stop === 'function') track.stop();});
+      }
+       // Dừng từng track trong stream
+       if (videoRef.current) {   
+        videoRef.current.srcObject = null;}
+
       streamRef.current = null; // Đặt lại tham chiếu stream
     }
-    Quagga.stop();
+    if(Quagga&&typeof Quagga.stop==='function'){
+       Quagga.stop();
+    }
+   
     setCamera(false);
   }
   const onform=()=>{
-    setForm(true)
+    if(total>0){
+      setForm(true);}
+    
+  }
+  const onclose=()=>{
+    setForm(false)
+  }
+  const onformcustomer=()=>{
+          setFormcustomer(true)
+    
+
+  }
+  const onclosecustomer=()=>{
+    setFormcustomer(false)
+  }
+  const onclosehistory=()=>{
+    setForm_history(false)
+  }
+  const onform_history=()=>{
+    setForm_history(true)
   }
   return (<>
-   {form&&<PaymentComponent />}
+  {form_history&&<History turnoff={onclosehistory}/>}
+  {formcustomer&&<CustomerInfo turnoff={onclosecustomer} customer={customers} adds={adds} supplier={false}/>}
+   {form&&<PaymentComponent close={onclose} totalAmount={total} products={invoices[currentInvoice].products} customers={customers} discount={taxall} vat={tax}/>}
    {camera&&(<div className="camera-sell"><video ref={videoRef} autoPlay   width="400px" height="300px"/>
 
   <button  className="button-capture-sell button-sell" onClick={stopCamera} style={{backgroundColor:"red",color:"white"}}>Hủy</button></div>
@@ -405,16 +280,12 @@ const Billing = () => {
               return <li key={index} onClick={()=>{setProductCode(product.sku);setSuggestion([])}}>{product.sku}</li>
             })}
           </ul>
-          <button style={{marginTop:"10px",color:"white"}} onClick={startCamera} className="button-sell" >Quét mã</button>
-          <label className="label-sell"style={{marginTop:"10px"}} >khách hàng: </label>
-          <input className="input-sell"
-            type="text"
-          />
-          <button style={{marginTop:"10px",color:"white"}}  className="button-sell">Add</button>          
+          <button style={{marginTop:"10px",color:"white"}} onClick={startCamera} className="button-sell" >Quét mã</button>      
         </div>
         <div className="xx">
         <button onClick={()=>addProduct()} style={{color:"white"}}  className="button-sell">Thêm sản phẩm</button><br/>
-        <button   className="history">Lịch sử</button></div>
+        <button   className="history" onClick={onform_history}>Lịch sử</button><br/>
+        <button   className="create_user" onClick={onformcustomer}>Danh sách khách hàng</button></div>
       </div>
       <div className="product-list">
         <h2>Danh sách sản phẩm</h2>
@@ -432,7 +303,7 @@ const Billing = () => {
           <tbody>
             {invoices[currentInvoice].products.map((product, index) => (
               <tr key={index} onDoubleClick={() => handleDoubleClick(index)}>
-                <td>{product.productCode}</td>
+                <td>{product.sku}</td>
                 <td>{product.name}</td>
                 <td>
                   {editingIndex === index ? (
@@ -449,18 +320,9 @@ const Billing = () => {
                   )}
                 </td>
                 <td>
-                  {editingIndex === index ? (
-                    <input className="input-sell"
-                      type="number"
-                      value={product.price}
-                      onChange={(e) =>
-                        handleChangeProduct(index, "price", Number(e.target.value))
-                      }
-                      onBlur={handleBlur}
-                    />
-                  ) : (
-                    product.price.toFixed(2)
-                  )}
+                  {
+                    product.price
+                  }
                 </td>
                 <td>
                   {editingIndex === index ? (
@@ -473,10 +335,10 @@ const Billing = () => {
                       onBlur={handleBlur}
                     />
                   ) : (
-                    product.discount.toFixed(2)
+                    product.discount
                   )}
                 </td>
-                <td>{product.total.toFixed(2)}</td>
+                <td>{product.total.toLocaleString('vi-VN')}</td>
                 <td className="delete_prd" onClick={()=>{delete_prd(index)}}>x</td>
               </tr>
             ))}
@@ -499,7 +361,7 @@ const Billing = () => {
           />
         </div>
         <div className="result">
-          <h2 style={{marginTop:"10px"}}>Tổng hóa đơn: {total.toFixed(2)}</h2>
+          <h2 style={{marginTop:"10px"}}>Tổng hóa đơn: {total.toLocaleString('vi-VN')}</h2>
         </div>
         <button className="button-sell" style={{color:"white",marginTop:"10px"}} onClick={onform}>Thanh toán</button>
       </div>
