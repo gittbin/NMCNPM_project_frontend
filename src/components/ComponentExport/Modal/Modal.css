@@ -1,5 +1,5 @@
 
-button{
+.modal-overlay button{
   outline:none;
   display: block;  
 }
@@ -16,6 +16,7 @@ button{
   }
   
   .modal {
+    display:block;
     background: white;
     margin-top: 100px;
     padding: 20px;

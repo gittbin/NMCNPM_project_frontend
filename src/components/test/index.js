@@ -146,12 +146,7 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       <table className="order-mgmt-table">
         <thead>
           <tr>
-            <th>
-              <input
-                type="checkbox"
-                className="order-mgmt-checkbox"
-              />
-            </th>
+          
             <th>Order</th>
             <th>Client</th>
             <th>Date</th>

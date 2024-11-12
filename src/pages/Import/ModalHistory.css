@@ -9,7 +9,7 @@
   }
 
   /* Container for the entire app */
-.container {
+.container_modal {
   max-height: 400px;
   width: 100%;
   margin: 20px auto;

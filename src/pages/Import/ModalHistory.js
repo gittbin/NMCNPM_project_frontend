@@ -108,7 +108,7 @@ const handleSearchChange = (e) => {
           </div>
         </div>
       </div>
-      <div className="container">
+      <div className="container_modal">
         <div style={{ display: "flex", padding: "10px 0", fontWeight: 600, fontSize: 24, justifyContent: "center" }}>
           Danh sách đơn hàng
         </div>
