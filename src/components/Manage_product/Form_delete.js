@@ -6,8 +6,9 @@ const DeleteProductModal = ({ product, onDelete, onClose2,supplier,customer }) =
 
   const handleDelete = () => {
     if (reason.trim()) {
-        console.log(product,reason);
-      onDelete(product, reason); // Gọi hàm xóa với lý do
+      if(product){onDelete(product, reason);}
+      else{onDelete(supplier, reason);}
+       // Gọi hàm xóa với lý do
       onClose2(); // Đóng form sau khi xóa
     } else {
       notify(2,'Vui lòng nhập lý do xóa!','Thất bại')

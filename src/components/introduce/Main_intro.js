@@ -5,6 +5,7 @@ import './main.css'
 import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { notify } from '../../components/Notification/notification';
+import help from "./img/help.png"
 function Main(){
     const [a,setA]= useState(0)
     const handle=(x)=>{setA(x)}
@@ -51,10 +52,21 @@ function Main(){
         </div>
     
     </header>
-
+{/* 
     <section className="content">
         <p>Chào mừng đến với trang web của chúng tôi! Đây là nơi giới thiệu các tính năng và dịch vụ mà chúng tôi cung cấp.</p>
-    </section></div>
+    </section> */}
+    <div id="wrapper">
+         
+
+        <div class="image-container">
+            <div class="support-btn">
+                <span class="support-text">Hỗ trợ</span>
+            </div>
+            <img src={help} alt="Background" class="background-image"/>
+        </div>    
+    </div>
+    </div>
     </>) 
 }
 export default Main

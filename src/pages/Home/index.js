@@ -25,13 +25,14 @@ function Home() {
     percentChange:"0%",
     message: "notchange",
 });
+const  [data,setData]=useState([])
 const [newcustomer,setNewcustomer] =useState({
   customerToday:0,
   customerYesterday:0,
   percentChange:"0%",
   state: "notchange",
 });
-  const data = [
+  const datas = [
     { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
     { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
     { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
@@ -123,8 +124,31 @@ const [newcustomer,setNewcustomer] =useState({
           console.error("Error fetching income:", error);
         }
       };
+      const get_report_customer=async()=>{
+        try {
+          const response = await fetch('http://localhost:5000/home/generateCustomerReport', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("customer:", data);
+          setData(data)
+        } catch (error) {
+          console.error("Error fetching income:", error);
+        }
+      }
       // Chạy cả hai hàm đồng thời
-      await Promise.all([get_revenue(), get_income(),get_customer()]);
+      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer()]);
     };
   
     fetchData();
