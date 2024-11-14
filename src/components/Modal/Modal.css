@@ -2,11 +2,10 @@
   position: relative;
 }
 
-.modal-content {
+.uy-modal-content {
   font-size: 14px;
   position: absolute;
-  top: 200px;
-  right: 0;
+  right: 0px;
   background-color: #fff;
   border-radius: 10px;
   width: 250px;

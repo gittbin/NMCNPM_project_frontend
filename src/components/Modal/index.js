@@ -29,7 +29,7 @@ const Modal = () => {
     <div className="modal-wrapper">
       <FaRegUser className="icon-user" onClick={toggleModal} />
       {isOpen && (
-        <div className="modal-content">
+        <div className="uy-modal-content">
           <div className="user-info">
             <img className="avatar" src="https://via.placeholder.com/50" alt="avatar" />
             <div className="user-details">
