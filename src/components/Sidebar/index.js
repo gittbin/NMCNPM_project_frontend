@@ -8,7 +8,7 @@ import { GrGroup } from "react-icons/gr";
 import { FaKeycdn } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { MdManageAccounts } from "react-icons/md";
-import a from "./my_crush-removebg-preview.png";
+import a from "./cute.png";
 
 function Sidebar({ change }) {
   const location = useLocation();  // Lấy thông tin đường dẫn hiện tại
@@ -56,7 +56,7 @@ function Sidebar({ change }) {
       <div className="logo-header" style={isExpanded ? {} : { display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isExpanded && (
           <a href="/home">
-            <img src={a} height="70px" alt="Logo" />
+            <img src={a} height="80px" alt="Logo" style={{animation:"tiltAnimation 1.5s infinite"}} />
           </a>
         )}
         <div className={`sidebar__icon ${!isExpanded ? "add_jus" : ""}`} style={!isExpanded?{marginRight:"0px",cursor:"pointer"}:{cursor:"pointer"}} onClick={toggleSidebar}>

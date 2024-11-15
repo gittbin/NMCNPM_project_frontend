@@ -148,6 +148,7 @@ const delete_action=async(supplier,reason)=>{
   startLoading()
   let url='http://localhost:5000/sell/delete_customer'
 if(supplier){url='http://localhost:5000/products/delete_supplier'}
+console.log(url)
   const response = await fetch(url, {
     method: 'POST',
     headers: {
