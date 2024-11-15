@@ -18,7 +18,8 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
         if (loading) { 
           return;
         }
-        try {console.log("render")
+        try {
+          startLoading();
           const response = await fetch('http://localhost:5000/products/show', {
             method: 'POST',
             headers: {
@@ -34,6 +35,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
           }
   
           const data = await response.json();
+          stopLoading();
           let o=[]
           for(let i=0;i<data.length;i++) {
           if(!o.includes(data[i].category)){o=[...o,data[i].category]}

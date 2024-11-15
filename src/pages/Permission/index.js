@@ -19,6 +19,8 @@ const Permissions = () => {
         startLoading();
         const roles = await getRoles();
         setRolesData(roles);
+        console.log("OK");
+        
         const initialPermissions = {};
         roles.forEach((role) => {
           initialPermissions[role.role] = {

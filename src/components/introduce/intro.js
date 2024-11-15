@@ -10,6 +10,7 @@ import {useAuth} from '../introduce/useAuth'
 import Forgot_password from "./forgot_password"
 import Change_password from "./resetpassword"
 import {useLoading} from "./Loading"
+import top from './img/top.png'
 function LoginModal({ off, isSignup }) {
   // Sử dụng state để điều khiển hiển thị modal và form
   const { startLoading, stopLoading } = useLoading();
@@ -202,6 +203,10 @@ setIsforgot(true);
       <GoogleOAuthProvider clientId="1039484967279-b0uv9c8m0t6v453c7im8f0jiopq82v3j.apps.googleusercontent.com">
         <div className="login">
           <div className="login-modal">
+          <div class="image-top">
+
+<img src={top} alt="Background" class="top-image"/>
+</div> 
             <div className="login-header">
               <h2>{isSignup ? "Sign up" : "Login"}</h2>
               <span className="close-btn" onClick={()=>{off(0)}}>
@@ -316,7 +321,7 @@ setIsforgot(true);
             </form>
             {!isSignup && (
               <p className="signup-text">
-                New to Myapp? <a style={{cursor:"pointer"}} onClick={()=>{off(2)}}>Sign Up</a>
+                New to Myapp? <a style={{cursor:"pointer",color:"cornflowerblue"}} onClick={()=>{off(2)}}>Sign Up</a>
               </p>
             )}
           </div>
