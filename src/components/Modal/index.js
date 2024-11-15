@@ -32,8 +32,8 @@ const Modal = () => {
       {isOpen && (
         <div className="uy-modal-content">
           <div className="user-info">
-          <div className='avatar-container'>
-          <div className='avatar'><Avatar name={user.name} imageUrl={user.image} /></div>
+          <div className='uy-avatar-container'>
+          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.image} /></div>
           </div>
             <div className="user-details">
               <strong>{user.name}</strong>

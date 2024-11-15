@@ -4,7 +4,7 @@ import './Avatar.css';
 function Avatar({ name, imageUrl}) {
   function getRandomColor() {
     const hue = Math.floor(name.charCodeAt(0) / 256 * 360);
-    const saturation = 70;
+    const saturation = Math.floor(name.charCodeAt(0) / 256 * 360);
     const lightness = 50; 
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
