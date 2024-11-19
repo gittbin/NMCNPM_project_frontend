@@ -17,7 +17,7 @@ function Profile() {
           className="banner"
         />
         <div className="profile-picture">
-          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.image} /></div>
+          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.avatar} /></div>
         </div>
         <div className="profile-info">
           <div className="profile-info__name">{user.name}</div>

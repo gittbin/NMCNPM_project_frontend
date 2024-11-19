@@ -33,7 +33,7 @@ const Modal = () => {
         <div className="uy-modal-content">
           <div className="user-info">
           <div className='uy-avatar-container'>
-          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.image} /></div>
+          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.avatar} /></div>
           </div>
             <div className="user-details">
               <strong>{user.name}</strong>

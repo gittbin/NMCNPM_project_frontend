@@ -208,7 +208,10 @@
   justify-content: center;
 }
 .rounded-circle {
+  max-width: 90px;
   border-radius: 50% !important;
+  object-fit: cover;
+  width:100%
 }
 .bg-info {
   --bs-bg-opacity: 1;

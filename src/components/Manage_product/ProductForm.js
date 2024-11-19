@@ -238,7 +238,7 @@ detail:details
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value.toLowerCase()
     });
   }; 
   return (
@@ -282,7 +282,7 @@ detail:details
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="stock_in_shelf">Số lượng trên kệ</label>
-                <input type="number" id="stock_in_shelf" name="stock_in_shelf" value={formData.stock_in_shelf} onChange={handleChange} />
+                <input type="number" id="stock_in_shelf" name="stock_in_shelf" value={formData.stock_in_shelf} onChange={handleNChange} />
             </div>
             <div className="form-group">
                 <label htmlFor="reorderLevel">Thông báo cần nhập hàng nếu số lượng dưới:</label>
@@ -313,7 +313,7 @@ detail:details
             </div>
             <div className="form-group">
             <label htmlFor="stock_in_Warehouse">Số lượng trong kho</label>
-            <input type="number" id="stock_in_Warehouse" name="stock_in_Warehouse" value={formData.stock_in_Warehouse} onChange={handleChange}/>
+            <input type="number" id="stock_in_Warehouse" name="stock_in_Warehouse" value={formData.stock_in_Warehouse} onChange={handleNChange}/>
             </div>
         </div>
 
