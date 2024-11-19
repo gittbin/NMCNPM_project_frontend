@@ -14,7 +14,7 @@ import debounce from "lodash.debounce";
 import Modal from "./../../components/ComponentExport/Modal";
 import "./import.css";
 import ModalDetail from "./ModalDetail";
-import  { useAuth }  from '../../components/introduce/useAuth'
+import { useAuth } from "../../components/introduce/useAuth";
 
 function Import() {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,6 +27,7 @@ function Import() {
   const [suppOrPro, setSuppOrPro] = useState(false);
   const [idProductAdded, setIdProductAdded] = useState([]);
   const [idOrder, setIdOrder] = useState(null);
+  const [dataTop, setDataTop] = useState([]);
   const { user, logout } = useAuth();
   // const id_owner = user.id_owner;
   const openModal = () => setIsOpen(true);
@@ -35,6 +36,20 @@ function Import() {
   const closeModalHistory = () => setOpenHistory(false);
   const closeModalDetail = () => setOpenDetail(false);
   const openModalDetail = () => setOpenDetail(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/import/orderHistory/lastProductTop100?ownerId=${user.id_owner}`
+        );
+        const dataRes = await res.json();
+        setDataTop(dataRes);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, []);
   const handleSearch = (event) => {
     const term = event.target.value;
     let keyword = term.trim();
@@ -45,7 +60,7 @@ function Import() {
       if (keyword.length > 0) {
         debouncedFetchSuggestions(
           keyword,
-          `http://localhost:5000/import/supplier/search`,
+          `http://localhost:5000/import/supplier/search`
         );
       } else {
         setSuggestions([]); // Nếu không có từ khóa, xóa kết quả gợi ý
@@ -53,10 +68,21 @@ function Import() {
     } else {
       setSuppOrPro(true);
       if (keyword.length > 0) {
-        debouncedFetchSuggestions(
-          keyword,
-          `http://localhost:5000/import/products/exhibitProN`
-        );
+        const topData = dataTop
+          .filter((item) =>
+            item.name.toLowerCase().includes(keyword.toLowerCase())
+          )
+          .slice(0, 5);
+        if (topData.length) {
+          setResults(topData.map((item) => item.name));
+          setSuggestions(topData);
+        } else {
+          console.log("jellooo");
+          debouncedFetchSuggestions(
+            keyword,
+            `http://localhost:5000/import/products/exhibitProN`
+          );
+        }
       } else {
         setSuggestions([]); // Nếu không có từ khóa, xóa kết quả gợi ý
       }
@@ -65,16 +91,20 @@ function Import() {
   // database
   const fetchProductSuggestions = async (keyword, hrefLink) => {
     try {
-      console.log(user)
-        const response = await axios.get(hrefLink, {
-          params: {
-            query: keyword,
-            ownerId: user.id_owner,
-          },
-        });
-        const sugg = response.data.map((s) => s.name);
-        setResults(sugg);
-        setSuggestions(response.data);
+      console.log(user);
+      const response = await axios.get(hrefLink, {
+        params: {
+          query: keyword,
+          ownerId: user.id_owner,
+        },
+      });
+      const sugg = response.data.map((s) => s.name);
+      setResults(sugg);
+      setDataTop((prev) => {
+        const newData = [...prev, ...response.data];
+        return newData;
+      });
+      setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
@@ -135,7 +165,7 @@ function Import() {
     setSearchTerm(result); // Cập nhật giá trị input với kết quả đã chọn
     setShowDropdown(false); // Ẩn dropdown sau khi chọn
   };
-  if(!user)return null;
+
   return (
     <>
       <OrderManagement
@@ -246,7 +276,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
       name: item.name,
       description: item.description,
       supplier: item.supplierDetails.name,
-      price: item.purchasePrice,
+      price: item.purchasePrice.replace(/\./g, ""),
       imageUrl: item.image.secure_url,
       supplierId: item.supplierDetails._id,
       quantity: 1,
@@ -279,7 +309,14 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
   useEffect(() => {
     if (dataHis && dataHis.length > 0) {
       const newItems = dataHis.map(initItem);
-      setListProductWereAdded((prevList) => [...newItems, ...prevList]);
+      console.log(dataHis, listProductWereAdded);
+      if (
+        !listProductWereAdded.some((item) =>
+          dataHis.some((it) => it._id === item.productId)
+        )
+      ) {
+        setListProductWereAdded((prevList) => [...newItems, ...prevList]);
+      }
       setIdProductAdded([]);
     }
   }, [dataHis]);
@@ -314,7 +351,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
   const amountBill = () => {
     let sum = 0;
     listProductWereAdded.forEach((product) => {
-      sum += product.price * product.quantity;
+      sum += product.price.replace(/\./g, "") * product.quantity;
     });
     return sum;
   };
@@ -365,7 +402,9 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
   const decrease = (index) => {
     setListProductWereAdded((prev) => {
       const newQuantities = [...prev];
-      newQuantities[index].quantity += 1; // Tăng giá trị
+      if (newQuantities[index].quantity > 0) {
+        newQuantities[index].quantity -= 1; // Tăng giá trị
+      }
       return newQuantities;
     });
   };
@@ -416,7 +455,12 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
       },
       { user: {}, dataForm: {} }
     );
-    groupBySupplier.user = { id: user._id, name: user.name, email: user.email,ownerId:user.id_owner };
+    groupBySupplier.user = {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      ownerId: user.id_owner,
+    };
     const url = "http://localhost:5000/import/orderHistory/save";
     console.log(groupBySupplier);
     try {
@@ -442,6 +486,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
       console.error("Lỗi kết nối:", error);
     }
   };
+
   return (
     <>
       <div className="list-product-title">List product </div>
@@ -457,7 +502,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
                 <th>Số Lượng</th>
                 <th>Thành Tiền</th>
                 <th>Status</th>
-                <th>Fix</th>
+                <th>Delete</th>
                 <th>Mail</th>
               </tr>
             </thead>
@@ -515,7 +560,8 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
                   </td>
                   <td>
                     {(
-                      product.price * listProductWereAdded[index].quantity
+                      product.price.replace(/\./g, "") *
+                      listProductWereAdded[index].quantity
                     ).toLocaleString()}{" "}
                     VND
                   </td>
@@ -577,13 +623,21 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
         <div className="order-tax">
           VAT TAX 10%:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill() * 0.1).toFixed(2)} VND
+            {(amountBill() * 0.1)
+              .toFixed(0)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+            VND
           </span>{" "}
         </div>
         <div className="order-tax">
           Tổng tiền:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill() * 1.1).toFixed(2)} VND
+            {(amountBill() * 1.1)
+              .toFixed(0)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+            VND
           </span>
         </div>
         <div className="complete-order">

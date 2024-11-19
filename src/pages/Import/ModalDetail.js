@@ -121,7 +121,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
   const amountBill = () => {
     let sum = 0;
     products.forEach((product) => {
-      sum += product.price * product.quantity;
+      sum += product.price.replace(/\./g, "") * product.quantity;
     });
     return sum;
   };
@@ -143,7 +143,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
     }
   
     // Calculate total amount
-    data.total = amountBill();
+    data.total = amountBill().toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     data.userName = user.name;
     data.userId = user._id;
     data.ownerId= user.id_owner;
@@ -356,7 +356,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
                         </div>
                       </td>
                       <td style={{ textAlign: "right" }}>
-                        {product.price * product.quantity} VND
+                        {(product.price.replace(/\./g, "") * product.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND
                       </td>
                       <td>
                         <input
@@ -375,7 +375,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
         <div className="order-tax">
           Tổng tiền:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill() * 1.1).toFixed(2)} VND
+            {(amountBill().toString().replace(/\./g, "")* 1.1).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND
           </span>
         </div>
         <div className="complete-order">
