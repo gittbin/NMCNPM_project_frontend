@@ -247,12 +247,14 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
                     </>
                   ) : (
                     <>
-                      <button className="order-mgmt-button edit" onClick={() => handleEditClick(index, order)}>✏️</button>
+                      <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+                      <button className="order-mgmt-button edit" onClick={() => handleEditClick(index, order) } style={{margin:0}}>✏️</button>
                       <FontAwesomeIcon icon={faCircleInfo} onClick={()=>{
                         openModalDetail();
                         setIdOrder(order.id)
                       }}
                        style={{height: '24px', witdh: '24px', padding:'8px'}} className="infoDetail"/>
+                      </div>
                     </>
                   )}
                 </td>
