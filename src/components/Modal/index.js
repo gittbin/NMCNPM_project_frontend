@@ -3,6 +3,7 @@ import './Modal.css';
 import { FaRegUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import {useAuth} from "../introduce/useAuth"
+import Avatar from '../Avatar';
 const Modal = () => {
   const {user,logout} =useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -29,9 +30,11 @@ const Modal = () => {
     <div className="modal-wrapper">
       <FaRegUser className="icon-user" onClick={toggleModal} />
       {isOpen && (
-        <div className="modal-content">
+        <div className="uy-modal-content">
           <div className="user-info">
-            <img className="avatar" src="https://via.placeholder.com/50" alt="avatar" />
+          <div className='uy-avatar-container'>
+          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.avatar} /></div>
+          </div>
             <div className="user-details">
               <strong>{user.name}</strong>
               <span className="email">{user.email}</span>

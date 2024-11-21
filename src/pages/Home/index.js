@@ -26,26 +26,27 @@ function Home() {
     message: "notchange",
 });
 const  [data,setData]=useState([])
+const  [topproduct,setTopproduct]=useState([])
 const [newcustomer,setNewcustomer] =useState({
   customerToday:0,
   customerYesterday:0,
   percentChange:"0%",
   state: "notchange",
 });
-  const datas = [
-    { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
-    { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
-    { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
-    { name: "Apr", "Khách hàng trung thành": 330, "khách hàng mới": 220, "Khách hàng quay lại": 480 },
-    { name: "May", "Khách hàng trung thành": 450, "khách hàng mới": 260, "Khách hàng quay lại": 550 },
-    { name: "Jun", "Khách hàng trung thành": 400, "khách hàng mới": 290, "Khách hàng quay lại": 580 },
-    { name: "Jul", "Khách hàng trung thành": 460, "khách hàng mới": 320, "Khách hàng quay lại": 620 },
-    { name: "Aug", "Khách hàng trung thành": 510, "khách hàng mới": 340, "Khách hàng quay lại": 680 },
-    { name: "Sep", "Khách hàng trung thành": 252, "khách hàng mới": 360, "Khách hàng quay lại": 740 },
-    { name: "Oct", "Khách hàng trung thành": 680, "khách hàng mới": 390, "Khách hàng quay lại": 820 },
-    { name: "Nov", "Khách hàng trung thành": 780, "khách hàng mới": 420, "Khách hàng quay lại": 890 },
-    { name: "Dec", "Khách hàng trung thành": 900, "khách hàng mới": 450, "Khách hàng quay lại": 980 },
-  ];
+  // const datas = [
+  //   { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
+  //   { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
+  //   { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
+  //   { name: "Apr", "Khách hàng trung thành": 330, "khách hàng mới": 220, "Khách hàng quay lại": 480 },
+  //   { name: "May", "Khách hàng trung thành": 450, "khách hàng mới": 260, "Khách hàng quay lại": 550 },
+  //   { name: "Jun", "Khách hàng trung thành": 400, "khách hàng mới": 290, "Khách hàng quay lại": 580 },
+  //   { name: "Jul", "Khách hàng trung thành": 460, "khách hàng mới": 320, "Khách hàng quay lại": 620 },
+  //   { name: "Aug", "Khách hàng trung thành": 510, "khách hàng mới": 340, "Khách hàng quay lại": 680 },
+  //   { name: "Sep", "Khách hàng trung thành": 252, "khách hàng mới": 360, "Khách hàng quay lại": 740 },
+  //   { name: "Oct", "Khách hàng trung thành": 680, "khách hàng mới": 390, "Khách hàng quay lại": 820 },
+  //   { name: "Nov", "Khách hàng trung thành": 780, "khách hàng mới": 420, "Khách hàng quay lại": 890 },
+  //   { name: "Dec", "Khách hàng trung thành": 900, "khách hàng mới": 450, "Khách hàng quay lại": 980 },
+  // ];
 
   // if (!user) {
   //   return <div>Không có người dùng nào đăng nhập.</div>;
@@ -147,8 +148,31 @@ const [newcustomer,setNewcustomer] =useState({
           console.error("Error fetching income:", error);
         }
       }
+      const get_top_product=async()=>{
+        try {
+          const response = await fetch('http://localhost:5000/home/generate_top_product', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+  
+          const data = await response.json();
+          console.log("products:", data);
+          setTopproduct(data)
+        } catch (error) {
+          console.error("Error fetching income:", error);
+        }
+      }
       // Chạy cả hai hàm đồng thời
-      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer()]);
+      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer(),get_top_product()]);
     };
   
     fetchData();
@@ -436,13 +460,52 @@ const [newcustomer,setNewcustomer] =useState({
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4" style={{maxHeight:"420px",overflowY:"auto",marginBottom:"15px"}}>
             <div class="card">
               <div class="card-header">
                 <div class="card-title">Top Products</div>
               </div>
               <div class="card-body pb-0">
+              {topproduct.map((a,b)=>{
+              if(b>=1){
+                return (<><div class="separator-dashed"></div>
+                  <div class="d-flex">
+                    <div class="avatar">
+                      <img
+                        src={a.image.secure_url}
+                        alt="..."
+                        class="avatar-img rounded-circle"
+                      />
+                    </div>
+                    <div class="flex-1 pt-1 ms-2">
+                      <h6 class="fw-bold mb-1">{a.name}</h6>
+                      {/* <small class="text-muted">The Best Donuts</small> */}
+                    </div>
+                    <div class="d-flex ms-auto align-items-center">
+                      <h4 class="text-info fw-bold">{a.rate}</h4>
+                    </div>
+                  </div></>)
+              }
+              return (
                 <div class="d-flex ">
+                  <div class="avatar">
+                    <img
+                      src={a.image.secure_url}
+                      alt="..."
+                      class="avatar-img rounded-circle"
+                    />
+                  </div>
+                  <div class="flex-1 pt-1 ms-2">
+                    <h6 class="fw-bold mb-1">{a.name}</h6>
+                    {/* <small class="text-muted">Cascading Style Sheets</small> */}
+                  </div>
+                  <div class="d-flex ms-auto align-items-center">
+                    <h4 class="text-info fw-bold">{a.rate}</h4>
+                  </div>
+                </div>
+              )
+              })}
+                {/* <div class="d-flex ">
                   <div class="avatar">
                     <img
                       src="assets/img/logoproduct.svg"
@@ -493,7 +556,7 @@ const [newcustomer,setNewcustomer] =useState({
                   <div class="d-flex ms-auto align-items-center">
                     <h4 class="text-info fw-bold">+$350</h4>
                   </div>
-                </div>
+                </div> */}
                 <div class="separator-dashed"></div>
                 <div class="pull-in">
                   <canvas id="topProductsChart"></canvas>

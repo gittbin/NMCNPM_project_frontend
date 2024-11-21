@@ -356,7 +356,7 @@ function AccountTable() {
                     ⋮
                   </button>
                   {showMenuIndex === account._id && (
-                    <div className="dropdown-menu">
+                    <div className="uy-dropdown-menu">
                       <ul>
                         <li onClick={() => handleOpenEditModal(account)}>Chỉnh sửa</li>
                         <li onClick={() => handleDeleteAccount(account._id)}>Xóa</li>

@@ -186,7 +186,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
     const { name, value } = e.target;
     setEditData({
       ...editData,
-      [name]: value
+      [name]: value.toLowerCase()
     });
   };
   return (
@@ -334,7 +334,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="stock_in_shelf"
                   name="stock_in_shelf"
                   value={editData.stock_in_shelf}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -346,7 +346,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="reorderLevel"
                   name="reorderLevel"
                   value={editData.reorderLevel}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">
@@ -393,7 +393,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
                   id="stock_in_Warehouse"
                   name="stock_in_Warehouse"
                   value={editData.stock_in_Warehouse}
-                  onChange={handleChange}
+                  onChange={handleNChange}
                 />
               </div>
               <div className="form-group">

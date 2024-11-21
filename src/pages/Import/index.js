@@ -15,7 +15,7 @@ import Modal from "./../../components/ComponentExport/Modal";
 import "./import.css";
 import ModalDetail from "./ModalDetail";
 import { useAuth } from "../../components/introduce/useAuth";
-
+import { notify } from "../../components/Notification/notification";
 function Import() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -462,7 +462,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
       ownerId: user.id_owner,
     };
     const url = "http://localhost:5000/import/orderHistory/save";
-    console.log(groupBySupplier);
+    notify(1,"you've completed importing goods","Successfully!")
     try {
       const response = await fetch(url, {
         method: "POST", // Phương thức POST
@@ -471,11 +471,12 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
         },
         body: JSON.stringify(groupBySupplier), // Chuyển đổi dữ liệu thành chuỗi JSON
       });
-
+        
       if (response.ok) {
         // Nếu thành công, xử lý kết quả
         const responseData = await response.json();
         console.log("Dữ liệu đã được gửi thành công", responseData);
+      
         setIdProductAdded([]);
         setListProductWereAdded([]);
       } else {

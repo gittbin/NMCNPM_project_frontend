@@ -1,25 +1,27 @@
-import React from 'react';
+import React ,{useEffect,useState}from 'react';
 import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto'; // Tự động đăng ký các thành phần biểu đồ
-
+import { useAuth } from "../../components/introduce/useAuth";
 function Sales_daily() {
+    const { user, loading } = useAuth();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
+    const [dt,Setdt]=useState({date:[0,0,0,0,0,0,0,0],report:[0,0,0,0,0,0,0,0]})
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
+    
+    
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    
     const data = {
-        labels: ['March 25', 'March 26', 'March 27', 'March 28', 'March 29', 'March 30', 'March 31', 'April 01', 'April 02'],
+        labels: dt.date,
         datasets: [
             {
-                data: [4300, 4600, 4700, 4500, 4400, 4800, 4200, 4100],
+                data: dt.report,
                 borderColor: '#fff',
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
                 fill: true,
@@ -27,7 +29,34 @@ function Sales_daily() {
             },
         ],
     };
+    useEffect(()=>{
+        const fetchData = async () => {
+if(loading) return ;
+try {
+    const response = await fetch('http://localhost:5000/home/generatedailySale', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: user,
+      }),
+    });
 
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    console.log("generatedailySale:", data);
+    Setdt(data);
+  } catch (error) {
+    console.error("Error fetching revenue:", error);
+  }
+};
+        
+        fetchData()
+    },[loading])
     return (
         <Box
             sx={{
@@ -41,8 +70,8 @@ function Sales_daily() {
             }}
         >
             <Typography variant="h6">Daily Sales</Typography>
-            <Typography variant="body2">March 25 - April 02</Typography>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', marginTop: 1 }}>$4,578.58</Typography>
+            <Typography variant="body2">{`${dt.date[0]}   ---   ${dt.date[7]}`}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 'bold', marginTop: 1 }}>{`${Math.max(...dt.report).toLocaleString("vn-Vi")} đ`}</Typography>
 
             <Button
                 variant="contained"

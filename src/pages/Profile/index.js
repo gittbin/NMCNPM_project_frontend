@@ -5,6 +5,7 @@ import { SiShopee } from "react-icons/si";
 import { FaPhoneAlt } from "react-icons/fa";
 import './Profile.css';
 import  { useAuth }  from '../../components/introduce/useAuth'
+import Avatar from '../../components/Avatar';
 function Profile() {
   const { user, logout } = useAuth();
   return (
@@ -16,10 +17,7 @@ function Profile() {
           className="banner"
         />
         <div className="profile-picture">
-          <img 
-            src="https://via.placeholder.com/100" 
-            alt="Profile"
-          />
+          <div className='uy-avatar'><Avatar name={user.name} imageUrl={user.avatar} /></div>
         </div>
         <div className="profile-info">
           <div className="profile-info__name">{user.name}</div>

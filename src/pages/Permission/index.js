@@ -7,7 +7,7 @@ import { notify } from '../../components/Notification/notification'
 
 const Permissions = () => {
   const rights = ["add_product", "edit_product", "delete_product", "create_order", "import_goods",
-"create_user"];
+"create_user","create-customer", "edit-customer","create-suplier", "edit-suplier"];
   const [rolesData, setRolesData] = useState([]);
   const { user } = useAuth();
   const { startLoading, stopLoading } = useLoading();
@@ -19,6 +19,8 @@ const Permissions = () => {
         startLoading();
         const roles = await getRoles();
         setRolesData(roles);
+        console.log("OK");
+        
         const initialPermissions = {};
         roles.forEach((role) => {
           initialPermissions[role.role] = {
@@ -85,7 +87,7 @@ const Permissions = () => {
       <h2>Permission</h2>
       <h3>Thiết lập phân quyền</h3>
 
-      <div className="tabs">
+      <div className="uy-tabs">
         <table>
           <thead>
             <tr>

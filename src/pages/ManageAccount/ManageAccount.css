@@ -7,7 +7,7 @@ body {
 }
 
 .account-table {
-  width: 80%;
+  width: 100%;
   margin: 20px auto;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -55,19 +55,19 @@ body {
   background-color: #0056b3;
 }
 
-table {
+.account-table table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
 
-table th, table td {
+.account-table table th, .account-table table td {
   padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
-table th {
+.account-table table th {
   background-color: #f4f4f9;
   font-weight: bold;
 }
@@ -96,7 +96,7 @@ table th {
   font-size: 20px;
 }
 
-.dropdown-menu {
+.uy-dropdown-menu {
   position: absolute;
   background-color: #fff;
   border: 1px solid #ddd;
@@ -104,18 +104,18 @@ table th {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.dropdown-menu ul {
+.uy-dropdown-menu ul {
   list-style: none;
   padding: 10px;
   margin: 0;
 }
 
-.dropdown-menu ul li {
+.uy-dropdown-menu ul li {
   padding: 5px 10px;
   cursor: pointer;
 }
 
-.dropdown-menu ul li:hover {
+.uy-dropdown-menu ul li:hover {
   background-color: #f4f4f9;
 }
 

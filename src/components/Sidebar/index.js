@@ -56,7 +56,7 @@ function Sidebar({ change }) {
       <div className="logo-header" style={isExpanded ? {} : { display: "flex", justifyContent: "center", alignItems: "center" }}>
         {isExpanded && (
           <a href="/home">
-            <img src={a} height="80px" alt="Logo" style={{animation:"tiltAnimation 1.5s infinite"}} />
+            <img src={a} height="80px" alt="Logo"/>
           </a>
         )}
         <div className={`sidebar__icon ${!isExpanded ? "add_jus" : ""}`} style={!isExpanded?{marginRight:"0px",cursor:"pointer"}:{cursor:"pointer"}} onClick={toggleSidebar}>

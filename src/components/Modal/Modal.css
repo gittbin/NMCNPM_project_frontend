@@ -2,11 +2,10 @@
   position: relative;
 }
 
-.modal-content {
+.uy-modal-content {
   font-size: 14px;
   position: absolute;
-  top: 200px;
-  right: 0;
+  right: 0px;
   background-color: #fff;
   border-radius: 10px;
   width: 250px;
@@ -21,11 +20,24 @@
   margin-bottom: 20px;
 }
 
-.avatar {
+.uy-avatar-container {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
+}
+
+.uy-avatar{
+  width: 100%;
+  height: 100%;
+}
+
+.uy-avatar .uy-avatar,
+.uy-avatar .uy-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  border-radius: 50%; 
 }
 
 .user-details {

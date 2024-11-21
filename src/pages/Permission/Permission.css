@@ -1,5 +1,5 @@
 .permissions-container {
-  width: 80%;
+  width: 100%;
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;
@@ -19,12 +19,12 @@
   margin-bottom: 20px;
 }
 
-.tabs {
+.uy-tabs {
   display: flex;
   margin-bottom: 20px;
 }
 
-.tabs button {
+.uy-tabs button {
   padding: 10px 20px;
   border: 1px solid #ddd;
   background-color: #f9f9f9;
@@ -32,7 +32,7 @@
   font-size: 16px;
 }
 
-.tabs button.active {
+.uy-tabs button.active {
   background-color: #e0e0e0;
   border-color: #333;
 }
@@ -41,9 +41,10 @@
   margin-top: 20px;
 }
 
-.permissions-table table {
+.uy-tabs table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 .permissions-table th, .permissions-table td {
