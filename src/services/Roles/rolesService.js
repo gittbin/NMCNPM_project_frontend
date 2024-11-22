@@ -1,3 +1,5 @@
+import { notify } from '../../components/Notification/notification';
+
 export const getRoles = async () => {
   try {
     const response = await fetch("http://localhost:5000/roles/show", {
@@ -30,11 +32,13 @@ export const createRole = async (newRoleData) => {
     });
     const data = await response.json();
     if(data){
-      console.log("Da tao thanh cong");
+      notify(1,"Tạo thành công quyền mới","Thành công");
     }else{
+      notify(2,"Tạo quyền mới thất bại","Thất bại");
       console.log("Khong tao thanh cong");
     }
   } catch (error) {
+    notify(2,"Tạo quyền mới thất bại","Thất bại");
     console.error("Error creating role:", error);
     throw error;
   }
@@ -53,8 +57,10 @@ export const deleteRole = async (roleId, user) => {
       }),
     });
     const data = await response.json();
+    notify(1,"Xóa quyền thành công","Thành công");
     return data;
   } catch (error) {
+    notify(2,"Xóa quyền thất bại","Thất bại");
     console.error("Error deleting role:", error);
     throw error;
   }

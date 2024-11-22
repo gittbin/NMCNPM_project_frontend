@@ -19,6 +19,7 @@ const Permissions = () => {
         startLoading();
         const roles = await getRoles();
         setRolesData(roles);
+        console.log(document.cookie);
         console.log("OK");
         
         const initialPermissions = {};

@@ -7,8 +7,6 @@ import { getRoles, createRole, deleteRole } from '../../services/Roles/rolesServ
 function RolesGroup() {
   const { startLoading, stopLoading } = useLoading();
   const { user, loading } = useAuth();
-  const [selectedUser, setSelectedUser] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [showMenuIndex, setShowMenuIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -33,20 +31,6 @@ function RolesGroup() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-    setSelectAll(isChecked);
-    setSelectedUser(isChecked ? rolesData.map((_, index) => index) : []);
-  };
-
-  const handleSelectedUser = (accountId) => {
-    const updatedSelectedUser = selectedUser.includes(accountId)
-      ? selectedUser.filter((id) => id !== accountId)
-      : [...selectedUser, accountId];
-    setSelectedUser(updatedSelectedUser);
-    setSelectAll(updatedSelectedUser.length === rolesData.length);
   };
 
   const handleInputChange = (e) => {
@@ -98,10 +82,10 @@ function RolesGroup() {
     <div className="roles-group">
       <div className="role-header">
         <h2>Manage Role</h2>
-        <div className="search-container">
+        <div className="uy-search-container">
           <input
             type="text"
-            className="search-input"
+            className="uy-search-input"
             placeholder="Search for roles..."
             value={searchTerm}
             onChange={handleSearchChange}
@@ -112,18 +96,10 @@ function RolesGroup() {
         </div>
       </div>
 
-      <div className="table-container">
-        <table className="role-table">
+      <div className="uy-table-container">
+        <table className="uy-role-table">
           <thead>
             <tr>
-              <th>
-                <input
-                  type="checkbox"
-                  className="checkbox-all"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-              </th>
               <th>STT</th>
               <th>Role</th>
               <th>Description</th>
@@ -133,24 +109,16 @@ function RolesGroup() {
           <tbody>
             {filteredAccounts.map((role, index) => (
               <tr key={index}>
-                <td>
-                  <input
-                    type="checkbox"
-                    className="checkbox-user"
-                    checked={selectedUser.includes(index)}
-                    onChange={() => handleSelectedUser(index)}
-                  />
-                </td>
                 <td>{index + 1}</td>
                 <td>{role.role}</td>
                 <td>{role.description}</td>
                 <td>
-                  <div className="action">
-                    <button onClick={() => toggleMenu(index)} className="menu-btn">
+                  <div className="uy-action">
+                    <button onClick={() => toggleMenu(index)} className="uy-menu-btn">
                       ⋮
                     </button>
                     {showMenuIndex === index && (
-                      <div className="dropdown-menu">
+                      <div className="uy-dropdown-menu">
                         <ul>
                           <li>View Details</li>
                           <li>Edit</li>
@@ -167,37 +135,31 @@ function RolesGroup() {
       </div>
 
       {isFormVisible && (
-        <div className="modal">
+        <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-btn" onClick={() => setIsFormVisible(false)}>X</button>
+            <button className="close-btn" onClick={() => setIsFormVisible(false)}>✖</button>
             <form className="create-role-form" onSubmit={handleSubmit}>
-              <h3>Create New Role</h3>
-              <div className="form-group">
-                <label htmlFor="role">Role Name:</label>
-                <input
+              <h3>Create Role</h3>
+              <input
                   type="text"
                   id="role"
                   name="role"
+                  placeholder="Role"
                   value={newRole.role}
                   onChange={handleInputChange}
                   required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="description">Description:</label>
-                <input
+              />
+              <input
                   type="text"
                   id="description"
                   name="description"
+                  placeholder='Description'
                   value={newRole.description}
                   onChange={handleInputChange}
                   required
-                />
-              </div>
-              <button type="submit" className="submit-btn">Create</button>
-              <button type="button" className="cancel-btn" onClick={() => setIsFormVisible(false)}>
-                Cancel
-              </button>
+              />
+              <button type="submit">Submit</button>
+              <button type="button" className="cancel-btn" onClick={() => setIsFormVisible(false)}>Cancel</button>
             </form>
           </div>
         </div>

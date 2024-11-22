@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import './ManageAccount.css';
 import { getRoles } from "../../services/Roles/rolesService";
 import { useAuth } from "../../components/introduce/useAuth";
@@ -8,14 +8,14 @@ import { notify } from "../../components/Notification/notification";
 function AccountTable() {
   const [accounts, setAccounts] = useState([]);
   const [rolesData, setRolesData] = useState([]);
-  const { startLoading, stopLoading } = useLoading();
+  const { startLoading, stopLoading } = useLoading(); 
   const { user, loading } = useAuth();
-  const [selectedUser, setSelectedUser] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [showMenuIndex, setShowMenuIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const dropdownRef = useRef(null);
+  const [confirmOtp, setConfirmOtp] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,6 +53,20 @@ function AccountTable() {
   };
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenuIndex(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchRoles = async () => {
         if (user) {
             startLoading();
@@ -66,7 +80,7 @@ function AccountTable() {
     fetchRoles();
   }, [user]);
 
-
+  
 
   const toggleMenu = (index) => {
     setShowMenuIndex(showMenuIndex === index ? null : index);
@@ -74,20 +88,6 @@ function AccountTable() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-    setSelectAll(isChecked);
-    setSelectedUser(isChecked ? accounts.map((acc) => acc._id) : []);
-  };
-
-  const handleSelectedUser = (accountId) => {
-    const updatedSelectedUser = selectedUser.includes(accountId)
-      ? selectedUser.filter((id) => id !== accountId)
-      : [...selectedUser, accountId];
-    setSelectedUser(updatedSelectedUser);
-    setSelectAll(updatedSelectedUser.length === accounts.length);
   };
 
   const filteredAccounts = accounts.filter((account) => {
@@ -140,12 +140,15 @@ function AccountTable() {
         });
 
         if (!response.ok) {
+          notify(2,"Xóa tài khoản thất bài","Thất bại");
           throw new Error(`Failed to delete account: ${response.statusText}`);
         }
 
-        await getAccounts(user._id); // Refresh the accounts list
+        await getAccounts(user.id_owner); // Refresh the accounts list
         stopLoading();
+        notify(1,"Xóa thành công tài khoản","Thành công");
       } catch (error) {
+        notify(2,"Xóa tài khoản thất bài","Thất bại");
         console.error("Error deleting account:", error);
         stopLoading();
       }
@@ -158,7 +161,7 @@ function AccountTable() {
       name: account.name,
       email: account.email,
       role: account.role,
-      password: "", // Assuming password can be left blank for editing
+      password: account.password, // Assuming password can be left blank for editing
     });
     setShowEditModal(true);
   };
@@ -178,9 +181,11 @@ function AccountTable() {
       const data = await response.json();
       console.log("Success:", data);
       stopLoading();
-      await getAccounts(user._id); // Use await here as handleCreateAccount is async
+      notify(1,"Chỉnh sửa tài khoản thành công","Thành công");
+      await getAccounts(user.id_owner); // Use await here as handleCreateAccount is async
       setShowModal(false); // Hide modal on success
     } catch (error) {
+      notify(2,"Chỉnh sửa tài khoản thất bại","Thất bại");
       console.error("Error edit:",error);
     }
   };
@@ -189,12 +194,6 @@ function AccountTable() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleCloseModal = (e) => {
-    if (e.target.className === "modal-overlay") {
-      setShowModal(false);
-    }
   };
 
   return (
@@ -214,7 +213,7 @@ function AccountTable() {
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-modal" onClick={() => setShowModal(false)}>✖</button>
             <form className="create-account-form" onSubmit={handleCreateAccount}>
@@ -254,6 +253,19 @@ function AccountTable() {
                   <option key={role._id} value={role.role}>{role.role}</option>
                 ))}
               </select>
+              {/* {confirmOtp && (<>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="code"
+                    placeholder="Điền mã xác nhận "
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div> 
+                <p className="sentagain" onClick={sentagain} >Gửi lại mã</p></>
+              )} */}
               <button type="submit">Submit</button>
               <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
             </form>
@@ -262,7 +274,7 @@ function AccountTable() {
       )}
 
       {showEditModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-modal" onClick={() => setShowEditModal(false)}>✖</button>
             <form className="create-account-form" onSubmit={handleEditAccount}> {/* Changed class name here */}
@@ -286,7 +298,7 @@ function AccountTable() {
               <input
                 type="password"
                 name="password"
-                placeholder="Password (leave blank to keep current)"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
               />
@@ -311,14 +323,6 @@ function AccountTable() {
       <table>
         <thead>
           <tr>
-            <th>
-              <input
-                type="checkbox"
-                className="checkbox-all"
-                checked={selectAll}
-                onChange={handleSelectAll} 
-              />
-            </th>
             <th>Họ Tên</th>
             <th>Phân Quyền</th>
             <th>Email</th>
@@ -330,14 +334,6 @@ function AccountTable() {
         <tbody>
           {filteredAccounts.map((account) => (
             <tr key={account._id}>
-              <td>
-                <input
-                  type="checkbox"
-                  className="checkbox-user"
-                  checked={selectedUser.includes(account._id)}
-                  onChange={() => handleSelectedUser(account._id)} 
-                />
-              </td>
               <td>{account.name}</td>
               <td>{account.role}</td>
               <td>{account.email}</td>
@@ -356,7 +352,7 @@ function AccountTable() {
                     ⋮
                   </button>
                   {showMenuIndex === account._id && (
-                    <div className="uy-dropdown-menu">
+                    <div className="uy-dropdown-menu"  ref={dropdownRef}>
                       <ul>
                         <li onClick={() => handleOpenEditModal(account)}>Chỉnh sửa</li>
                         <li onClick={() => handleDeleteAccount(account._id)}>Xóa</li>
