@@ -18,11 +18,13 @@ function AccountTable() {
   const [confirmOtp, setConfirmOtp] = useState(false);
 
   const [formData, setFormData] = useState({
+    id: user? user.id:"",
     name: "",
     email: "",
     password: "",
     role: "",
-    id_owner: user? user._id:"",
+    id_owner: user? user.id_owner:"",
+    code:"",
   });
 
   const getAccounts = async (userId) => {
@@ -70,7 +72,7 @@ function AccountTable() {
     const fetchRoles = async () => {
         if (user) {
             startLoading();
-            await getAccounts(user._id);
+            await getAccounts(user.id_owner);
             const roles = await getRoles();
             setRolesData(roles);
             stopLoading();
@@ -105,31 +107,97 @@ function AccountTable() {
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     try {
+      const dataUser = {
+        id: user? user.id:"",
+        role: formData.role,
+        id_owner: user? user.id_owner:"",
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        confirmOtp:confirmOtp,
+        code:formData.code
+      };
       startLoading();
-      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/accounts/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({dataUser,user}),
       });
 
       const data = await response.json();
-      console.log("Success:", data);
-      if(data.message === 'Không có quyền truy cập'){
-        notify(2,"Bạn không có quyền tạo tài khoản","Thất bại");
-      }else{
-        notify(1,"Tạo thành công tài khoản","Thành công");
-      }
       stopLoading();
-      await getAccounts(user._id); 
-      setShowModal(false); 
+      console.log(data);
+      
+      if (confirmOtp) {
+        if (data.message === "Staff is created successfully") {
+          notify(1, "Tạo thành công tài khoản", "Thành công");
+          setFormData({
+            id: user ? user.id : "",
+            name: "",
+            email: "",
+            password: "",
+            role: "",
+            id_owner: user ? user.id_owner : "",
+            code: "",
+        });
+        setConfirmOtp(false);
+        setShowModal(false); // Đóng modal khi tạo tài khoản thành công
+        await getAccounts(user.id_owner); // Cập nhật danh sách tài khoản
+        } else {
+          notify(2, data.message || "Lỗi xác nhận mã", "Thất bại");
+        }
+      } else {
+        if (data.message === "Confirmation code sent") {
+          setConfirmOtp(true); 
+          notify(1, "Mã xác nhận đã được gửi", "Thành công");
+        } else {
+          notify(2, data.message || "Không thể gửi mã xác nhận", "Thất bại");
+        }
+      }
+      
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:",error);
     }
   };
+
+  const sentAgain = async ()=>{
+    setConfirmOtp(true);
+    try {
+      const dataUser = {
+        id: user? user.id:"",
+        role: user?user.role:"",
+        id_owner: user? user.id_owner:"",
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        confirmOtp:confirmOtp,
+        code:formData.code
+      };
+      startLoading();
+      const response = await fetch("http://localhost:5000/accounts/send_again", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({dataUser,user}),
+      });
+
+      const data = await response.json();
+      stopLoading();
+      // Khi gửi mã xác nhận
+      if (data.message === "Confirmation code sent") {
+        setConfirmOtp(true); // Chuyển sang trạng thái nhập mã xác nhận
+        setFormData((prev) => ({ ...prev, code: "" }));
+        notify(1, "Mã xác nhận đã được gửi", "Thành công");
+      } else {
+          notify(2, data.message || "Không thể gửi mã xác nhận", "Thất bại");
+      }
+    } catch (error) {
+      console.error("Error:",error);
+    }
+  }
 
   const handleDeleteAccount = async (accountId) => {
     if (window.confirm("Are you sure you want to delete this account?")) {
@@ -137,6 +205,7 @@ function AccountTable() {
         startLoading();
         const response = await fetch(`http://localhost:5000/accounts/delete/${accountId}`, {
           method: "DELETE",
+          body: JSON.stringify(formData),
         });
 
         if (!response.ok) {
@@ -253,8 +322,8 @@ function AccountTable() {
                   <option key={role._id} value={role.role}>{role.role}</option>
                 ))}
               </select>
-              {/* {confirmOtp && (<>
-                <div className="form-group">
+
+              {confirmOtp && ( <>
                   <input
                     type="text"
                     name="code"
@@ -263,12 +332,12 @@ function AccountTable() {
                     onChange={handleInputChange}
                     required
                   />
-                </div> 
-                <p className="sentagain" onClick={sentagain} >Gửi lại mã</p></>
-              )} */}
-              <button type="submit">Submit</button>
-              <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
-            </form>
+                <p className="uy-sentagain" onClick={sentAgain} >Gửi lại mã</p></>)}
+
+      <button type="submit">{confirmOtp ? "Verify & Create Account" : "Send Confirmation Code"}</button>
+      <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+</form>
+
           </div>
         </div>
       )}

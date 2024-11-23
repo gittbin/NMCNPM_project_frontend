@@ -213,3 +213,25 @@ body {
   outline: none;         /* Tắt viền outline mặc định */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Tạo hiệu ứng đổ bóng khi focus */
 }
+
+.uy-sentagain {
+  text-align: center;
+  color: #007bff; /* Màu chữ xanh */
+  cursor: pointer; /* Thay đổi con trỏ thành pointer khi di chuột */
+  text-decoration: underline; /* Gạch chân để nhấn mạnh */
+  font-weight: bold; /* Chữ đậm */
+  font-size: 16px; /* Kích thước chữ */
+  margin: 10px 0; /* Khoảng cách trên dưới */
+  display: inline-block; /* Hiển thị như một khối nội tuyến */
+  transition: color 0.3s ease, text-shadow 0.3s ease; /* Hiệu ứng chuyển đổi màu và bóng chữ */
+}
+
+.uy-sentagain:hover {
+  color: #0056b3; /* Thay đổi màu khi di chuột */
+  text-shadow: 0px 0px 5px rgba(0, 123, 255, 0.6); /* Hiệu ứng bóng chữ khi di chuột */
+}
+
+.uy-sentagain:active {
+  color: #003d80; /* Màu khi nhấn vào */
+  text-shadow: none; /* Loại bỏ bóng chữ khi nhấn */
+}
