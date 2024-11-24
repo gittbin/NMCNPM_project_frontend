@@ -235,3 +235,12 @@ body {
   color: #003d80; /* Màu khi nhấn vào */
   text-shadow: none; /* Loại bỏ bóng chữ khi nhấn */
 }
+
+.deleteAccountBtn{
+  background-color: red; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; 
+  border-radius: 5px; 
+  cursor: pointer;
+}

@@ -4,18 +4,20 @@ import { getRoles } from "../../services/Roles/rolesService";
 import { useAuth } from "../../components/introduce/useAuth";
 import { useLoading } from "../../components/introduce/Loading";
 import { notify } from "../../components/Notification/notification";
+import { useNavigate } from "react-router-dom";
 
 function AccountTable() {
   const [accounts, setAccounts] = useState([]);
   const [rolesData, setRolesData] = useState([]);
   const { startLoading, stopLoading } = useLoading(); 
-  const { user, loading } = useAuth();
+  const { user, logout } = useAuth();
   const [showMenuIndex, setShowMenuIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const dropdownRef = useRef(null);
   const [confirmOtp, setConfirmOtp] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     id: user? user.id:"",
@@ -205,19 +207,25 @@ function AccountTable() {
         startLoading();
         const response = await fetch(`http://localhost:5000/accounts/delete/${accountId}`, {
           method: "DELETE",
-          body: JSON.stringify(formData),
+          headers: {
+          "Content-Type": "application/json",
+        },
+          body: JSON.stringify(user),
         });
 
         if (!response.ok) {
-          notify(2,"Xóa tài khoản thất bài","Thất bại");
+          notify(2,"Xóa tài khoản thất bại","Thất bại");
           throw new Error(`Failed to delete account: ${response.statusText}`);
+        }
+        if(user._id===accountId){
+          logout();
         }
 
         await getAccounts(user.id_owner); // Refresh the accounts list
         stopLoading();
         notify(1,"Xóa thành công tài khoản","Thành công");
       } catch (error) {
-        notify(2,"Xóa tài khoản thất bài","Thất bại");
+        notify(2,"Xóa tài khoản thất bại","Thất bại");
         console.error("Error deleting account:", error);
         stopLoading();
       }
@@ -268,7 +276,7 @@ function AccountTable() {
   return (
     <div className="account-table">
       <div className="account-header">
-        <h2>Manage Accounts</h2>
+        <h2>Quản lí tài khoản</h2>
         <div className="search-container">
           <input
             type="text"
@@ -277,7 +285,7 @@ function AccountTable() {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="create-order-btn" onClick={() => setShowModal(true)}>Create Staff Account</button>
+          <button className="create-order-btn" onClick={() => setShowModal(true)}>Tạo tài khoản nhân viên</button>
         </div>
       </div>
 
@@ -286,7 +294,7 @@ function AccountTable() {
           <div className="modal-content">
             <button className="close-modal" onClick={() => setShowModal(false)}>✖</button>
             <form className="create-account-form" onSubmit={handleCreateAccount}>
-              <h3>Create Staff Account</h3>
+              <h3 style={{marginBottom: "10px"}}>Tạo tài khoản nhân viên</h3>
               <input
                 type="text"
                 name="name"
@@ -334,7 +342,7 @@ function AccountTable() {
                   />
                 <p className="uy-sentagain" onClick={sentAgain} >Gửi lại mã</p></>)}
 
-      <button type="submit">{confirmOtp ? "Verify & Create Account" : "Send Confirmation Code"}</button>
+      <button type="submit">{confirmOtp ? "Xác minh và tạo tài khoản" : "Gửi mã OTP"}</button>
       <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
 </form>
 
@@ -434,6 +442,7 @@ function AccountTable() {
           ))}
         </tbody>
       </table>
+      <button className="deleteAccountBtn" onClick={() => handleDeleteAccount(user._id)}>Xóa Tài Khoản</button>
     </div>
   );
 }
