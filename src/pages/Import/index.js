@@ -29,6 +29,9 @@ function Import() {
   const [idOrder, setIdOrder] = useState(null);
   const [dataTop, setDataTop] = useState([]);
   const { user, logout } = useAuth();
+  const apiGetOrder = useRef()
+  const apiGetHistory = useRef()
+  const [view,setView] = useState(true);
   // const id_owner = user.id_owner;
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -165,7 +168,7 @@ function Import() {
     setSearchTerm(result); // Cập nhật giá trị input với kết quả đã chọn
     setShowDropdown(false); // Ẩn dropdown sau khi chọn
   };
-
+  //  console.log(apiGetHistory.current)
   return (
     <>
       <OrderManagement
@@ -173,6 +176,8 @@ function Import() {
         onHistory={openModalHistory}
         openModalDetail={openModalDetail}
         setIdOrder={setIdOrder}
+        refOrder ={apiGetOrder}
+        setView = {setView}
       />
 
       <Modal isOpen={isOpen} onClose={closeModal}>
@@ -233,6 +238,9 @@ function Import() {
           <ContentOrder
             dataHis={idProductAdded}
             setIdProductAdded={setIdProductAdded}
+            apiFetchOrderHistory = {apiGetOrder}
+            apiGetHistory = {apiGetHistory}
+            
           />
         </div>
       </Modal>
@@ -241,11 +249,14 @@ function Import() {
         onClose={closeModalHistory}
         openModalDetail={openModalDetail}
         setIdOrder={setIdOrder}
+        apiGetHistory= {apiGetHistory}
+        setView = {setView}
       />
       <ModalDetail
         isOpen={openDetail}
         onClose={closeModalDetail}
         idOrder={idOrder}
+        view = {view}
       >
         {" "}
       </ModalDetail>
@@ -270,7 +281,7 @@ function Import() {
   );
 }
 
-const ContentOrder = ({ dataHis, setIdProductAdded }) => {
+const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHistory }) => {
   const initItem = (item) => {
     return {
       name: item.name,
@@ -476,7 +487,8 @@ const ContentOrder = ({ dataHis, setIdProductAdded }) => {
         // Nếu thành công, xử lý kết quả
         const responseData = await response.json();
         console.log("Dữ liệu đã được gửi thành công", responseData);
-      
+        await apiFetchOrderHistory.current.fetchOrder("")
+        await apiGetHistory.current.debouncedFetchSuggestions(" ", "http://localhost:5000/import/loggingOrder/listOrder", 1, 10);
         setIdProductAdded([]);
         setListProductWereAdded([]);
       } else {

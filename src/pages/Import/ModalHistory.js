@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect,useImperativeHandle, forwardRef  } from "react";
 import axios from "axios";
 import debounce from "lodash.debounce";
 import "./ModalHistory.css";
 import Modal from "./../../components/ComponentExport/Modal";
 import  { useAuth }  from '../../components/introduce/useAuth'
 
-const ModalHistory = ({ isOpen, onClose,openModalDetail,setIdOrder }) => {
+const ModalHistory = forwardRef(({ isOpen, onClose,openModalDetail,setIdOrder,apiGetHistory,setView }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [listOrder, setListOrder] = useState({ logs: [], totalCount: 0 });
@@ -43,7 +43,9 @@ const ModalHistory = ({ isOpen, onClose,openModalDetail,setIdOrder }) => {
     }, 500),
     []
   );
-
+  useImperativeHandle(apiGetHistory,()=>({
+    debouncedFetchSuggestions
+  }))
 const handleSearchChange = (e) => {
   const term = e.target.value;
   setSearchTerm(term);        // Cập nhật từ khoá tìm kiếm
@@ -54,6 +56,7 @@ const handleSearchChange = (e) => {
   const handleRowClick = (order) => {
  
     setSelectedRow(order);
+    setView(false)
     openModalDetail();
     onClose()
     setIdOrder(order.orderId)
@@ -164,6 +167,6 @@ const handleSearchChange = (e) => {
       )}
     </Modal>
   );
-};
+});
 
 export default ModalHistory;

@@ -2,9 +2,9 @@ import "./ModalHistory.css";
 import Modal from "./../../components/ComponentExport/Modal";
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { AuthContext } from "../../components/introduce/AuthContext";
-import  { useAuth }  from '../../components/introduce/useAuth'
+import { useAuth } from "../../components/introduce/useAuth";
 import { notify } from "../../components/Notification/notification";
-const ModalDetail = ({ isOpen, onClose, idOrder }) => {
+const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [supplierName, setSupplierName] = useState({});
@@ -12,6 +12,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
   const [filter, setFilter] = useState([]);
   const dropdownRef = useRef(null);
   const { user } = useAuth();
+
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -129,7 +130,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
   const handleSubmit = async () => {
     const url = "http://localhost:5000/import/orderDetail/updateDetail";
     const state = products.some((pro) => pro.status === "pending");
-    
+
     const data = { formData: products };
     if (!state) {
       if (products.every((pro) => pro.status === "deliveried")) {
@@ -142,15 +143,17 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
     } else {
       data.status = "pending";
     }
-  
+
     // Calculate total amount
-    data.total = amountBill().toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    data.total = amountBill()
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     data.userName = user.name;
     data.userId = user._id;
-    data.ownerId= user.id_owner;
-  
+    data.ownerId = user.id_owner;
+
     console.log("Submitting data:", data);
-  
+
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -159,21 +162,23 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
         },
         body: JSON.stringify(data),
       });
-  
+
       if (!response.ok) {
-        throw new Error(`Failed to submit data: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to submit data: ${response.status} ${response.statusText}`
+        );
       }
-  
+
       const responseData = await response.json();
       console.log("Success:", responseData);
-  
+
       // Clear products only after successful submission
       setProducts([]);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
   };
-  
+
   const handleChangeNote = (event, index) => {
     const newValue = event.target.value;
     setProducts((prev) => {
@@ -185,6 +190,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
       return updatedProducts;
     });
   };
+  console.log(view)
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="Modal-title">Order #{idOrder}</div>
@@ -234,7 +240,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
                 <th>Trạng thái</th>
                 <th>Số lượng</th>
                 <th>Thành tiền</th>
-                <th>Note</th>
+                {view&&(<th>Note</th>)}
               </tr>
             </thead>
             <tbody>
@@ -294,7 +300,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
                             }}
                           >
                             {product.status}
-                            {dropdownOpenIndex === index && (
+                            {dropdownOpenIndex === index && view && (
                               <div ref={dropdownRef} className="dropdown">
                                 <div
                                   className="dropdown-item"
@@ -336,37 +342,51 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
                               padding: 0,
                             }}
                           >
-                            <button
-                              className="Quantity-button"
-                              onClick={() => decrease(index)}
-                            >
-                              -
-                            </button>
-                            <input
-                              value={product.quantity}
-                              className="Quantity-input"
-                              onChange={(e) => handleInputQuantitty(index, e)}
-                            />
-                            <button
-                              className="Quantity-button"
-                              onClick={() => increase(index)}
-                            >
-                              +
-                            </button>
+                            {view ? (
+                              // Khi view là true, hiển thị các button và input
+                              <>
+                                <button
+                                  className="Quantity-button"
+                                  onClick={() => decrease(index)} // Gọi hàm decrease khi nhấn nút -
+                                >
+                                  -
+                                </button>
+                                <input
+                                  value={product.quantity} // Hiển thị giá trị quantity hiện tại
+                                  className="Quantity-input"
+                                  onChange={(e) =>
+                                    handleInputQuantitty(index, e)
+                                  } // Cập nhật giá trị quantity khi thay đổi
+                                />
+                                <button
+                                  className="Quantity-button"
+                                  onClick={() => increase(index)} // Gọi hàm increase khi nhấn nút +
+                                >
+                                  +
+                                </button>
+                              </>
+                            ) : (
+                              // Khi view là false, chỉ hiển thị giá trị quantity
+                              <div>{product.quantity}</div>
+                            )}
                           </div>
                         </div>
                       </td>
                       <td style={{ textAlign: "right" }}>
-                        {(product.price.replace(/\./g, "") * product.quantity).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND
+                        {(product.price.replace(/\./g, "") * product.quantity)
+                          .toString()
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+                        VND
                       </td>
-                      <td>
+                      {view&&(
+                        <td>
                         <input
                           type="text"
                           value={product.note}
                           onChange={(event) => handleChangeNote(event, index)} // Use onChange instead of onchange
                           placeholder="Nhập ghi chú"
                         />
-                      </td>
+                      </td>)}
                     </tr>
                   )
               )}
@@ -376,11 +396,15 @@ const ModalDetail = ({ isOpen, onClose, idOrder }) => {
         <div className="order-tax">
           Tổng tiền:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill().toString().replace(/\./g, "")* 1.1).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} VND
+            {(amountBill().toString().replace(/\./g, "") * 1.1)
+              .toFixed(0)
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
+            VND
           </span>
         </div>
         <div className="complete-order">
-          <button onClick={() => handleSubmit()}>Complete</button>
+          {view&&(<button onClick={() => handleSubmit()}>Complete</button>)}
         </div>
       </div>
     </Modal>

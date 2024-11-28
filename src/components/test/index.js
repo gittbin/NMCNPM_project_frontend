@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useCallback,useContext } from "react";
+import React, { useState, useEffect, useCallback,useContext,useImperativeHandle, forwardRef } from "react";
 import '../test/index.css';
 import { AuthContext } from "../../components/introduce/AuthContext";
 import debounce from "lodash.debounce";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
-
-const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }) => {
+let apiFetchOrderHistory; 
+const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,setIdOrder,refOrder,setView })=> {
   const [orders, setOrders] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editedOrder, setEditedOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [noteDetail, setNoteDetail] = useState(null); // Thay đổi state để theo dõi chỉ số đơn hàng đang chỉnh sửa
   const {user} = useContext(AuthContext)
+  
   const createorder = (order) => {
     return {
       id: order._id,
@@ -37,7 +38,7 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
     setNoteDetail(null);  
   };
 
-  const fetchOrder = async (keyword,hrefLink) => {
+   const fetchOrder = async (keyword) => {
     try {
       const apiUrl = `http://localhost:5000/import/orderHistory/getOrder?search=${keyword}&ownerId=${user.id_owner}&userId=${user._id}`;
       const response = await fetch(apiUrl);
@@ -57,6 +58,9 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       console.error('Error:', error);
     }
   };
+  useImperativeHandle(refOrder,()=>({
+    fetchOrder
+  }))
   const updateData = async ( newData) => {
     try {
       newData.ownerId= user.id_owner;
@@ -78,9 +82,10 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       console.error('Error during update:', error);
     }
   };
+  apiFetchOrderHistory = fetchOrder;
   const debouncedFetchSuggestions = useCallback(
-    debounce((keyword, hrefLink) => {
-      fetchOrder(keyword, hrefLink);
+    debounce((keyword) => {
+      fetchOrder(keyword);
     }, 500),
     []
   );
@@ -250,6 +255,7 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
                       <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
                       <button className="order-mgmt-button edit" onClick={() => handleEditClick(index, order) } style={{margin:0}}>✏️</button>
                       <FontAwesomeIcon icon={faCircleInfo} onClick={()=>{
+                        setView(true)
                         openModalDetail();
                         setIdOrder(order.id)
                       }}
@@ -282,7 +288,8 @@ const OrderManagement = ({ onCreateOrder, onHistory,openModalDetail,setIdOrder }
       </table>
     </div>
   );
-};
+});
 
 export default OrderManagement;
 
+export {apiFetchOrderHistory}
