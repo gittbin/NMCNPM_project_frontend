@@ -1,8 +1,8 @@
 import { notify } from '../../components/Notification/notification';
 
-export const getRoles = async () => {
+export const getRoles = async (userId) => {
   try {
-    const response = await fetch("http://localhost:5000/roles/show", {
+    const response = await fetch(`http://localhost:5000/roles/show?userId=${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

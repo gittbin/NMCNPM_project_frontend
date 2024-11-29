@@ -17,7 +17,7 @@ function RolesGroup() {
     const fetchRoles = async () => {
       if (user) {
         startLoading();
-        const roles = await getRoles(); // Thêm await
+        const roles = await getRoles(user.id_owner); // Thêm await
         setRolesData(roles); // Đảm bảo dữ liệu đã được lấy
         stopLoading();
       }
@@ -43,14 +43,14 @@ function RolesGroup() {
 
   const sendRoleToBackend = async (newRoleData) => {
     await createRole(newRoleData); // Thêm await
-    const updatedRoles = await getRoles();
+    const updatedRoles = await getRoles(user.id_owner);
     setRolesData(updatedRoles);
   };
 
   const handleDeleteRole = async (roleId) => {
     await deleteRole(roleId, user); // Thêm await
     // Gọi lại fetchRoles để cập nhật danh sách sau khi xóa
-    const updatedRoles = await getRoles();
+    const updatedRoles = await getRoles(user.id_owner);
     setRolesData(updatedRoles);
   };
 
@@ -65,6 +65,7 @@ function RolesGroup() {
         createAt: new Date().toISOString(),
         deleteAt: null,
         delete: false,
+        id_owner: user._id,
       };
 
       sendRoleToBackend(newRoleData);

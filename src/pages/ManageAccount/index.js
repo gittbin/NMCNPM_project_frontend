@@ -75,7 +75,7 @@ function AccountTable() {
         if (user) {
             startLoading();
             await getAccounts(user.id_owner);
-            const roles = await getRoles();
+            const roles = await getRoles(user.id_owner);
             setRolesData(roles);
             stopLoading();
             setFormData((prevData) => ({ ...prevData, id_owner: user._id })); // cập nhật id_owner

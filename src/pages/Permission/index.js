@@ -17,7 +17,7 @@ const Permissions = () => {
     const fetchRoles = async () => {
       if (user) {
         startLoading();
-        const roles = await getRoles();
+        const roles = await getRoles(user.id_owner);
         setRolesData(roles);
         console.log(document.cookie);
         console.log("OK");
