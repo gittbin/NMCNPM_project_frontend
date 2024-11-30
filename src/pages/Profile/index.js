@@ -8,8 +8,11 @@ import './Profile.css';
 import  { useAuth }  from '../../components/introduce/useAuth'
 import Avatar from '../../components/Avatar';
 import {useLoading} from '../../components/introduce/Loading'
+import ProfilePictureOptions from './image.js'
 function Profile() {
   const { user, logout,loading } = useAuth();
+  const [edit,SetEdit]=useState(false);
+  const [editimage,SetEditimage]=useState(false);
   const [data,SetData]=useState(null);
   const {startLoading, stopLoading} = useLoading();
   useEffect(()=>{
@@ -32,7 +35,7 @@ user:user
 
   const datas = await response.json();
   stopLoading();
-  SetData(datas.user2);
+  SetData(datas);
   };
   a();
 
@@ -45,14 +48,18 @@ user:user
           alt="Profile Banner" 
           className="banner"
         />
-        <div className="profile-picture">
-          <div className='uy-avatar'>{data?<Avatar name={data.name} imageUrl={data.avatar}/>:""}</div>
+        <div>
+        <div className="profile-picture" onClick={()=>{SetEditimage((a)=>!a)}}>
+          <div className='uy-avatar' style={{cursor:"pointer"}}>{data?<Avatar name={data.name} imageUrl={data.avatar}/>:""}</div>
         </div>
+        {editimage?<ProfilePictureOptions image={data.avatar}/>:""}
+        </div>
+        
         <div className="profile-info">
-          <div className="profile-info__name"> </div>
-          <p>Dia chi cua hang</p>
+          <div className="profile-info__name">{data?(data.name):""}</div>
 
-          <button className="message-btn">Edit Profile</button>
+          <button className="message-btn" onClick={()=>{SetEdit(a=>!a)}}>{edit?"Lưu":"Edit Profile"}</button>
+          {edit?(<button className="message-btn" onClick={()=>{SetEdit(a=>!a)}} style={{marginLeft:"10px"}}>Thoát</button>):("")}
         </div>
       </div>
 
@@ -63,7 +70,7 @@ user:user
         <li><a href="#"><FaRegUser />  Quán của : {data?data.id_owner.name:""}</a></li>
 
           <li><a href="#"><FaChild /> vị trí : {data?data.role:""}</a></li>
-          <li><a href="#"><FaCheckSquare /> Quyền : </a></li>
+          <li><a href="#"><FaCheckSquare /> Quyền : {data?(data.right?data.right.map((a)=>a):"tất cả các quyền"):""}</a></li>
           <li><a href="#"><MdEmail /> Email : {data?data.email:""}</a></li>
           <li><a href="#"><RiLockPasswordFill /> Mật khẩu : {data?data.password:""}</a></li>
         </ul>

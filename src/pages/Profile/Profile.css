@@ -38,7 +38,7 @@
 }
 
 .profile-info {
-  margin-top: 80px; /* Cách phần header một khoảng để không bị chồng lấn với avatar */
+  margin-top: 25px; /* Cách phần header một khoảng để không bị chồng lấn với avatar */
   text-align: center;
 }
 
@@ -52,7 +52,9 @@
   height: 100%;
   object-fit: cover; /* Đảm bảo ảnh luôn bao phủ hết avatar mà không bị biến dạng */
 }
-
+.profile-picture:hover{
+  opacity: 0.8;
+}
 
 .profile-info .profile-info__name {
   font-weight: 700;
