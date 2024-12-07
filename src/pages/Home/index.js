@@ -2,7 +2,8 @@ import React,{useEffect,useState} from "react";
 import { useAuth } from "../../components/introduce/useAuth";
 import Sales_daily from "./sale_daily"
 import Useronline from "./useronlinecard"
-// src/index.js hoặc src/App.js
+// src/index.js hoặc src/App.js'
+import CalendarComponent from "../Calendar/index.js"
 // import React from 'react';
 import {
   AreaChart,
@@ -380,7 +381,8 @@ const [newcustomer,setNewcustomer] =useState({
                 <div class="card-title">Lịch làm việc</div>
               </div>
               <div class="card-body p-0">
-                <div class="table-responsive">
+                <CalendarComponent defaultView="agenda"/>
+                {/* <div class="table-responsive">
                   <table class="table align-items-center">
                     <thead class="thead-light">
                       <tr>
@@ -456,7 +458,7 @@ const [newcustomer,setNewcustomer] =useState({
                       </tr>
                     </tbody>
                   </table>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
