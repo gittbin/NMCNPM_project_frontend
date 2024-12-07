@@ -95,3 +95,13 @@
   cursor: pointer;
   margin-top: 15px;
 }
+.profile-info input{
+ display: block;
+  padding: 5px; /* Khoảng cách bên trong ô */
+  margin: 5px 0; /* Khoảng cách trên và dưới */
+  border-radius: 4px; /* Bo tròn góc */
+  border: 1px solid #ccc; /* Đường viền cho input */
+  box-sizing: border-box; /* Bao gồm padding và border vào chiều rộng */
+  margin-left: 50%;
+  transform: translateX(-50%);
+}

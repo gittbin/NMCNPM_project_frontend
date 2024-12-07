@@ -1,13 +1,13 @@
-import React from 'react';
-
-const ProfilePictureOptions = (image) => {
-
+import React,{useState,useEffect} from 'react';
+import ProductForm from '../../components/Manage_product/ProductForm.js'
+import { notify } from '../../components/Notification/notification';
+const ProfilePictureOptions = ({image,reload}) => {
+const [on,Seton]=useState(false)
   const handleChooseProfilePicture = () => {
-    alert("Choose profile picture clicked!");
+    Seton((a)=>!a)
   };
-
-  return (
-    <div style={styles.container}>
+  return (<>
+  {on?<ProductForm profile={true} turnoff={()=>{Seton(false)} } refresh={reload}/>:(<div style={styles.container}>
       <button style={styles.button}>
         <a href={image.image} target="_blank"><span style={styles.icon}>👤</span> See profile picture</a>
         
@@ -15,7 +15,8 @@ const ProfilePictureOptions = (image) => {
       <button style={styles.button} onClick={handleChooseProfilePicture}>
         <span style={styles.icon}>🖼️</span> Choose profile picture
       </button>
-    </div>
+    </div>)}
+    </>
   );
 };
 
