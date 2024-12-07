@@ -214,7 +214,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
           </div>
         </div>
       </div>
-      <div className="container">
+      <div className="containerKhoe" style={{maxHeight:"500px",overflowY:"auto",scrollbarWidth: "thin",}}>
         <div
           style={{
             display: "flex",
@@ -222,6 +222,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
             fontWeight: 600,
             fontSize: 24,
             justifyContent: "center",
+            maxHeight:"600px"
           }}
         >
           Danh sách đơn hàng
