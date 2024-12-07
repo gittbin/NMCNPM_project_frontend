@@ -14,8 +14,9 @@ import debounce from "lodash.debounce";
 import Modal from "./../../components/ComponentExport/Modal";
 import "./import.css";
 import ModalDetail from "./ModalDetail";
-import { useAuth } from "../../components/introduce/useAuth";
+import { useAuth} from "../../components/introduce/useAuth";
 import { notify } from "../../components/Notification/notification";
+import { useLoading } from "../../components/introduce/Loading";
 function Import() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,10 +29,12 @@ function Import() {
   const [idProductAdded, setIdProductAdded] = useState([]);
   const [idOrder, setIdOrder] = useState(null);
   const [dataTop, setDataTop] = useState([]);
-  const { user, logout } = useAuth();
+  const { user, loading } = useAuth();
   const apiGetOrder = useRef()
   const apiGetHistory = useRef()
   const [view,setView] = useState(true);
+  const [loadLog,setLoadLog] = useState(false)
+  const [loadOrder,setLoadOrder] = useState(false)
   // const id_owner = user.id_owner;
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -39,20 +42,23 @@ function Import() {
   const closeModalHistory = () => setOpenHistory(false);
   const closeModalDetail = () => setOpenDetail(false);
   const openModalDetail = () => setOpenDetail(true);
+  const {startLoading,stopLoading}=useLoading();
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if(loading)return;
         const res = await fetch(
           `http://localhost:5000/import/orderHistory/lastProductTop100?ownerId=${user.id_owner}`
         );
         const dataRes = await res.json();
         setDataTop(dataRes);
+
       } catch (err) {
         console.error(err);
       }
     };
     fetchData();
-  }, []);
+  }, [loading]);
   const handleSearch = (event) => {
     const term = event.target.value;
     let keyword = term.trim();
@@ -94,7 +100,6 @@ function Import() {
   // database
   const fetchProductSuggestions = async (keyword, hrefLink) => {
     try {
-      console.log(user);
       const response = await axios.get(hrefLink, {
         params: {
           query: keyword,
@@ -117,7 +122,7 @@ function Import() {
       (keyword, hrefLink) => fetchProductSuggestions(keyword, hrefLink),
       500
     ),
-    [] // Chỉ tạo ra một lần
+    [user] // Chỉ tạo ra một lần
   );
 
   const handleAddToOrder = async () => {
@@ -178,6 +183,9 @@ function Import() {
         setIdOrder={setIdOrder}
         refOrder ={apiGetOrder}
         setView = {setView}
+        loadOrder = {loadOrder}
+        setLoadLog =  {setLoadLog}
+        setLoadOrder = {setLoadOrder}
       />
 
       <Modal isOpen={isOpen} onClose={closeModal}>
@@ -251,12 +259,15 @@ function Import() {
         setIdOrder={setIdOrder}
         apiGetHistory= {apiGetHistory}
         setView = {setView}
+        loadLog = {loadLog}
       />
       <ModalDetail
         isOpen={openDetail}
         onClose={closeModalDetail}
         idOrder={idOrder}
         view = {view}
+        setLoadLog = {setLoadLog}
+        setLoadOrder = {setLoadOrder}
       >
         {" "}
       </ModalDetail>
@@ -298,8 +309,8 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
       productId: item._id,
     };
   };
-
-  const { user, logout } = useAuth();
+  const {startLoading,stopLoading}=useLoading();
+  const { user, loading } = useAuth();
   const [listProductWereAdded, setListProductWereAdded] = useState([]);
   const listItem = dataHis.map((item) => initItem(item));
   const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
@@ -476,6 +487,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
     const url = "http://localhost:5000/import/orderHistory/save";
     notify(1,"you've completed importing goods","Successfully!")
     try {
+ 
       const response = await fetch(url, {
         method: "POST", // Phương thức POST
         headers: {
@@ -483,13 +495,15 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
         },
         body: JSON.stringify(groupBySupplier), // Chuyển đổi dữ liệu thành chuỗi JSON
       });
-        
+
       if (response.ok) {
         // Nếu thành công, xử lý kết quả
+ 
         const responseData = await response.json();
         console.log("Dữ liệu đã được gửi thành công", responseData);
         await apiFetchOrderHistory.current.fetchOrder("")
         await apiGetHistory.current.debouncedFetchSuggestions(" ", "http://localhost:5000/import/loggingOrder/listOrder", 1, 10);
+
         setIdProductAdded([]);
         setListProductWereAdded([]);
       } else {

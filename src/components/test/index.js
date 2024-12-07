@@ -4,18 +4,25 @@ import { AuthContext } from "../../components/introduce/AuthContext";
 import debounce from "lodash.debounce";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import {useAuth} from "../../components/introduce/useAuth"
+import { useLoading } from "../../components/introduce/Loading";
+import { notify } from "../../components/Notification/notification";
 let apiFetchOrderHistory; 
-const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,setIdOrder,refOrder,setView })=> {
+
+const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,setIdOrder,refOrder,setView,setLoadOrder,setLoadLog,loadOrder })=> {
   const [orders, setOrders] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [editedOrder, setEditedOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [noteDetail, setNoteDetail] = useState(null); // Thay đổi state để theo dõi chỉ số đơn hàng đang chỉnh sửa
-  const {user} = useContext(AuthContext)
+  const {startLoading,stopLoading} = useLoading
+  // const {user} = useContext(AuthContext)
+  const {user,loading} = useAuth()
   
   const createorder = (order) => {
     return {
       id: order._id,
+      tax:order.tax,
       client: order.nameSupplier,
       email: order.emailSupplier,
       status: order.generalStatus,
@@ -25,18 +32,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       notes: order.notes || '', // Giả sử có trường "notes" trong dữ liệu đơn hàng
     };
   };
-  const handleSaveClick = () => {
-    const updatedOrders = [...orders];
-    const newOrder = {...editedOrder,userid:user._id,userName:user.name}
-    newOrder.date = new Date().toISOString();
-    console.log(newOrder.date)
-    updatedOrders[editingIndex] = editedOrder;
-    console.log(newOrder)
-    updateData(newOrder)
-    setOrders(updatedOrders);
-    setEditingIndex(null); 
-    setNoteDetail(null);  
-  };
+
 
    const fetchOrder = async (keyword) => {
     try {
@@ -48,6 +44,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       }
 
       const data = await response.json();
+      console.log(data,"new data")
       const regurlizationData = data.map(item => createorder(item));
       setOrders((prev)=>{
         const newData = [...regurlizationData]
@@ -71,11 +68,11 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
         },
         body: JSON.stringify(newData),
       });
-  
+      
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-  
+
       const data = await response.json(); // Đọc phản hồi trả về
       console.log('Update successful:', data);
     } catch (error) {
@@ -87,14 +84,43 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
     debounce((keyword) => {
       fetchOrder(keyword);
     }, 500),
-    []
+    [user]
   );
   useEffect(() => {
-    fetchOrder();
-  }, []);
+    if(loading)return
+    if (user) {
+      fetchOrder(" ");
+    }
+  }, [loading,loadOrder]);
   useEffect(() => {
     debouncedFetchSuggestions(searchTerm.trim());
   }, [searchTerm]);  
+
+  const handleSaveClick = async () => {
+    try {
+      const updatedOrders = [...orders];
+      const newOrder = { ...editedOrder, userid: user._id, userName: user.name };
+      newOrder.date = new Date().toISOString();
+  
+      console.log(loadOrder);
+      console.log("Đơn hàng mới:", newOrder);
+  
+      await updateData(newOrder);
+  
+      updatedOrders[editingIndex] = editedOrder;
+      setOrders(updatedOrders);
+      setEditingIndex(null);
+      setNoteDetail(null);
+      notify(1, "you've updated importing goods", "Successfully!");
+
+      setLoadOrder((prev) => !prev);
+      setLoadLog((prev) => !prev);
+  
+    } catch (error) {
+      console.error("Error in handleSaveClick:", error);
+      notify(0, "Error updating data", "Failed to update!");
+    }
+  };
 
   const handleCancelClick = () => {
     setEditingIndex(null); // Hủy chế độ chỉnh sửa
@@ -130,7 +156,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       hour12: false,
     });
   };
-
+ 
   return (
     <div className="order-mgmt-container">
       <div className="order-mgmt-header">
@@ -208,8 +234,8 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
                       value={editedOrder.status}
                       onChange={handleEditChange}
                     >
-                      <option value="deliveried">Deliveried</option>
                       <option value="Pending">Pending</option>
+                      <option value="deliveried">Deliveried</option>
                       <option value="Canceled">Canceled</option>
                     </select>
                   ) : (
@@ -286,7 +312,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
           ))}
         </tbody>
       </table>
-      <div style={{minHeight:"200px"}}>My app </div>
+  
     </div>
   );
 });

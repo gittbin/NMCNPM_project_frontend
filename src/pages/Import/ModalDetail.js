@@ -4,14 +4,15 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { AuthContext } from "../../components/introduce/AuthContext";
 import { useAuth } from "../../components/introduce/useAuth";
 import { notify } from "../../components/Notification/notification";
-const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
+
+const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder}) => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [supplierName, setSupplierName] = useState({});
   const [dropdownOpenIndex, setDropdownOpenIndex] = useState(null);
   const [filter, setFilter] = useState([]);
   const dropdownRef = useRef(null);
-  const { user } = useAuth();
+  const { user,loading } = useAuth();
   const [myTax,setMyTax] = useState(0)
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -82,11 +83,12 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
     }
   };
   useEffect(() => {
+    if(loading)return
     if (idOrder) {
       getSupplierByOrderId(idOrder); // Gọi hàm khi component mount hoặc khi idOrder thay đổi
       getData();
     }
-  }, [idOrder]);
+  }, [idOrder,loading]);
   const transfer = (date) => {
     const date2 = new Date(date);
     return date2.toLocaleString("vi-VN", {
@@ -144,7 +146,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
     } else {
       data.status = "pending";
     }
-
+   
     // Calculate total amount
     data.total = amountBill()
       .toString()
@@ -168,13 +170,17 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
         throw new Error(
           `Failed to submit data: ${response.status} ${response.statusText}`
         );
+      }else{
+        notify(1,"you've updated importing goods","Successfully!")
       }
 
       const responseData = await response.json();
+      setLoadLog((prev)=>!prev)
+      setLoadOrder((prev)=>!prev)
       console.log("Success:", responseData);
 
       // Clear products only after successful submission
-      setProducts([]);
+      // setProducts([]);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -191,7 +197,6 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
       return updatedProducts;
     });
   };
-  console.log(view)
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="Modal-title">Order #{idOrder}</div>
@@ -214,7 +219,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
           </div>
         </div>
       </div>
-      <div className="containerKhoe" style={{maxHeight:"500px",overflowY:"auto",scrollbarWidth: "thin",}}>
+      <div className="containerKhoe" style={{maxHeight:"480px",overflowY:"auto",scrollbarWidth: "thin",paddingBottom:"20px"}}>
         <div
           style={{
             display: "flex",

@@ -5,13 +5,13 @@ import "./ModalHistory.css";
 import Modal from "./../../components/ComponentExport/Modal";
 import  { useAuth }  from '../../components/introduce/useAuth'
 
-const ModalHistory = forwardRef(({ isOpen, onClose,openModalDetail,setIdOrder,apiGetHistory,setView }) => {
+const ModalHistory = forwardRef(({ isOpen, onClose,openModalDetail,setIdOrder,apiGetHistory,setView,loadLog }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
   const [listOrder, setListOrder] = useState({ logs: [], totalCount: 0 });
   const [page, setPage] = useState(1);
-  const { user } = useAuth();
-
+  const { user,loading } = useAuth();
+  
   const fetchProductSuggestions = async (keyword, hrefLink, page, limit) => {
     try {
       const response = await axios.get(hrefLink, {
@@ -41,7 +41,7 @@ const ModalHistory = forwardRef(({ isOpen, onClose,openModalDetail,setIdOrder,ap
     debounce((keyword, hrefLink, page, limit) => {
       fetchProductSuggestions(keyword, hrefLink, page, limit);
     }, 500),
-    []
+    [user]
   );
   useImperativeHandle(apiGetHistory,()=>({
     debouncedFetchSuggestions
@@ -64,9 +64,10 @@ const handleSearchChange = (e) => {
   };
 
   useEffect(() => {
+    if(loading)return
     debouncedFetchSuggestions(searchTerm.trim(), "http://localhost:5000/import/loggingOrder/listOrder", page, 10);
-  }, [searchTerm, page]);  
-
+  }, [searchTerm, page,loading,loadLog]);  
+  
   const handlePage = () => {
     // Tăng page khi nhấn "Load More" để tải thêm dữ liệu
     setPage((prevPage) => prevPage + 1);
