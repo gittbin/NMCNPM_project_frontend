@@ -118,8 +118,8 @@ user:user
         <ul>
         <li><a href="#"><FaRegUser />  Quán của : {data?data.id_owner.name:""}</a></li>
 
-          <li><a href="#"><FaChild /> vị trí : {data?data.right.role:""}</a></li>
-          <li><a href="#"><FaCheckSquare /> Quyền : {data?(data.right.permission?data.permission.map((a)=>a):"tất cả các quyền"):""}</a></li>
+          <li><a href="#"><FaChild /> vị trí : {data?data.role:""}</a></li>
+          <li><a href="#"><FaCheckSquare /> Quyền : {data?(data.right?data.right.permissions.map((a)=>a):"tất cả các quyền"):""}</a></li>
           <li><a href="#"><MdEmail /> Email : {data?data.email:""}</a></li>
           <li><a href="#"><RiLockPasswordFill /> Mật khẩu : {!edit?(data?data.password:""):
           <input 
