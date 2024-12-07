@@ -15,7 +15,7 @@ function Header({size}) {
       </div>
       <AudioPlayer />
       <div className="header__right">
-        <div className="header__setting"><RiSettings4Line /></div>
+        {/* <div className="header__setting"><RiSettings4Line /></div> */}
         <div className="header__notify"><FaRegBell /></div>
         <div className="header__user"><Modal /></div>
       </div>

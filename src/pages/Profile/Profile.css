@@ -38,7 +38,7 @@
 }
 
 .profile-info {
-  margin-top: 80px; /* Cách phần header một khoảng để không bị chồng lấn với avatar */
+  margin-top: 25px; /* Cách phần header một khoảng để không bị chồng lấn với avatar */
   text-align: center;
 }
 
@@ -52,7 +52,9 @@
   height: 100%;
   object-fit: cover; /* Đảm bảo ảnh luôn bao phủ hết avatar mà không bị biến dạng */
 }
-
+.profile-picture:hover{
+  opacity: 0.8;
+}
 
 .profile-info .profile-info__name {
   font-weight: 700;
@@ -92,4 +94,14 @@
   border-radius: 20px;
   cursor: pointer;
   margin-top: 15px;
+}
+.profile-info input{
+ display: block;
+  padding: 5px; /* Khoảng cách bên trong ô */
+  margin: 5px 0; /* Khoảng cách trên và dưới */
+  border-radius: 4px; /* Bo tròn góc */
+  border: 1px solid #ccc; /* Đường viền cho input */
+  box-sizing: border-box; /* Bao gồm padding và border vào chiều rộng */
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
