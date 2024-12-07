@@ -8,7 +8,7 @@ import { useLoading } from "../../components/introduce/Loading";
 
 const localizer = momentLocalizer(moment);
 
-const CalendarComponent = () => {
+const CalendarComponent = ({defaultView}) => {
   const [events, setEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({ title: "", employee: "", start_time: "", end_time: "" });
@@ -195,6 +195,7 @@ const CalendarComponent = () => {
         endAccessor="end"
         style={{ height: 500 }}
         selectable
+        defaultView={defaultView}
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
       />
