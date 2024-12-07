@@ -180,6 +180,7 @@ th:nth-child(9), td:nth-child(9) { /* Hành Động */
   width: 10px; /* Chiều rộng cho cột Hành Động */
   text-align: center;
 }
+
 .body-container-img-description{
   height:110px;
   margin: 4px 4px;

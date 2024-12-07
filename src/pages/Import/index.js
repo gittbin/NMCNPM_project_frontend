@@ -316,7 +316,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
   const [isOpen, setIsOpen] = useState(
     new Array(listProductWereAdded.length).fill(false)
   ); // Khởi tạo mảng isOpen
-
+  const [myTax,setMyTax]= useState(10);
   useEffect(() => {
     if (dataHis && dataHis.length > 0) {
       const newItems = dataHis.map(initItem);
@@ -472,6 +472,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
       email: user.email,
       ownerId: user.id_owner,
     };
+    groupBySupplier.tax = myTax
     const url = "http://localhost:5000/import/orderHistory/save";
     notify(1,"you've completed importing goods","Successfully!")
     try {
@@ -512,7 +513,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
                 <th>Ảnh Mô Tả</th>
                 <th>Sản Phẩm</th>
                 <th>Nhà Cung Cấp</th>
-                <th>Số Lượng</th>
+                <th>Số Lượng</th> 
                 <th>Thành Tiền</th>
                 <th>Status</th>
                 <th>Delete</th>
@@ -634,19 +635,26 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
           </table>
         </div>
         <div className="order-tax">
-          VAT TAX 10%:{" "}
+          TAX :{" "}
+          <input 
+          type = "text"
+          style={{borderRadius:"8px",maxWidth:"60px", border:"1px solid #333",    fontSize:"16px",
+            color:"#333",
+            textAlign:"right",lineHeight:"24px",
+            paddingRight:"8px",
+          }}
+          value={myTax}
+          name= "tax"
+          onChange={(e)=>{if (/^\d*$/.test(e.target.value)){setMyTax(e.target.value)}}}
+          />
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill() * 0.1)
-              .toFixed(0)
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
-            VND
+                {"   "}%
           </span>{" "}
         </div>
         <div className="order-tax">
           Tổng tiền:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill() * 1.1)
+            {(amountBill() *( myTax+100)/100)
               .toFixed(0)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}

@@ -12,7 +12,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
   const [filter, setFilter] = useState([]);
   const dropdownRef = useRef(null);
   const { user } = useAuth();
-
+  const [myTax,setMyTax] = useState(0)
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
@@ -53,6 +53,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
 
       if (response.ok) {
         const data = await response.json(); // Phân tích dữ liệu JSON từ response
+        if(data.tax)setMyTax(Number(data.tax))
         console.log(data);
         setSupplierName(data);
       } else {
@@ -393,15 +394,21 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view }) => {
             </tbody>
           </table>
         </div>
+
+
         <div className="order-tax">
+        <span >{`Tax : ${myTax} %`}</span>
+          
+          <div style={{paddingTop:"10px" }}>
           Tổng tiền:{" "}
           <span style={{ fontSize: 16, fontWeight: 300 }}>
-            {(amountBill().toString().replace(/\./g, "") * 1.1)
+            {(amountBill().toString().replace(/\./g, "") * (100+myTax)/100)
               .toFixed(0)
               .toString()
               .replace(/\B(?=(\d{3})+(?!\d))/g, ".")}{" "}
             VND
-          </span>
+          </span>      
+          </div>
         </div>
         <div className="complete-order">
           {view&&(<button onClick={() => handleSubmit()}>Complete</button>)}

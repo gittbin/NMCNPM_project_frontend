@@ -286,6 +286,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
           ))}
         </tbody>
       </table>
+      <div style={{minHeight:"200px"}}>My app </div>
     </div>
   );
 });
