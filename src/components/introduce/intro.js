@@ -172,7 +172,7 @@ setIsforgot(true);
       password: formData.password,
       name: formData.username,
       confirm:false,
-      code:formData.code
+      code:formData.code,
     };
     console.log(body);
     startLoading();

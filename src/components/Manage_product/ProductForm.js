@@ -3,7 +3,7 @@ import "./ProductForm.css";
 import { useAuth } from "../introduce/useAuth";
 import {useLoading} from "../introduce/Loading"
 import { notify } from '../../components/Notification/notification';
-const ProductForm = ({turnoff,refresh}) => {
+const ProductForm = ({turnoff,refresh,profile}) => {
   const {startLoading,stopLoading}=useLoading()
     const CLOUD_NAME = "ddgrjo6jr";
     const UPLOAD_PRESET = "my-app";
@@ -149,8 +149,12 @@ const ProductForm = ({turnoff,refresh}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.supplier) {
+    if (!formData.supplier&&!profile) {
       notify(3,'Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm','Cảnh báo');
+      return;
+    }
+    if(profile&&!formData.image){
+      notify(2,'Vui lòng thêm ảnh','Lỗi');
       return;
     }
     console.log(formData.supplier)
@@ -192,7 +196,7 @@ detail:details
       }
 }
     console.log(JSON.stringify(body));
-    fetch("http://localhost:5000/products/create", {
+    if(!profile){fetch("http://localhost:5000/products/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -210,7 +214,29 @@ detail:details
       .catch((error) => {
         notify(2,"thêm sản phẩm thất bại","Thất bại")
         console.log("Lỗi:", error);
-      });
+      });}else{
+        fetch("http://localhost:5000/profile/update_avatar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        })
+          .then((response) => response.json())
+          .then((data) => {stopLoading()
+            console.log(data.respond)
+          if(data.respond==="success"){turnoff();  notify(1,"thay đổi ảnh đại diện thành công","Thành công");
+            console.log(refresh);
+            refresh();}
+          else{
+            notify(2,'một lỗi nào đó đã xảy ra','Thất bại');
+            }
+          })
+          .catch((error) => {
+            notify(2,"thêm sản phẩm thất bại","Thất bại")
+            console.log("Lỗi:", error);
+          });
+      }
   };
   const stopCamera = () => {
     if (streamRef.current) {
@@ -242,10 +268,11 @@ detail:details
     });
   }; 
   return (
-    <div className="form-container" ref={scrollableRef}>
+    <div className="form-container" ref={scrollableRef} style={profile?({top:"8%",minHeight:"450px"}):({})}>
         <span className="close-button" onClick={turnoff}>&times;</span> {/* Dấu X để tắt form */}
-    <h2>Product Entry Form</h2>
+    <h2>{!profile?"Product Entry Form":"Upload ảnh"}</h2>
     <form onSubmit={handleSubmit}>
+      {!profile?(<>
         <div className="form-row">
             <div className="form-group">
                 <label htmlFor="name">Tên hàng hóa *</label>
@@ -316,16 +343,16 @@ detail:details
             <input type="number" id="stock_in_Warehouse" name="stock_in_Warehouse" value={formData.stock_in_Warehouse} onChange={handleNChange}/>
             </div>
         </div>
-
+        </>):null}
         <div className="form-row">
-            <div className="form-group">
+            {!profile?(<><div className="form-group">
                 <label htmlFor="unit">đơn vị</label>
                 <input type="text" id="unit" name="unit" value={formData.unit} onChange={handleNChange} />
             </div>
             <div className="form-group">
                 <label htmlFor="notes">Notes</label>
                 <textarea id="notes" name="notes" value={formData.notes} onChange={handleNChange}></textarea>
-            </div>
+            </div></>):null}
             <div className="form-group">
       <label htmlFor="image">Image (3 cách để nhập ảnh)</label>
       <p style={{marginBottom:"3px"}}>1. tải ảnh lên từ máy</p>
@@ -355,10 +382,10 @@ detail:details
         </div>
       )}
     </div>
-            <div className="form-group">
+            {!profile?(<div className="form-group">
                 <label htmlFor="details">Thông tin chi tiết về thêm sản phẩm </label>
                 <textarea id="details" name="details" value={details} onChange={handleChangedetails}></textarea>
-            </div>
+            </div>):("")}
         </div>
         <p style={{color:"red"}}>{error}</p>
         <div className="submit-row">

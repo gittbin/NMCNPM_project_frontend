@@ -1,11 +1,21 @@
+/* RolesGroup Container */
 .roles-group {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.roles-group h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Search and Header */
 .role-header {
   display: flex;
   justify-content: space-between;
@@ -13,164 +23,169 @@
   margin-bottom: 20px;
 }
 
-.search-container {
+.uy-search-container {
   display: flex;
-  align-items: center;
+  gap: 10px;
 }
 
-.search-input {
-  width: 250px;
-  padding: 8px;
+.uy-search-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
+  width: 250px;
 }
 
 .create-role-btn {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 16px;
 }
 
 .create-role-btn:hover {
-  background-color: #0056b3;
+  background-color: #034994;
 }
 
-.table-container {
-  width: 100%;
+/* Table Styling */
+.uy-table-container {
+  overflow-x: auto;
 }
 
-.role-table {
+.uy-role-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  font-size: 16px;
 }
 
-.role-table th, .role-table td {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
+.uy-role-table th, .uy-role-table td {
+  padding: 10px;
   text-align: left;
+  border: 1px solid #ddd;
 }
 
-.role-table th {
-  background-color: #f4f4f4;
-  font-weight: 600;
+.uy-role-table th {
+  font-weight: bold;
+  background-color: #f4f4f9;
+  color: #333;
 }
 
-.role-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.checkbox-all, .checkbox-user {
-  cursor: pointer;
-}
-
-.action {
+/* Action Menu */
+.uy-action {
   position: relative;
 }
 
-.menu-btn {
+.uy-menu-btn {
   background: none;
   border: none;
-  font-size: 18px;
   cursor: pointer;
+  font-size: 20px;
 }
 
-.dropdown-menu {
+.uy-dropdown-menu {
   position: absolute;
-  background-color: #fff;
+  top: 100%;
+  left: 0;
+  background: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 4px;
-  z-index: 1000;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 120px;
 }
 
-.dropdown-menu ul {
+.uy-dropdown-menu ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.dropdown-menu li {
-  padding: 8px 12px;
+.uy-dropdown-menu li {
+  padding: 10px;
   cursor: pointer;
+  font-size: 14px;
+  color: #333;
 }
 
-.dropdown-menu li:hover {
-  background-color: #f0f0f0;
+.uy-dropdown-menu li:hover {
+  background-color: #f4f4f9;
 }
 
-
-.create-role-form {
-  margin-top: 20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.submit-btn, .cancel-btn {
-  padding: 10px 15px;
-  margin-right: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.submit-btn {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.cancel-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-
-.roles-group .modal {
+/* Modal Styling */
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5); /* Làm tối nền phía sau modal */
 }
 
 .modal-content {
-  background-color: #fff;
+  background: #fff;
   padding: 20px;
-  border-radius: 8px;
-  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
   width: 100%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.create-role-form h3 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.create-role-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.create-role-form button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.create-role-form button[type="submit"] {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+.create-role-form button[type="submit"]:hover {
+  background-color: #014893;
+}
+
+.create-role-form .cancel-btn {
+  background-color: #f44336;
+  color: #fff;
+  margin-left: 10px;
+}
+
+.create-role-form .cancel-btn:hover {
+  background-color: #e53935;
 }

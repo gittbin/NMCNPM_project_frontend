@@ -5,7 +5,7 @@ import { LuClipboardCheck } from "react-icons/lu";
 import { TbPackageImport, TbPackageExport } from "react-icons/tb";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { GrGroup } from "react-icons/gr";
-import { FaKeycdn } from "react-icons/fa";
+import { FaKeycdn, FaRegCalendarAlt } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { MdManageAccounts } from "react-icons/md";
 import a from "./cute.png";
@@ -40,6 +40,9 @@ function Sidebar({ change }) {
       case '/home/permissions':
       case '/home/roles-group':
         setSelected(5);
+        break;
+      case '/home/calendar':
+        setSelected(6);
         break;
       default:
         setSelected(1); // Nếu không khớp với bất kỳ trường hợp nào, thiết lập mặc định là 1
@@ -126,6 +129,12 @@ function Sidebar({ change }) {
             </li>
           </ul>
         )}
+      </li>
+      <li className="sidebar__calendar">
+        <Link className={`sidebar__link ${selected === 6 ? 'active' : ''} ${!isExpanded ? "add_jus" : ""}`} style={!isExpanded?{padding:"15px 0px"}:{}} to='/home/calendar'>
+          <div className="sidebar__icon" style={!isExpanded?{marginRight:"0px"}:{}}><FaRegCalendarAlt /></div>
+          {isExpanded && "Quản lí lịch làm việc"}
+        </Link>
       </li>
     </ul>
   );

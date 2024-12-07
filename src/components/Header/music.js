@@ -5,7 +5,6 @@ function AudioPlayer() {
     <div>
       <ReactAudioPlayer
         src={cute}
-        autoPlay
         controls
       />
     </div>

@@ -377,7 +377,7 @@ const [newcustomer,setNewcustomer] =useState({
           <div class="col-md-8">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">Page visits</div>
+                <div class="card-title">Lịch làm việc</div>
               </div>
               <div class="card-body p-0">
                 <div class="table-responsive">

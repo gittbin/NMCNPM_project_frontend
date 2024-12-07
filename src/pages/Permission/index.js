@@ -17,8 +17,9 @@ const Permissions = () => {
     const fetchRoles = async () => {
       if (user) {
         startLoading();
-        const roles = await getRoles();
+        const roles = await getRoles(user.id_owner);
         setRolesData(roles);
+        console.log(document.cookie);
         console.log("OK");
         
         const initialPermissions = {};
@@ -88,7 +89,7 @@ const Permissions = () => {
       <h3>Thiết lập phân quyền</h3>
 
       <div className="uy-tabs">
-        <table>
+        <table className = "permissions-table">
           <thead>
             <tr>
               <th>Tính năng</th>

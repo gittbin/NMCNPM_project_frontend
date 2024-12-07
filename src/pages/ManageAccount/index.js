@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import './ManageAccount.css';
 import { getRoles } from "../../services/Roles/rolesService";
 import { useAuth } from "../../components/introduce/useAuth";
 import { useLoading } from "../../components/introduce/Loading";
 import { notify } from "../../components/Notification/notification";
+import { useNavigate } from "react-router-dom";
 
 function AccountTable() {
   const [accounts, setAccounts] = useState([]);
   const [rolesData, setRolesData] = useState([]);
-  const { startLoading, stopLoading } = useLoading();
-  const { user, loading } = useAuth();
-  const [selectedUser, setSelectedUser] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+  const { startLoading, stopLoading } = useLoading(); 
+  const { user, logout } = useAuth();
   const [showMenuIndex, setShowMenuIndex] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const dropdownRef = useRef(null);
+  const [confirmOtp, setConfirmOtp] = useState(false);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    id: user? user.id:"",
     name: "",
     email: "",
     password: "",
     role: "",
-    id_owner: user? user._id:"",
+    id_owner: user? user.id_owner:"",
+    code:"",
   });
 
   const getAccounts = async (userId) => {
@@ -53,11 +57,25 @@ function AccountTable() {
   };
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenuIndex(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchRoles = async () => {
         if (user) {
             startLoading();
-            await getAccounts(user._id);
-            const roles = await getRoles();
+            await getAccounts(user.id_owner);
+            const roles = await getRoles(user.id_owner);
             setRolesData(roles);
             stopLoading();
             setFormData((prevData) => ({ ...prevData, id_owner: user._id })); // cập nhật id_owner
@@ -66,7 +84,7 @@ function AccountTable() {
     fetchRoles();
   }, [user]);
 
-
+  
 
   const toggleMenu = (index) => {
     setShowMenuIndex(showMenuIndex === index ? null : index);
@@ -74,20 +92,6 @@ function AccountTable() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleSelectAll = (e) => {
-    const isChecked = e.target.checked;
-    setSelectAll(isChecked);
-    setSelectedUser(isChecked ? accounts.map((acc) => acc._id) : []);
-  };
-
-  const handleSelectedUser = (accountId) => {
-    const updatedSelectedUser = selectedUser.includes(accountId)
-      ? selectedUser.filter((id) => id !== accountId)
-      : [...selectedUser, accountId];
-    setSelectedUser(updatedSelectedUser);
-    setSelectAll(updatedSelectedUser.length === accounts.length);
   };
 
   const filteredAccounts = accounts.filter((account) => {
@@ -105,31 +109,97 @@ function AccountTable() {
   const handleCreateAccount = async (e) => {
     e.preventDefault();
     try {
+      const dataUser = {
+        id: user? user.id:"",
+        role: formData.role,
+        id_owner: user? user.id_owner:"",
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        confirmOtp:confirmOtp,
+        code:formData.code
+      };
       startLoading();
-      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/accounts/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({dataUser,user}),
       });
 
       const data = await response.json();
-      console.log("Success:", data);
-      if(data.message === 'Không có quyền truy cập'){
-        notify(2,"Bạn không có quyền tạo tài khoản","Thất bại");
-      }else{
-        notify(1,"Tạo thành công tài khoản","Thành công");
-      }
       stopLoading();
-      await getAccounts(user._id); 
-      setShowModal(false); 
+      console.log(data);
+      
+      if (confirmOtp) {
+        if (data.message === "Staff is created successfully") {
+          notify(1, "Tạo thành công tài khoản", "Thành công");
+          setFormData({
+            id: user ? user.id : "",
+            name: "",
+            email: "",
+            password: "",
+            role: "",
+            id_owner: user ? user.id_owner : "",
+            code: "",
+        });
+        setConfirmOtp(false);
+        setShowModal(false); // Đóng modal khi tạo tài khoản thành công
+        await getAccounts(user.id_owner); // Cập nhật danh sách tài khoản
+        } else {
+          notify(2, data.message || "Lỗi xác nhận mã", "Thất bại");
+        }
+      } else {
+        if (data.message === "Confirmation code sent") {
+          setConfirmOtp(true); 
+          notify(1, "Mã xác nhận đã được gửi", "Thành công");
+        } else {
+          notify(2, data.message || "Không thể gửi mã xác nhận", "Thất bại");
+        }
+      }
+      
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error:",error);
     }
   };
+
+  const sentAgain = async ()=>{
+    setConfirmOtp(true);
+    try {
+      const dataUser = {
+        id: user? user.id:"",
+        role: user?user.role:"",
+        id_owner: user? user.id_owner:"",
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        confirmOtp:confirmOtp,
+        code:formData.code
+      };
+      startLoading();
+      const response = await fetch("http://localhost:5000/accounts/send_again", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({dataUser,user}),
+      });
+
+      const data = await response.json();
+      stopLoading();
+      // Khi gửi mã xác nhận
+      if (data.message === "Confirmation code sent") {
+        setConfirmOtp(true); // Chuyển sang trạng thái nhập mã xác nhận
+        setFormData((prev) => ({ ...prev, code: "" }));
+        notify(1, "Mã xác nhận đã được gửi", "Thành công");
+      } else {
+          notify(2, data.message || "Không thể gửi mã xác nhận", "Thất bại");
+      }
+    } catch (error) {
+      console.error("Error:",error);
+    }
+  }
 
   const handleDeleteAccount = async (accountId) => {
     if (window.confirm("Are you sure you want to delete this account?")) {
@@ -137,15 +207,25 @@ function AccountTable() {
         startLoading();
         const response = await fetch(`http://localhost:5000/accounts/delete/${accountId}`, {
           method: "DELETE",
+          headers: {
+          "Content-Type": "application/json",
+        },
+          body: JSON.stringify(user),
         });
 
         if (!response.ok) {
+          notify(2,"Xóa tài khoản thất bại","Thất bại");
           throw new Error(`Failed to delete account: ${response.statusText}`);
         }
+        if(user._id===accountId){
+          logout();
+        }
 
-        await getAccounts(user._id); // Refresh the accounts list
+        await getAccounts(user.id_owner); // Refresh the accounts list
         stopLoading();
+        notify(1,"Xóa thành công tài khoản","Thành công");
       } catch (error) {
+        notify(2,"Xóa tài khoản thất bại","Thất bại");
         console.error("Error deleting account:", error);
         stopLoading();
       }
@@ -158,7 +238,7 @@ function AccountTable() {
       name: account.name,
       email: account.email,
       role: account.role,
-      password: "", // Assuming password can be left blank for editing
+      password: account.password, // Assuming password can be left blank for editing
     });
     setShowEditModal(true);
   };
@@ -178,9 +258,11 @@ function AccountTable() {
       const data = await response.json();
       console.log("Success:", data);
       stopLoading();
-      await getAccounts(user._id); // Use await here as handleCreateAccount is async
+      notify(1,"Chỉnh sửa tài khoản thành công","Thành công");
+      await getAccounts(user.id_owner); // Use await here as handleCreateAccount is async
       setShowModal(false); // Hide modal on success
     } catch (error) {
+      notify(2,"Chỉnh sửa tài khoản thất bại","Thất bại");
       console.error("Error edit:",error);
     }
   };
@@ -191,16 +273,10 @@ function AccountTable() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleCloseModal = (e) => {
-    if (e.target.className === "modal-overlay") {
-      setShowModal(false);
-    }
-  };
-
   return (
     <div className="account-table">
       <div className="account-header">
-        <h2>Manage Accounts</h2>
+        <h2>Quản lí tài khoản</h2>
         <div className="search-container">
           <input
             type="text"
@@ -209,16 +285,16 @@ function AccountTable() {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <button className="create-order-btn" onClick={() => setShowModal(true)}>Create Staff Account</button>
+          <button className="create-order-btn" onClick={() => setShowModal(true)}>Tạo tài khoản nhân viên</button>
         </div>
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-modal" onClick={() => setShowModal(false)}>✖</button>
             <form className="create-account-form" onSubmit={handleCreateAccount}>
-              <h3>Create Staff Account</h3>
+              <h3 style={{marginBottom: "10px"}}>Tạo tài khoản nhân viên</h3>
               <input
                 type="text"
                 name="name"
@@ -254,15 +330,28 @@ function AccountTable() {
                   <option key={role._id} value={role.role}>{role.role}</option>
                 ))}
               </select>
-              <button type="submit">Submit</button>
-              <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
-            </form>
+
+              {confirmOtp && ( <>
+                  <input
+                    type="text"
+                    name="code"
+                    placeholder="Điền mã xác nhận "
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    required
+                  />
+                <p className="uy-sentagain" onClick={sentAgain} >Gửi lại mã</p></>)}
+
+      <button type="submit">{confirmOtp ? "Xác minh và tạo tài khoản" : "Gửi mã OTP"}</button>
+      <button type="button" onClick={() => setShowModal(false)}>Cancel</button>
+</form>
+
           </div>
         </div>
       )}
 
       {showEditModal && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
+        <div className="modal-overlay">
           <div className="modal-content">
             <button className="close-modal" onClick={() => setShowEditModal(false)}>✖</button>
             <form className="create-account-form" onSubmit={handleEditAccount}> {/* Changed class name here */}
@@ -286,7 +375,7 @@ function AccountTable() {
               <input
                 type="password"
                 name="password"
-                placeholder="Password (leave blank to keep current)"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
               />
@@ -311,14 +400,6 @@ function AccountTable() {
       <table>
         <thead>
           <tr>
-            <th>
-              <input
-                type="checkbox"
-                className="checkbox-all"
-                checked={selectAll}
-                onChange={handleSelectAll} 
-              />
-            </th>
             <th>Họ Tên</th>
             <th>Phân Quyền</th>
             <th>Email</th>
@@ -330,14 +411,6 @@ function AccountTable() {
         <tbody>
           {filteredAccounts.map((account) => (
             <tr key={account._id}>
-              <td>
-                <input
-                  type="checkbox"
-                  className="checkbox-user"
-                  checked={selectedUser.includes(account._id)}
-                  onChange={() => handleSelectedUser(account._id)} 
-                />
-              </td>
               <td>{account.name}</td>
               <td>{account.role}</td>
               <td>{account.email}</td>
@@ -356,7 +429,7 @@ function AccountTable() {
                     ⋮
                   </button>
                   {showMenuIndex === account._id && (
-                    <div className="uy-dropdown-menu">
+                    <div className="uy-dropdown-menu"  ref={dropdownRef}>
                       <ul>
                         <li onClick={() => handleOpenEditModal(account)}>Chỉnh sửa</li>
                         <li onClick={() => handleDeleteAccount(account._id)}>Xóa</li>
@@ -369,6 +442,7 @@ function AccountTable() {
           ))}
         </tbody>
       </table>
+      <button className="deleteAccountBtn" onClick={() => handleDeleteAccount(user._id)}>Xóa Tài Khoản</button>
     </div>
   );
 }
