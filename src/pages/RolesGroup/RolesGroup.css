@@ -1,11 +1,21 @@
+/* RolesGroup Container */
 .roles-group {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #fff;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.roles-group h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Search and Header */
 .role-header {
   display: flex;
   justify-content: space-between;
@@ -15,59 +25,56 @@
 
 .uy-search-container {
   display: flex;
-  align-items: center;
+  gap: 10px;
 }
 
 .uy-search-input {
-  width: 250px;
-  padding: 8px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
+  width: 250px;
 }
 
 .create-role-btn {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  padding: 10px 20px;
+  background-color: #0056b3;
+  color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 16px;
 }
 
 .create-role-btn:hover {
-  background-color: #0056b3;
+  background-color: #034994;
 }
 
+/* Table Styling */
 .uy-table-container {
-  width: 100%;
+  overflow-x: auto;
 }
 
 .uy-role-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  font-size: 16px;
 }
 
 .uy-role-table th, .uy-role-table td {
-  padding: 12px 16px;
-  border: 1px solid #ddd;
+  padding: 10px;
   text-align: left;
+  border: 1px solid #ddd;
 }
 
 .uy-role-table th {
-  background-color: #f4f4f4;
-  font-weight: 600;
+  font-weight: bold;
+  background-color: #f4f4f9;
+  color: #333;
 }
 
-.uy-role-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
+/* Action Menu */
 .uy-action {
   position: relative;
 }
@@ -75,18 +82,20 @@
 .uy-menu-btn {
   background: none;
   border: none;
-  font-size: 18px;
   cursor: pointer;
+  font-size: 20px;
 }
 
 .uy-dropdown-menu {
   position: absolute;
-  background-color: #fff;
+  top: 100%;
+  left: 0;
+  background: #fff;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 4px;
-  z-index: 1000;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  min-width: 120px;
 }
 
 .uy-dropdown-menu ul {
@@ -96,145 +105,87 @@
 }
 
 .uy-dropdown-menu li {
-  padding: 8px 12px;
+  padding: 10px;
   cursor: pointer;
+  font-size: 14px;
+  color: #333;
 }
 
 .uy-dropdown-menu li:hover {
-  background-color: #f0f0f0;
+  background-color: #f4f4f9;
 }
 
-
-/* Overlay cho modal */
+/* Modal Styling */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6); /* Làm mờ nền */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Hiển thị trên cùng */
 }
 
-/* Nội dung modal */
 .modal-content {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 450px;
-  position: relative;
-  animation: fadeIn 0.3s ease-out; /* Hiệu ứng xuất hiện mượt mà */
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
 }
 
-/* Hiệu ứng fade-in */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Nút đóng modal */
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
   background: none;
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #888;
-  transition: color 0.3s;
-}
-
-.close-btn:hover {
-  color: #ff4d4f;
-}
-
-/* Form trong modal */
-.create-role-form {
-  display: flex;
-  flex-direction: column;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 .create-role-form h3 {
+  font-size: 20px;
   margin-bottom: 20px;
   color: #333;
-  font-size: 24px;
 }
 
-/* Định dạng input */
 .create-role-form input {
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border-radius: 8px;
+  padding: 10px;
   border: 1px solid #ddd;
-  font-size: 16px;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
-.create-role-form input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-  outline: none;
-}
-
-/* Định dạng button */
 .create-role-form button {
-  padding: 12px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s;
 }
 
-/* Nút submit màu xanh dương */
 .create-role-form button[type="submit"] {
-  background-color: #007bff;
+  background-color: #0056b3;
   color: #fff;
-  margin-bottom: 10px;
 }
 
 .create-role-form button[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #014893;
 }
 
-/* Nút cancel màu xanh dương nhạt */
-.create-role-form button[type="button"] {
-  background-color: #6c757d;
+.create-role-form .cancel-btn {
+  background-color: #f44336;
   color: #fff;
+  margin-left: 10px;
 }
 
-.create-role-form button[type="button"]:hover {
-  background-color: #5a6268;
-}
-
-/* Định dạng dropdown trong form (nếu có) */
-.create-role-form select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  font-size: 16px;
-  color: #333;
-  margin-bottom: 15px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.create-role-form select:focus {
-  border-color: #007bff;
-  outline: none;
-  box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+.create-role-form .cancel-btn:hover {
+  background-color: #e53935;
 }

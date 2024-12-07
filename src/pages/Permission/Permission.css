@@ -49,12 +49,13 @@
 
 .permissions-table th, .permissions-table td {
   padding: 10px;
-  text-align: left;
+  text-align: center;
   border: 1px solid #ddd;
 }
 
 .permissions-table th {
-  background-color: #f4f4f4;
+  font-weight: bold;
+  background-color: #f4f4f9;
 }
 
 .select-all {

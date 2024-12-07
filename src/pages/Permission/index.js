@@ -89,7 +89,7 @@ const Permissions = () => {
       <h3>Thiết lập phân quyền</h3>
 
       <div className="uy-tabs">
-        <table>
+        <table className = "permissions-table">
           <thead>
             <tr>
               <th>Tính năng</th>
