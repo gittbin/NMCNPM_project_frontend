@@ -25,9 +25,9 @@ const CalendarComponent = () => {
       end: new Date(event.end_time),
     }));
 
-    const fetchEvents = async () => {
+    const fetchEvents = async (userId) => {
       try {
-        const response = await fetch("http://localhost:5000/calendar/show", {
+        const response = await fetch(`http://localhost:5000/calendar/show?userId=${userId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -45,9 +45,14 @@ const CalendarComponent = () => {
   // Fetch sự kiện từ server
   useEffect(() => {
     startLoading();
-    fetchEvents();
+    const fetchData = async () =>{
+      if(user){
+        await fetchEvents(user.id_owner);
+      }
+    }
+    fetchData();
     stopLoading();
-  }, []);
+  }, [user]);
 
   // Xử lý chọn slot trống
   const handleSelectSlot = (slotInfo) => {
@@ -114,7 +119,7 @@ const CalendarComponent = () => {
       if (!response.ok) throw new Error("Failed to create event");
 
       setEvents([...events, newEvent]);
-      fetchEvents();
+      await fetchEvents(user.id_owner);
       stopLoading();
       closeModal();
     } catch (error) {

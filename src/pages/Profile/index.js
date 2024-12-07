@@ -38,6 +38,7 @@ user:user
 
   const datas = await response.json();
   stopLoading();
+  console.log(datas)
   SetData(datas);
   SetNewdata(datas)
   };
@@ -86,7 +87,7 @@ user:user
     <div className="profile-container">
       <div className="profile-header">
         <img 
-          src="https://scontent.fhan5-11.fna.fbcdn.net/v/t39.30808-6/460595448_861471532789268_1814732849464479219_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=cc71e4&_nc_eui2=AeH7Sbuvwd_u4f1cfgFxJiMBdtdJrU0_uLJ210mtTT-4suUsNQJZQPO-Zf516Ig5TGhkAWxcdEGNPH2DfpAIJ4WD&_nc_ohc=40sKGe2XBg8Q7kNvgFhCEOS&_nc_zt=23&_nc_ht=scontent.fhan5-11.fna&_nc_gid=AgHDpK7mdh-r72mnwZMiPX0&oh=00_AYBtXY7wI1WJFEIYnZKbtJpFyP-jJYt6yg3HELeKlZ6IWg&oe=674DC622" 
+          src="https://th.bing.com/th?id=ORMS.56823debd4d1cba419b1262f94a12e45&pid=Wdp&w=612&h=304&qlt=90&c=1&rs=1&dpr=1.5&p=0" 
           alt="Profile Banner" 
           className="banner"
         />
@@ -117,8 +118,8 @@ user:user
         <ul>
         <li><a href="#"><FaRegUser />  Quán của : {data?data.id_owner.name:""}</a></li>
 
-          <li><a href="#"><FaChild /> vị trí : {data?data.role:""}</a></li>
-          <li><a href="#"><FaCheckSquare /> Quyền : {data?(data.right?data.right.map((a)=>a):"tất cả các quyền"):""}</a></li>
+          <li><a href="#"><FaChild /> vị trí : {data?data.right.role:""}</a></li>
+          <li><a href="#"><FaCheckSquare /> Quyền : {data?(data.right.permission?data.permission.map((a)=>a):"tất cả các quyền"):""}</a></li>
           <li><a href="#"><MdEmail /> Email : {data?data.email:""}</a></li>
           <li><a href="#"><RiLockPasswordFill /> Mật khẩu : {!edit?(data?data.password:""):
           <input 

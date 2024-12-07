@@ -9,7 +9,7 @@ const [on,Seton]=useState(false)
   return (<>
   {on?<ProductForm profile={true} turnoff={()=>{Seton(false)} } refresh={reload}/>:(<div style={styles.container}>
       <button style={styles.button}>
-        <a href={image.image} target="_blank"><span style={styles.icon}>👤</span> See profile picture</a>
+        <a href={image} target="_blank"><span style={styles.icon}>👤</span> See profile picture</a>
         
       </button>
       <button style={styles.button} onClick={handleChooseProfilePicture}>
