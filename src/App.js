@@ -35,6 +35,7 @@ import ManageAccount from './pages/ManageAccount/index.js';
 import RolesGroup from './pages/RolesGroup/index.js';
 import Permissions from './pages/Permission/index.js';
 import Notification from './components/Notification/notification.js';
+import CalendarComponent from './pages/Calendar/index.js';
 function App() {
   return (
     <>
@@ -53,6 +54,7 @@ function App() {
           <Route path = 'permissions' element={<Permissions/>}/>
           <Route path = 'import' element={<Import/>}/>
           <Route path = 'export' element={<Export/>}/>
+          <Route path = 'calendar' element={<CalendarComponent/>}/>
         </Route><Route path = '*' element={<Page404/>}/>
       </Routes>
     </>
