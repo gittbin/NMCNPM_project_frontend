@@ -11,7 +11,7 @@ root.render(
   // <React.StrictMode>
     <Router>
       <LoadingProvider >
-    <AuthProvider>
+     <AuthProvider>
         <App />
       </AuthProvider>
       </LoadingProvider>
