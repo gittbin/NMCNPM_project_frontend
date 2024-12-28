@@ -139,6 +139,15 @@ const Billing = () => {
     ;
 
   }
+  const calculateTotal = () => {
+    return invoices[currentInvoice].products.reduce((total, product) => total + product.total, 0);
+  };
+  const deleteAllProducts = () => {
+    const updatedInvoices = [...invoices];
+    updatedInvoices[currentInvoice].products = []; // Xóa tất cả sản phẩm
+    setInvoices(updatedInvoices); // Cập nhật lại state
+  };
+  
   const totalBeforeTax = invoices[currentInvoice].products.reduce(
     (acc, product) => acc + product.total,
     0
@@ -280,15 +289,15 @@ const Billing = () => {
               return <li key={index} onClick={()=>{setProductCode(product.sku);setSuggestion([])}}>{product.sku}</li>
             })}
           </ul>
-          <button style={{marginTop:"10px",color:"white"}} onClick={startCamera} className="button-sell" >Quét mã</button>      
+          <button style={{marginTop:"10px",color:"white"}} onClick={startCamera} className="button-sell" >Quét mã</button>     
+          <button onClick={()=>addProduct()} style={{color:"white"}}  className="button-sell">Thêm sản phẩm</button><br/> 
         </div>
         <div className="xx">
-        <button onClick={()=>addProduct()} style={{color:"white"}}  className="button-sell">Thêm sản phẩm</button><br/>
         <button   className="history" onClick={onform_history}>Lịch sử</button><br/>
         <button   className="create_user" onClick={onformcustomer}>Danh sách khách hàng</button></div>
       </div>
       <div className="product-list">
-        <h2>Danh sách sản phẩm</h2>
+        <h2 style={{marginBottom:"10px"}}>Danh sách sản phẩm</h2>
         <table>
           <thead>
             <tr>
@@ -342,6 +351,11 @@ const Billing = () => {
                 <td className="delete_prd" onClick={()=>{delete_prd(index)}}>x</td>
               </tr>
             ))}
+            <tr>
+            <td colSpan={5} style={{ textAlign: 'right' }}><strong>Tổng cộng:</strong></td>
+            <td style={{ textAlign: 'right' }}>{calculateTotal().toLocaleString('vi-VN')}</td>
+            <td className="delete_prd" onClick={deleteAllProducts}>Xóa hết</td>
+          </tr>
           </tbody>
         </table>
       </div>
