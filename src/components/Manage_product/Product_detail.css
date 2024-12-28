@@ -52,7 +52,29 @@
     margin: 8px 0;
     color: #555;
 }
-
+.product-info-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .product-info-details-row {
+    display: flex;
+    flex-wrap: wrap;
+    word-wrap: break-word; /* Cho phép nội dung dài được chia dòng nếu cần */
+    white-space: normal; /* Nội dung có thể xuống dòng */
+  }
+  
+  .product-info-details-row strong {
+    width: 30%; /* Cột đầu tiên chiếm 30% */
+    color: gray;
+  }
+  
+  .product-info-details-row span {
+    width: 70%; /* Cột thứ hai chiếm 70% */
+    padding-left: 10px;
+  }
+  
 .edit-button-detail {
     margin-top: 20px;
     padding: 10px 20px;
