@@ -156,7 +156,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 5px black solid;
+    border: 1px black solid;
     cursor: pointer;
     transition: 0.25s ease-in-out;
 }

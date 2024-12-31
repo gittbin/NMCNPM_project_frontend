@@ -197,53 +197,68 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
         </span>
         {!isEditing ? (
           <div className="product-info">
-            <h2 style={{ whiteSpace: "wrap" }}>Tên : {products.name}</h2>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Loại:</strong> {products.category}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Thương hiệu:</strong> {products.brand}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Mã:</strong> {products.sku}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Giá bán:</strong> ${products.price}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>số lượng trên kệ:</strong> {products.stock_in_shelf}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Mức độ cần được nhập hàng:</strong>{" "}
-              {products.reorderLevel}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Nhà cung cấp:</strong> {products.supplier.name}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Ngày nhập:</strong>{" "}
-              {new Date(products.purchaseDate).toLocaleDateString()}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Vị trí:</strong> {products.location}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Số lượng trong kho hàng:</strong>{" "}
-              {products.stock_in_Warehouse}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Đơn vị:</strong> {products.unit}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Giá nhập:</strong> ${products.purchasePrice}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Notes:</strong> {products.notes}
-            </p>
-            <p style={{ whiteSpace: "normal", overflowWrap: "break-word" }}>
-              <strong>Link ảnh :</strong>{" "}
-              {products.image ? products.image.secure_url : ""}
-            </p>
+            <div className="product-info-details">
+              <div className="product-info-details-row">
+                <strong>Tên:</strong>
+                <span>{products.name}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Loại:</strong>
+                <span>{products.category}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Thương hiệu:</strong>
+                <span>{products.brand}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Mã:</strong>
+                <span>{products.sku}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Giá bán:</strong>
+                <span>${products.price}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Số lượng trên kệ:</strong>
+                <span>{products.stock_in_shelf}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Mức độ cần được nhập hàng:</strong>
+                <span>{products.reorderLevel}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Nhà cung cấp:</strong>
+                <span>{products.supplier.name}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Ngày nhập:</strong>
+                <span>{new Date(products.purchaseDate).toLocaleDateString()}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Vị trí:</strong>
+                <span>{products.location}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Số lượng trong kho hàng:</strong>
+                <span>{products.stock_in_Warehouse}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Đơn vị:</strong>
+                <span>{products.unit}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Giá nhập:</strong>
+                <span>${products.purchasePrice}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Notes:</strong>
+                <span>{products.notes}</span>
+              </div>
+              <div className="product-info-details-row">
+                <strong>Link ảnh:</strong>
+                <span>{products.image ? products.image.secure_url : ""}</span>
+              </div>
+            </div>
             <img
               src={
                 products.image

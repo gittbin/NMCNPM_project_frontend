@@ -2,7 +2,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-
 // Tạo Context
 export const AuthContext = createContext();
 
@@ -19,7 +18,7 @@ export const AuthProvider = ({ children }) => {
         const decodedString = decodeURIComponent(storedUser);
         const userData = JSON.parse(decodedString);
         console.log("User data from cookie:", userData);
-        setUser(userData);
+        setUser( userData);
       } catch (error) {
         console.error("Không thể giải mã hoặc phân tích dữ liệu người dùng:", error);
       }

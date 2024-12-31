@@ -119,6 +119,7 @@
   
   .button-sell {
     padding: 10px 15px;
+    margin-left: 10px;
     background-color: #007bff;
     border: none;
     border-radius: 5px;
@@ -154,12 +155,12 @@
     font-weight: bold;
   }
   .delete_prd{
-    color: red;
+    color: black;
     cursor: pointer;
   }
   .delete_prd:hover{
-background-color: red;
-color: white;
+    background-color: lightgray;
+    color: black;
   }
   .camera-sell{
 

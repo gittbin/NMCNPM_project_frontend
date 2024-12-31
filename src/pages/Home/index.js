@@ -2,7 +2,8 @@ import React,{useEffect,useState} from "react";
 import { useAuth } from "../../components/introduce/useAuth";
 import Sales_daily from "./sale_daily"
 import Useronline from "./useronlinecard"
-// src/index.js hoặc src/App.js
+// src/index.js hoặc src/App.js'
+import CalendarComponent from "../Calendar/index.js"
 // import React from 'react';
 import {
   AreaChart,
@@ -33,6 +34,7 @@ const [newcustomer,setNewcustomer] =useState({
   percentChange:"0%",
   state: "notchange",
 });
+const [pending,setPending]=useState({total:0,percent:"0%"})
   // const datas = [
   //   { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
   //   { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
@@ -171,8 +173,30 @@ const [newcustomer,setNewcustomer] =useState({
           console.error("Error fetching income:", error);
         }
       }
+      const get_pending=async()=>{
+        try {
+          const response = await fetch('http://localhost:5000/home/total_pending', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log("pending:", data);
+          setPending(data)
+        } catch (error) {
+          console.error("Error fetching income:", error);
+        }
+      }
       // Chạy cả hai hàm đồng thời
-      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer(),get_top_product()]);
+      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer(),get_top_product(),get_pending()]);
     };
   
     fetchData();
@@ -254,18 +278,18 @@ const [newcustomer,setNewcustomer] =useState({
                       
                     </h6>
                     <p class="text-muted">Fresh Order Amount</p>
-                  </div><h4 class="text-danger fw-bold">15</h4>
+                  </div><h4 class="text-danger fw-bold">{pending.total}</h4>
                 </div>
                 <div class="progress progress-sm">
                   <div
-                    class="progress-bar bg-danger w-50"
+                    class="progress-bar bg-danger"
                     role="progressbar"
-                    style={{ width: "50%" }}
+                    style={{ width: `${pending.percent}` }}
                   ></div>
                 </div>
                 <div class="d-flex justify-content-between">
                   <p class="text-muted">Change</p>
-                  <p class="text-muted">50%</p>
+                  <p class="text-muted">{pending.percent}</p>
                 </div>
               </div>
             </div>
@@ -380,7 +404,8 @@ const [newcustomer,setNewcustomer] =useState({
                 <div class="card-title">Lịch làm việc</div>
               </div>
               <div class="card-body p-0">
-                <div class="table-responsive">
+                <CalendarComponent defaultView="agenda"/>
+                {/* <div class="table-responsive">
                   <table class="table align-items-center">
                     <thead class="thead-light">
                       <tr>
@@ -456,7 +481,7 @@ const [newcustomer,setNewcustomer] =useState({
                       </tr>
                     </tbody>
                   </table>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -572,7 +597,7 @@ const [newcustomer,setNewcustomer] =useState({
                 <div class="card-head-row card-tools-still-right">
                   <div class="card-title">Recent Activity</div>
                   <div class="card-tools">
-                    <div class="dropdown">
+                    {/* <div class="dropdown">
                       <button
                         class="btn btn-icon btn-clean"
                         type="button"
@@ -597,7 +622,7 @@ const [newcustomer,setNewcustomer] =useState({
                           Something else here
                         </a>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
