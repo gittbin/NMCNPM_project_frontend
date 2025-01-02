@@ -6,8 +6,8 @@ import { getRoles } from '../../services/Roles/rolesService';
 import { notify } from '../../components/Notification/notification'
 
 const Permissions = () => {
-  const rights = ["add_product", "edit_product", "delete_product", "create_order", "import_goods",
-"create_user","create-customer", "edit-customer","create-suplier", "edit-suplier"];
+  const rights = ["add_product", "edit_product", "delete_product", "create_order", "edit_order"
+    ,"create-customer", "edit-customer","create-suplier", "edit-suplier","delete_suplier","*role"];
   const [rolesData, setRolesData] = useState([]);
   const { user } = useAuth();
   const { startLoading, stopLoading } = useLoading();
@@ -70,13 +70,19 @@ const Permissions = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(rolesWithPermissions),
+        body: JSON.stringify({
+          rolesWithPermissions,
+          user:user}),
       });
       console.log(rolesWithPermissions);
       
       const data = await response.json();
       console.log(data);
-      notify(1,"Cập nhật quyền thành công","Thành công");
+      if(data.message=="Không có quyền truy cập"||data.message=="Vai trò không tồn tại"||data.message=="Lỗi máy chủ nội bộ"){
+        notify(2,"Lỗi khi cập nhật phân quyền","Lỗi rồi ba");
+      }else{
+        notify(1,"Cập nhật quyền thành công","Thành công");
+      }
     } catch (error) {
       notify(2,"Lỗi khi cập nhật phân quyền","Lỗi rồi ba");
       console.error("Lỗi khi cập nhật phân quyền:", error);
@@ -92,7 +98,7 @@ const Permissions = () => {
         <table className = "permissions-table">
           <thead>
             <tr>
-              <th>Tính năng</th>
+              <th style={{width:"150px"}}>Tính năng</th>
               {rolesData.map((role, index) => (
                 <th key={index}>{role.role}</th>
               ))}

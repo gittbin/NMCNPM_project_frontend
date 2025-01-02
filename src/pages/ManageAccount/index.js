@@ -154,9 +154,23 @@ function AccountTable() {
         if (data.message === "Confirmation code sent") {
           setConfirmOtp(true); 
           notify(1, "Mã xác nhận đã được gửi", "Thành công");
+        } else if(data.message === "User_new updated successfully!"){
+          notify(1, "Tạo thành công tài khoản", "Thành công");
+          setFormData({
+            id: user ? user.id : "",
+            name: "",
+            email: "",
+            password: "",
+            role: "",
+            id_owner: user ? user.id_owner : "",
+            code: "",
+        });
+        setConfirmOtp(false);
+        setShowModal(false); // Đóng modal khi tạo tài khoản thành công
+        await getAccounts(user.id_owner); // Cập nhật danh sách tài khoản
         } else {
           notify(2, data.message || "Không thể gửi mã xác nhận", "Thất bại");
-        }
+        } 
       }
       
     } catch (error) {
@@ -277,7 +291,7 @@ function AccountTable() {
     <div className="account-table">
       <div className="account-header">
         <h2>Quản lí tài khoản</h2>
-        <div className="search-container">
+        <div className="uy-search-container">
           <input
             type="text"
             className="search-input"
@@ -421,7 +435,7 @@ function AccountTable() {
               </td>
               <td>{account.salary || 'N/A'}</td>
               <td>
-                <div className="action">
+                <div className="uy-action">
                   <button
                     onClick={() => toggleMenu(account._id)}
                     className="menu-btn"

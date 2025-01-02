@@ -45,7 +45,7 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
         notify(1,"thêm supplier thành công","Thành công");
         change()
         close()
-      }else if(data.message=="Số điện thoại này đã được đăng ký"){
+      }else {
         notify(2,data.message,"Thất bại");
         change()
       }

@@ -75,6 +75,9 @@
   .card h4.fw-bold {
     font-size: 24px;
     font-weight: 700;
+    white-space: nowrap; /* Không cho phép xuống dòng */
+    overflow: hidden;    /* Ẩn phần văn bản tràn */
+    text-overflow: ellipsis; /* Thêm dấu ba chấm nếu văn bản vượt quá */
   }
   
   .card .progress {
@@ -197,6 +200,7 @@
 }
 .avatar .border {
   border-width: 3px !important;
+  width: 40px;
 }
 .avatar-title {
   width: 100%;
@@ -237,6 +241,9 @@
 }
 .text-muted{
   font-size: 14px;
+  white-space: nowrap; /* Không cho phép xuống dòng */
+  overflow: hidden;    /* Ẩn phần văn bản tràn */
+  text-overflow: ellipsis; /* Thêm dấu ba chấm nếu văn bản vượt quá */
 }
 .flex-1{ flex-grow: 1 }
 .activity-feed .feed-item {

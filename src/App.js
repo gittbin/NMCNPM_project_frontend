@@ -27,7 +27,7 @@ import Import from './pages/Import';
 import Export from './pages/Export';
 import Main  from './components/introduce/Main_intro.js'
 import Profile from './pages/Profile/index.js';
-
+import Surprised from './pages/Surprised/index.js';
 import ProtectedRoute from "../src/components/introduce/protect.js";
 import Cookies from 'js-cookie';
 import {Loading} from './components/introduce/Loading.js'
@@ -55,6 +55,7 @@ function App() {
           <Route path = 'import' element={<Import/>}/>
           <Route path = 'export' element={<Export/>}/>
           <Route path = 'calendar' element={<CalendarComponent/>}/>
+          <Route path = 'surprised' element={<Surprised/>}/>
         </Route><Route path = '*' element={<Page404/>}/>
       </Routes>
     </>

@@ -482,10 +482,12 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
       name: user.name,
       email: user.email,
       ownerId: user.id_owner,
+      id_owner:user.id_owner,
+      role:user.role
     };
     groupBySupplier.tax = myTax
     const url = "http://localhost:5000/import/orderHistory/save";
-    notify(1,"you've completed importing goods","Successfully!")
+    
     try {
  
       const response = await fetch(url, {
@@ -498,7 +500,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
 
       if (response.ok) {
         // Nếu thành công, xử lý kết quả
- 
+        notify(1,"you've completed importing goods","Successfully!")
         const responseData = await response.json();
         console.log("Dữ liệu đã được gửi thành công", responseData);
         await apiFetchOrderHistory.current.fetchOrder("")
@@ -507,6 +509,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
         setIdProductAdded([]);
         setListProductWereAdded([]);
       } else {
+        notify(2,"you don't have the role to do this","Fail!")
         // Nếu có lỗi từ server
         console.error("Lỗi khi gửi dữ liệu:", response.statusText);
       }

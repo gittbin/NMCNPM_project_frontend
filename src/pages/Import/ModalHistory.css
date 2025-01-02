@@ -22,10 +22,10 @@
   display: flex;
 }
 /* Title styling */
-h1 {
+/* h1 {
   text-align: center;
   color: #333;
-}
+} */
 
 /* Style for the table */
 .order-table {
@@ -91,4 +91,7 @@ h1 {
   cursor: pointer;
   color:rgb(59, 118, 226);
   text-decoration: underline;
+}
+.product-table td{
+  vertical-align: middle;
 }

@@ -4,6 +4,7 @@ import { FaRegUser,FaSearch } from "react-icons/fa";
 import '../Header/Header.css'
 import Modal from "../Modal/index.js";
 import AudioPlayer from "./music.js"
+import Notification from "./noti.js"
 function Header({size}) {
   return(<>
   
@@ -16,7 +17,7 @@ function Header({size}) {
       <AudioPlayer />
       <div className="header__right">
         {/* <div className="header__setting"><RiSettings4Line /></div> */}
-        <div className="header__notify"><FaRegBell /></div>
+        <div className="header__notify"><Notification /></div>
         <div className="header__user"><Modal /></div>
       </div>
     </div></>

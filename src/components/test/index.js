@@ -49,6 +49,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       setOrders((prev)=>{
         const newData = [...regurlizationData]
         console.log(newData)
+        
         return newData;
       });
     } catch (error) {
@@ -61,6 +62,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
   const updateData = async ( newData) => {
     try {
       newData.ownerId= user.id_owner;
+      newData.user=user;
       const response = await fetch(`http://localhost:5000/import/orderHistory/updateOrderhistory`, {
         method: 'PUT',
         headers: {
@@ -71,12 +73,15 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       
       if (!response.ok) {
         throw new Error('Network response was not ok');
+        return 0;
       }
 
       const data = await response.json(); // Đọc phản hồi trả về
       console.log('Update successful:', data);
+      return 1;
     } catch (error) {
       console.error('Error during update:', error);
+      return 0;
     }
   };
   apiFetchOrderHistory = fetchOrder;
@@ -105,13 +110,18 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       console.log(loadOrder);
       console.log("Đơn hàng mới:", newOrder);
   
-      await updateData(newOrder);
+    let i= await updateData(newOrder);
   
       updatedOrders[editingIndex] = editedOrder;
       setOrders(updatedOrders);
       setEditingIndex(null);
       setNoteDetail(null);
-      notify(1, "you've updated importing goods", "Successfully!");
+      if(i){
+       notify(1, "you've updated importing goods", "Successfully!"); 
+      }else{
+        notify(2, "Error updating data", "Failed to update!"); 
+      }
+      
 
       setLoadOrder((prev) => !prev);
       setLoadLog((prev) => !prev);

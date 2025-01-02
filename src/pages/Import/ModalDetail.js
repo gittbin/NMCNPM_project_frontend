@@ -154,7 +154,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder})
     data.userName = user.name;
     data.userId = user._id;
     data.ownerId = user.id_owner;
-
+    data.user=user;
     console.log("Submitting data:", data);
 
     try {
@@ -167,6 +167,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder})
       });
 
       if (!response.ok) {
+        notify(2,"You don't have right to do this!","Fail!")
         throw new Error(
           `Failed to submit data: ${response.status} ${response.statusText}`
         );
@@ -260,7 +261,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder})
                           style={{ display: "flex", justifyContent: "center" }}
                         >
                           <div
-                            style={{ maxWidth: "80px", textAlign: "center" }}
+                            style={{ maxWidth: "80px", textAlign: "center"}}
                           >
                             #{product._id}
                           </div>

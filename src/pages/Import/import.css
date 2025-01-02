@@ -125,58 +125,58 @@ table {
 .dropdown.supplier:hover{
   background: #eee;
 }
-th, td {
+.list-product-detail th, .list-product-detail td {
   padding: 8px; /* Khoảng cách trong ô */
   text-align: left; /* Căn trái nội dung */
 }
 
-th {
+.list-product-detail th {
   text-align: center;
   background-color: #f4f4f4; /* Màu nền cho tiêu đề cột */
 }
-td{
+.list-product-detail td{
   vertical-align: middle;
 }
 /* Điều chỉnh chiều rộng các cột */
-th:nth-child(1), td:nth-child(1) { /* STT */
+.list-product-detail th:nth-child(1),.list-product-detail td:nth-child(1) { /* STT */
   width: 10px; /* Chiều rộng cho cột STT */
   text-align: center;
 
 }
-th:nth-child(2), td:nth-child(2) { /* Ảnh Mô Tả */
+.list-product-detail th:nth-child(2),.list-product-detail td:nth-child(2) { /* Ảnh Mô Tả */
   width: 120px; /* Chiều rộng cho cột Ảnh Mô Tả */
 }
-th:nth-child(3), td:nth-child(3) { /* Sản Phẩm */
+.list-product-detail th:nth-child(3),.list-product-detail td:nth-child(3) { /* Sản Phẩm */
   width: 200px; /* Chiều rộng cho cột Sản Phẩm */
   text-align: center;
 }
 
-th:nth-child(4), td:nth-child(4) { /* Nhà Cung Cấp */
+.list-product-detail th:nth-child(4),.list-product-detail td:nth-child(4) { /* Nhà Cung Cấp */
   width: 100px; /* Chiều rộng cho cột Nhà Cung Cấp */
   text-align: center;
 }
 
-th:nth-child(5), td:nth-child(5) { /* Số Lượng */
+.list-product-detail th:nth-child(5),.list-product-detail td:nth-child(5) { /* Số Lượng */
   width: 60px; /* Chiều rộng cho cột Số Lượng */
   padding:0;
 }
 
-th:nth-child(6), td:nth-child(6) { /* Thành Tiền */
+.list-product-detail th:nth-child(6),.list-product-detail td:nth-child(6) { /* Thành Tiền */
   width: 70px; /* Chiều rộng cho cột Thành Tiền */
   
 }
-td:nth-child(6){
+.list-product-detail td:nth-child(6){
   text-align: right;
 }
-th:nth-child(7), td:nth-child(7) { /* Hành Động */
+.list-product-detail th:nth-child(7),.list-product-detail  td:nth-child(7) { /* Hành Động */
   width: 90px; /* Chiều rộng cho cột Hành Động */
 }
-th:nth-child(8), td:nth-child(8) { /* Hành Động */
+.list-product-detail th:nth-child(8),.list-product-detail td:nth-child(8) { /* Hành Động */
   width: 10px; /* Chiều rộng cho cột Hành Động */
   text-align: center;
 
 }
-th:nth-child(9), td:nth-child(9) { /* Hành Động */
+.list-product-detail th:nth-child(9),.list-product-detail td:nth-child(9) { /* Hành Động */
   width: 10px; /* Chiều rộng cho cột Hành Động */
   text-align: center;
 }

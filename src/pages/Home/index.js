@@ -35,20 +35,21 @@ const [newcustomer,setNewcustomer] =useState({
   state: "notchange",
 });
 const [pending,setPending]=useState({total:0,percent:"0%"})
-  // const datas = [
-  //   { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
-  //   { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
-  //   { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
-  //   { name: "Apr", "Khách hàng trung thành": 330, "khách hàng mới": 220, "Khách hàng quay lại": 480 },
-  //   { name: "May", "Khách hàng trung thành": 450, "khách hàng mới": 260, "Khách hàng quay lại": 550 },
-  //   { name: "Jun", "Khách hàng trung thành": 400, "khách hàng mới": 290, "Khách hàng quay lại": 580 },
-  //   { name: "Jul", "Khách hàng trung thành": 460, "khách hàng mới": 320, "Khách hàng quay lại": 620 },
-  //   { name: "Aug", "Khách hàng trung thành": 510, "khách hàng mới": 340, "Khách hàng quay lại": 680 },
-  //   { name: "Sep", "Khách hàng trung thành": 252, "khách hàng mới": 360, "Khách hàng quay lại": 740 },
-  //   { name: "Oct", "Khách hàng trung thành": 680, "khách hàng mới": 390, "Khách hàng quay lại": 820 },
-  //   { name: "Nov", "Khách hàng trung thành": 780, "khách hàng mới": 420, "Khách hàng quay lại": 890 },
-  //   { name: "Dec", "Khách hàng trung thành": 900, "khách hàng mới": 450, "Khách hàng quay lại": 980 },
-  // ];
+const [act,setAct]=useState([])
+  const datas = [
+    { name: "Jan", "Khách hàng trung thành": 270, "khách hàng mới": 150, "Khách hàng quay lại": 542 },
+    { name: "Feb", "Khách hàng trung thành": 310, "khách hàng mới": 180, "Khách hàng quay lại": 520 },
+    { name: "Mar", "Khách hàng trung thành": 350, "khách hàng mới": 200, "Khách hàng quay lại": 560 },
+    { name: "Apr", "Khách hàng trung thành": 330, "khách hàng mới": 220, "Khách hàng quay lại": 480 },
+    { name: "May", "Khách hàng trung thành": 450, "khách hàng mới": 260, "Khách hàng quay lại": 550 },
+    { name: "Jun", "Khách hàng trung thành": 400, "khách hàng mới": 290, "Khách hàng quay lại": 580 },
+    { name: "Jul", "Khách hàng trung thành": 460, "khách hàng mới": 320, "Khách hàng quay lại": 620 },
+    { name: "Aug", "Khách hàng trung thành": 510, "khách hàng mới": 340, "Khách hàng quay lại": 680 },
+    { name: "Sep", "Khách hàng trung thành": 252, "khách hàng mới": 360, "Khách hàng quay lại": 740 },
+    { name: "Oct", "Khách hàng trung thành": 680, "khách hàng mới": 390, "Khách hàng quay lại": 820 },
+    { name: "Nov", "Khách hàng trung thành": 780, "khách hàng mới": 420, "Khách hàng quay lại": 890 },
+    { name: "Dec", "Khách hàng trung thành": 900, "khách hàng mới": 450, "Khách hàng quay lại": 980 },
+  ];
 
   // if (!user) {
   //   return <div>Không có người dùng nào đăng nhập.</div>;
@@ -56,7 +57,6 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
   useEffect(() => {
     const fetchData = async () => {
       if (loading) return;
-  
       const get_revenue = async () => {
         try {
           const response = await fetch('http://localhost:5000/home/total_revenue', {
@@ -195,8 +195,27 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
           console.error("Error fetching income:", error);
         }
       }
-      // Chạy cả hai hàm đồng thời
-      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer(),get_top_product(),get_pending()]);
+      const get_activity=async () => {
+      try{
+        const activity = await fetch('http://localhost:5000/home/recent_activity',{
+          method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              user: user,
+            }),
+
+        });
+        const data=await activity.json();
+      
+        setAct(data.events);
+      }catch (error) {
+        console.error("Error fetching activity:", error)
+      }
+      }
+
+      await Promise.all([get_revenue(), get_income(),get_customer(),get_report_customer(),get_top_product(),get_pending(),get_activity()]);
     };
   
     fetchData();
@@ -222,7 +241,9 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
                 <div class="d-flex justify-content-between">
                   <div>
                     <h6>
-                      <b>Todays Income</b>
+                      <b style={{ whiteSpace: "nowrap", 
+  overflow: "hidden",
+  textOverflow: "ellipsis" }}>Todays Income</b>
                     </h6>
                     <p class="text-muted">All Customs Value</p>
                   </div><h4 class="text-info fw-bold">{totalincome.profitToday}</h4>
@@ -404,7 +425,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
                 <div class="card-title">Lịch làm việc</div>
               </div>
               <div class="card-body p-0">
-                <CalendarComponent defaultView="agenda"/>
+                <CalendarComponent defaultView="month"/>
                 {/* <div class="table-responsive">
                   <table class="table align-items-center">
                     <thead class="thead-light">
@@ -485,7 +506,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
               </div>
             </div>
           </div>
-          <div class="col-md-4" style={{maxHeight:"420px",overflowY:"auto",marginBottom:"15px"}}>
+          <div class="col-md-4" style={{maxHeight:"645px",overflowY:"auto",marginBottom:"15px"}}>
             <div class="card">
               <div class="card-header">
                 <div class="card-title">Top Products</div>
@@ -497,7 +518,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
                   <div class="d-flex">
                     <div class="avatar">
                       <img
-                        src={a.image.secure_url}
+                        src={a.image?a.image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"}
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
@@ -590,7 +611,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row" style={{marginTop:"10px"}}>
           <div class="col-md-6">
             <div class="card">
               <div class="card-header">
@@ -628,7 +649,21 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
               </div>
               <div class="card-body">
                 <ol class="activity-feed">
-                  <li class="feed-item feed-item-secondary">
+                  {act.map(act =>{
+                    return(
+                      <li class={"feed-item "+ act.type}>
+                    <time class="date" datetime={act.date}>
+                      {act.date}
+                    </time>
+                    <span class="text" dangerouslySetInnerHTML={{
+              __html: act.detail,  // Hiển thị HTML (thẻ <br /> sẽ được xử lý)
+            }}>
+                     
+                    </span>
+                  </li>
+                    )
+                  })}
+                  {/* <li class="feed-item feed-item-secondary">
                     <time class="date" datetime="9-25">
                       Sep 25
                     </time>
@@ -681,7 +716,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
                       Attending the event
                       <a href="single-event.php">"Some New Event"</a>
                     </span>
-                  </li>
+                  </li> */}
                 </ol>
               </div>
             </div>
@@ -690,7 +725,7 @@ const [pending,setPending]=useState({total:0,percent:"0%"})
             <div class="card">
               <div class="card-header">
                 <div class="card-head-row">
-                  <div class="card-title">Support Tickets</div>
+                  <div class="card-title">Information</div>
                   <div class="card-tools">
                     <ul
                       class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm"

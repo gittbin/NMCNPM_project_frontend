@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { notify } from '../../components/Notification/notification';
 import help from "./img/help.png"
+import logo from "./img/logo2-removebg-preview.png"
 function Main(){
     const [a,setA]= useState(0)
     const handle=(x)=>{setA(x)}
@@ -38,7 +39,7 @@ function Main(){
    style={a!=0?{opacity:0.3}:{}}
    className="main">
     <header>
-        <div className="logo">LOGO</div>
+        <div className="logo"><img style={{height:"112px",position:"absolute",top:"0px",left:"33%"}} src={logo}/>SMART STORE</div>
         <div className="auth-buttons">
             <button className="btn"
             onClick={()=>{setA(1)
@@ -61,7 +62,10 @@ function Main(){
 
         <div class="image-container">
             <div class="support-btn">
-                <span class="support-text">Hỗ trợ</span>
+                <span class="support-text">
+                  <a href="http://localhost:8000" >
+                  Hỗ trợ</a>
+                  </span>
             </div>
             <img src={help} alt="Background" class="background-image"/>
         </div>    

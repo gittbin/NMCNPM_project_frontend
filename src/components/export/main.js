@@ -139,6 +139,14 @@ const Billing = () => {
     ;
 
   }
+  const calculateTotal = () => {
+    return invoices[currentInvoice].products.reduce((total, product) => total + product.total, 0);
+  };
+  const deleteAllProducts = () => {
+    const updatedInvoices = [...invoices];
+    updatedInvoices[currentInvoice].products = []; // Xóa tất cả sản phẩm
+    setInvoices(updatedInvoices); // Cập nhật lại state
+  };
   const totalBeforeTax = invoices[currentInvoice].products.reduce(
     (acc, product) => acc + product.total,
     0
@@ -342,6 +350,11 @@ const Billing = () => {
                 <td className="delete_prd" onClick={()=>{delete_prd(index)}}>x</td>
               </tr>
             ))}
+               <tr>
+            <td colSpan={5} style={{ textAlign: 'right' }}><strong>Tổng cộng:</strong></td>
+            <td style={{ textAlign: 'right' }}>{calculateTotal().toLocaleString('vi-VN')}</td>
+            <td className="delete_prd" onClick={deleteAllProducts}>Xóa hết</td>
+          </tr>
           </tbody>
         </table>
       </div>

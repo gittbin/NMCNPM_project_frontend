@@ -51,9 +51,9 @@
 }
 
 /* Table Styling */
-.uy-table-container {
+/* .uy-table-container {
   overflow-x: auto;
-}
+} */
 
 .uy-role-table {
   width: 100%;
@@ -88,8 +88,8 @@
 
 .uy-dropdown-menu {
   position: absolute;
-  top: 100%;
-  left: 0;
+  /* top: 100%;
+  left: 0; */
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;

@@ -29,6 +29,7 @@ header {
     font-weight: bold;
     text-align: center;
     flex: 1;
+    margin-left: 10%;
 }
 
 .auth-buttons {
