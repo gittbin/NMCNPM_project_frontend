@@ -48,7 +48,6 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       const regurlizationData = data.map(item => createorder(item));
       setOrders((prev)=>{
         const newData = [...regurlizationData]
-        console.log(newData)
         
         return newData;
       });
@@ -89,14 +88,13 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
     debounce((keyword) => {
       fetchOrder(keyword);
     }, 500),
-    [user]
+    [user,loading]
   );
   useEffect(() => {
     if(loading)return
-    if (user) {
-      fetchOrder(" ");
-    }
-  }, [loading,loadOrder]);
+      console.log("debub")
+      debouncedFetchSuggestions(searchTerm.trim());
+    }, [loading,loadOrder,user]);
   useEffect(() => {
     debouncedFetchSuggestions(searchTerm.trim());
   }, [searchTerm]);  
@@ -121,11 +119,8 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       }else{
         notify(2, "Error updating data", "Failed to update!"); 
       }
-      
-
       setLoadOrder((prev) => !prev);
       setLoadLog((prev) => !prev);
-  
     } catch (error) {
       console.error("Error in handleSaveClick:", error);
       notify(0, "Error updating data", "Failed to update!");
@@ -166,7 +161,7 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       hour12: false,
     });
   };
- 
+  console.log("user",user)
   return (
     <div className="order-mgmt-container">
       <div className="order-mgmt-header">

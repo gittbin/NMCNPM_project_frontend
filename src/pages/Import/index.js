@@ -248,7 +248,8 @@ function Import() {
             setIdProductAdded={setIdProductAdded}
             apiFetchOrderHistory = {apiGetOrder}
             apiGetHistory = {apiGetHistory}
-            
+            setLoadOrder ={setLoadOrder}
+            setLoadLog = {setLoadLog}
           />
         </div>
       </Modal>
@@ -292,7 +293,7 @@ function Import() {
   );
 }
 
-const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHistory }) => {
+const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHistory,setLoadLog,setLoadOrder }) => {
   const initItem = (item) => {
     return {
       name: item.name,
@@ -466,6 +467,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
   };
 
   const handleSubmit = async () => {
+    console.log("baby take my hand")
     const groupBySupplier = listProductWereAdded.reduce(
       (acc, item) => {
         // Kiểm tra xem đã có supplier này trong nhóm chưa
@@ -488,6 +490,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
     groupBySupplier.tax = myTax
     const url = "http://localhost:5000/import/orderHistory/save";
     
+   
     try {
  
       const response = await fetch(url, {
@@ -499,13 +502,14 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
       });
 
       if (response.ok) {
-        // Nếu thành công, xử lý kết quả
+        
         notify(1,"you've completed importing goods","Successfully!")
         const responseData = await response.json();
         console.log("Dữ liệu đã được gửi thành công", responseData);
-        await apiFetchOrderHistory.current.fetchOrder("")
-        await apiGetHistory.current.debouncedFetchSuggestions(" ", "http://localhost:5000/import/loggingOrder/listOrder", 1, 10);
-
+        //await apiFetchOrderHistory.current.fetchOrder(" ")
+        //await apiGetHistory.current.debouncedFetchSuggestions(" ", "http://localhost:5000/import/loggingOrder/listOrder", 1, 10);
+        setLoadOrder((prev)=>!prev)
+        setLoadLog((prev)=>!prev)
         setIdProductAdded([]);
         setListProductWereAdded([]);
       } else {

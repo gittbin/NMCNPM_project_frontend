@@ -41,7 +41,7 @@ const ModalHistory = forwardRef(({ isOpen, onClose,openModalDetail,setIdOrder,ap
     debounce((keyword, hrefLink, page, limit) => {
       fetchProductSuggestions(keyword, hrefLink, page, limit);
     }, 500),
-    [user]
+    [user,loadLog]
   );
   useImperativeHandle(apiGetHistory,()=>({
     debouncedFetchSuggestions
@@ -66,7 +66,7 @@ const handleSearchChange = (e) => {
   useEffect(() => {
     if(loading)return
     debouncedFetchSuggestions(searchTerm.trim(), "http://localhost:5000/import/loggingOrder/listOrder", page, 10);
-  }, [searchTerm, page,loading,loadLog]);  
+  }, [searchTerm, page,loading,loadLog,user]);  
   
   const handlePage = () => {
     // Tăng page khi nhấn "Load More" để tải thêm dữ liệu
