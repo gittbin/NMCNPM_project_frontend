@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { useAuth } from "../../components/introduce/useAuth";
-
+import { IoCallSharp } from "react-icons/io5";
+import { FaVideo } from "react-icons/fa";
 function Chat({chats,ring}) {
   const { user, loading } = useAuth();
   const chatEndRef = useRef(null);
@@ -118,6 +119,19 @@ function Chat({chats,ring}) {
   
   return (
     <div style={{ ...styles.container, display: chats ? "block" : "none" }}>
+      {/* Header */}
+      <div style={styles.header}>
+        <div style={styles.headerLeft}>
+          <img src={user?.avatar} alt="Avatar" style={styles.headerAvatar} />
+          <span style={styles.headerName}>{user?.name || "Chat"}</span>
+        </div>
+        <div style={styles.headerRight}>
+          <button style={styles.headerButton}><IoCallSharp /></button>
+          <button style={styles.headerButton}><FaVideo />
+          </button>
+        </div>
+      </div>
+      {/* Chat Window */}
       <div style={styles.chatWindow}>
         {chat.map((msg, index) => (
           <div
@@ -145,6 +159,7 @@ function Chat({chats,ring}) {
         ))}
         <div ref={chatEndRef} />
       </div>
+      {/* Input Field */}
       <div style={styles.inputContainer}>
         <input
           type="text"
@@ -159,6 +174,7 @@ function Chat({chats,ring}) {
       </div>
     </div>
   );
+  
 }
 
 const styles = {
@@ -172,7 +188,9 @@ const styles = {
     fontFamily: "Arial, sans-serif",
     position: "fixed",
     right:"150px",
-    bottom:"95px"
+    bottom:"95px",
+    zIndex:1000,
+    
   },
   chatWindow: {
     height: "300px",
@@ -221,6 +239,45 @@ const styles = {
     cursor: "pointer",
     marginLeft: "5px",
   },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      padding: "10px",
+      backgroundColor: "#007bff",
+      color: "#fff",
+      borderBottom: "1px solid #ccc",
+    },
+    headerLeft: {
+      display: "flex",
+      alignItems: "center",
+    },
+    headerAvatar: {
+      width: "40px",
+      height: "40px",
+      borderRadius: "50%",
+      marginRight: "10px",
+    },
+    headerName: {
+      fontSize: "16px",
+      fontWeight: "bold",
+    },
+    headerRight: {
+      display: "flex",
+      gap: "5px",
+    },
+    headerButton: {
+      padding: "5px 10px",
+      fontSize: "14px",
+      backgroundColor: "#0056b3",
+      color: "#fff",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+    
+    // Các kiểu khác giữ nguyên
+  }
+  
 };
 
 export default Chat;

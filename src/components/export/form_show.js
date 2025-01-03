@@ -190,7 +190,7 @@ console.log(url)
             value={searchTerm}
             onChange={handleSearch}
           />
-                    <button className="order-mgmt-history-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={()=>{Setshowhistory(true)}}>Lịch sử thanh đối</button>
+                    <button className="order-mgmt-history-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={()=>{Setshowhistory(true)}}>Lịch sử thay đối</button>
           <button className="order-mgmt-create-btn" style={{marginLeft:"0px",marginRight:"20px"}} onClick={onformcustomer}>{!supplier?"Create customer":"Create supplier"}</button>
         </div>
         
