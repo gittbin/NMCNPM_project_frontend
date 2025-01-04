@@ -1,5 +1,6 @@
 /* Container for the entire order management component */
 .order-mgmt-container {
+  margin-bottom: 200px;
   width: 100%;
   color: #333; /* Changed from black to dark gray */
   background-color: #ffffff; /* White background */

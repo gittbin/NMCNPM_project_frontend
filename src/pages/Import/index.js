@@ -910,7 +910,7 @@ function Import() {
                             <div
                               className="search-container-img"
                               style={{
-                                backgroundImage: `url(${suggestions[index].image.secure_url})`,
+                                backgroundImage: `url(${suggestions[index].image?suggestions[index].image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"})`,
                               }}
                             ></div>
                           )}
@@ -971,7 +971,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
       description: item.description,
       supplier: item.supplierDetails.name,
       price: item.purchasePrice.replace(/\./g, ""),
-      imageUrl: item.image.secure_url,
+      imageUrl: item.image?item.image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg",
       supplierId: item.supplierDetails._id,
       quantity: 1,
       status: "pending",

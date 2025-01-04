@@ -165,7 +165,7 @@ function PaymentComponent({ close, products, totalAmount, customers, discount, v
                   alt="QR Code" 
                   style={{ 
                     maxWidth: '100%', 
-                    maxHeight: '128px', 
+                    maxHeight: '220px', 
                     objectFit: 'contain',
                     display: 'block',
                     margin: '0 auto'

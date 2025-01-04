@@ -278,7 +278,7 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder})
                           <div
                             className="body-container-img-description"
                             style={{
-                              backgroundImage: `url(${product.image.secure_url})`,
+                              backgroundImage: `url(${product.image?product.image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"})`,
                               minWidth: "120px",
                             }}
                           ></div>

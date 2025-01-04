@@ -96,7 +96,7 @@ const Notification = () => {
             products.map((product, index) => (
               <div className="notification-item" key={index}>
                 <img
-                  src={product.image?.secure_url || "https://via.placeholder.com/30"}
+                  src={product.image?.secure_url || "https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"}
                   alt="Product"
                   style={{ width: "30px", height: "30px" }}
                 />

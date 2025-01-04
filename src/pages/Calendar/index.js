@@ -5,6 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "./Calendar.css";
 import { useAuth } from "../../components/introduce/useAuth";
 import { useLoading } from "../../components/introduce/Loading";
+import { notify } from "../../components/Notification/notification";
 
 const localizer = momentLocalizer(moment);
 
@@ -116,7 +117,13 @@ const CalendarComponent = ({defaultView}) => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create event");
+      if(response.ok){
+        notify(1,"Thêm lịch làm việc thành công","Thành công");
+      }
+      if (!response.ok){
+        notify(2,"Thêm lịch làm việc thất bại","Thất bại");
+        throw new Error("Failed to delete event");
+      } 
 
       setEvents([...events, newEvent]);
       await fetchEvents(user.id_owner);
@@ -158,7 +165,13 @@ const CalendarComponent = ({defaultView}) => {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to update event");
+      if(response.ok){
+        notify(1,"SửaSửa lịch làm việc thành công","Thành công");
+      }
+      if (!response.ok){
+        notify(2,"Sửa lịch làm việc thất bại","Thất bại");
+        throw new Error("Failed to delete event");
+      } 
 
       setEvents((prev) =>
         prev.map((event) => (event.id === selectedEvent.id ? updatedEvent : event))
@@ -171,19 +184,31 @@ const CalendarComponent = ({defaultView}) => {
   };
 
   // Xóa sự kiện
-  const handleDeleteEvent = async () => {
+  const handleDeleteEvent = async (e) => {
+    e.preventDefault();
+    startLoading();
     try {
-      const response = await fetch(`http://localhost:5000/calendar/delete/${selectedEvent.id}`, {
+      const response = await fetch(`http://localhost:5000/calendar/delete/${selectedEvent.id}?id_owner=${user.id_owner}`, {
         method: "DELETE",
-      });
-
-      if (!response.ok) throw new Error("Failed to delete event");
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });      
+      console.log(response);
+      if(response.ok){
+        notify(1,"Xóa lịch làm việc thành công","Thành công");
+      }
+      if (!response.ok){
+        notify(2,"Xóa lịch làm việc thất bại","Thất bại");
+        throw new Error("Failed to delete event");
+      } 
 
       setEvents((prev) => prev.filter((event) => event.id !== selectedEvent.id));
       closeModal();
     } catch (error) {
       console.error("Error deleting event:", error);
     }
+    stopLoading();
   };
 
   return (
