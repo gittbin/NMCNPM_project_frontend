@@ -105,3 +105,97 @@
   margin-left: 50%;
   transform: translateX(-50%);
 }
+/* .bank-section {
+  margin: 20px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+} */
+
+.bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.bank-header h3 {
+  font-size: 20px;
+  color: #333;
+  margin: 0;
+}
+
+.add-bank-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: white;
+  background: #28a745;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.add-bank-btn:hover {
+  background: #218838;
+}
+
+.bank-form {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.bank-form label {
+  display: block;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.bank-form input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.bank-form button {
+  padding: 10px 20px;
+  font-size: 14px;
+  color: white;
+  background: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: "background 0.3s";
+}
+
+.bank-form button:hover {
+  background: #0056b3;
+}
+.edit_account{
+  background-color: #ffc107; /* Màu vàng */
+  color: #000000; /* Màu chữ trắng */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: "background-color 0.3s ease";
+}
+.delete_account{
+  background-color: #dc3545; /* Màu đỏ */
+  color: #ffffff; /* Màu chữ trắng */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: "background-color 0.3s ease";
+}

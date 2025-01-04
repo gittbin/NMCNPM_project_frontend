@@ -42,7 +42,7 @@ function RolesGroup() {
   };
 
   const sendRoleToBackend = async (newRoleData) => {
-    await createRole(newRoleData); // Thêm await
+    await createRole(newRoleData,user); // Thêm await
     const updatedRoles = await getRoles(user.id_owner);
     setRolesData(updatedRoles);
   };

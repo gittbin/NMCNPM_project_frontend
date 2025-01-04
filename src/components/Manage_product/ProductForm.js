@@ -157,8 +157,6 @@ const ProductForm = ({turnoff,refresh,profile}) => {
       notify(2,'Vui lòng thêm ảnh','Lỗi');
       return;
     }
-    console.log(formData.supplier)
-    console.log(formData.image);
     let body = {
 user:user,
 newPr:{...formData},

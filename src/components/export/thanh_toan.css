@@ -117,3 +117,28 @@
   top: 10px;
   cursor: pointer;
 }
+.qr-code-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.qr-code-container img {
+  width: 200px;
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.bank-payment-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.bank-payment-button:hover {
+  background-color: #45a049;
+}

@@ -112,7 +112,7 @@ const CalendarComponent = ({defaultView}) => {
           employee: formData.employee,
           start_time: startDateTime.toISOString(),
           end_time: endDateTime.toISOString(),
-          id_owner: user._id,
+          id_owner: user.id_owner,
         }),
       });
 
@@ -154,7 +154,7 @@ const CalendarComponent = ({defaultView}) => {
           employee: formData.employee,
           start_time: updatedEvent.start.toISOString(),
           end_time: updatedEvent.end.toISOString(),
-          id_owner: user._id,
+          id_owner: user.id_owner,
         }),
       });
 

@@ -155,73 +155,110 @@ const Billing = () => {
   const totalTax = totalBeforeTax * (tax / 100);
   const total = Math.round(totalBeforeTax + totalTax);
   const startCamera = async () => {
-    setCamera(true);
-    setIsProcessing(false);
-    streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
-    if (videoRef.current) {   
-      videoRef.current.srcObject =streamRef.current ;}
-    if (Quagga.initialized) {
-      Quagga.stop(); // Dừng Quagga và tất cả các sự kiện hiện tại
-  }
-    // Chạy QuaggaJS để quét mã vạch
-    if(videoRef.current){
-      Quagga.init({
-        inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: videoRef.current, // Dùng video từ camera
-            constraints: {
-                facingMode: "environment" // Sử dụng camera sau
-            },
-            willReadFrequently: true 
-        },
-        decoder: {
-            readers: ["code_128_reader", "ean_reader", "upc_reader", "code_39_reader"], // Các loại mã vạch cần quét
-        }
-    }, function(err) {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        Quagga.initialized = true; // Đánh dấu rằng Quagga đã được khởi động
-        Quagga.start(); });
-    }
-    
-        Quagga.offDetected(); // Loại bỏ bất kỳ sự kiện onDetected nào trước đó
-        Quagga.onDetected(async function  (result) {
-          if (isProcessing) return; // Nếu đang xử lý thì bỏ qua các sự kiện tiếp theo
-    setIsProcessing(true); // Đặt trạng thái để ngăn không xử lý lại
-          const code = result.codeResult.code;   
-          stopCamera();
-          try {
-            await addProduct(code); // Gọi hàm và chờ đợi
-            setProductCode(code);
-        } catch (error) {
-            console.error("Error in addProduct:", error); // Bắt lỗi nếu có
-        }finally {  
-          setIsProcessing(false)
-      }
-        return;
-      });
-  };
-  const stopCamera=()=>{
-    if (streamRef.current) {
-      const tracks = streamRef.current.getTracks();
-      if (Array.isArray(tracks)) {
-        tracks.forEach(track => { if (track && typeof track.stop === 'function') track.stop();});
-      }
-       // Dừng từng track trong stream
-       if (videoRef.current) {   
-        videoRef.current.srcObject = null;}
+    try {
+        // Bật trạng thái camera và chuẩn bị
+        setCamera(true);
+        setIsProcessing(false);
 
-      streamRef.current = null; // Đặt lại tham chiếu stream
+        // Yêu cầu truy cập camera
+        streamRef.current = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+            videoRef.current.srcObject = streamRef.current;
+        }
+
+        // Dừng Quagga nếu đã khởi tạo
+        if (Quagga.initialized) {
+            Quagga.stop();
+        }
+
+        // Khởi tạo QuaggaJS để quét mã vạch
+        if (videoRef.current) {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: videoRef.current, // Sử dụng video từ camera
+                    constraints: {
+                        facingMode: "environment", // Camera sau
+                    },
+                    willReadFrequently: true,
+                },
+                decoder: {
+                    readers: [
+                        "code_128_reader",
+                        "ean_reader",
+                        "upc_reader",
+                        "code_39_reader",
+                    ], // Các loại mã vạch cần quét
+                },
+            }, function (err) {
+                if (err) {
+                    console.error("Quagga init error:", err);
+                    notify(2,"Không thể khởi động quét mã vạch. Vui lòng thử lại!","Thất bại");
+                    return;
+                }
+                Quagga.initialized = true; // Đánh dấu đã khởi tạo
+                Quagga.start();
+            });
+        }
+
+        // Xử lý sự kiện khi phát hiện mã vạch
+        Quagga.offDetected(); // Xóa sự kiện trước đó
+        Quagga.onDetected(async function (result) {
+            if (isProcessing) return; // Nếu đang xử lý thì bỏ qua
+            setIsProcessing(true); // Đặt trạng thái xử lý
+
+            const code = result.codeResult.code;
+            stopCamera(); // Dừng camera sau khi quét
+            try {
+                await addProduct(code); // Gọi hàm thêm sản phẩm
+                setProductCode(code); // Lưu mã sản phẩm
+            } catch (error) {
+                console.error("Error in addProduct:", error);
+            } finally {
+                setIsProcessing(false);
+            }
+        });
+    } catch (error) {
+        console.error("Camera error:", error);
+        notify(2,"Không thể mở camera. Vui lòng kiểm tra cài đặt quyền hoặc thiết bị!","Thất bại");
     }
-    if(Quagga&&typeof Quagga.stop==='function'){
-       Quagga.stop();
-    }
-   
+};
+
+const stopCamera = () => {
+  try {
+      // Kiểm tra và dừng stream nếu có
+      if (streamRef.current) {
+          const tracks = streamRef.current.getTracks();
+          if (Array.isArray(tracks)) {
+              tracks.forEach(track => {
+                  if (track && typeof track.stop === "function") {
+                      track.stop(); // Dừng track
+                  }
+              });
+          }
+          // Gỡ liên kết stream khỏi video
+          if (videoRef.current) {
+              videoRef.current.srcObject = null;
+          }
+          streamRef.current = null; // Đặt lại tham chiếu stream
+      }
+
+      // Dừng Quagga nếu đã khởi tạo
+      if (Quagga && typeof Quagga.stop === "function") {
+          Quagga.stop();
+          Quagga.initialized = false; // Đặt lại trạng thái Quagga
+      }
+
+      // Cập nhật trạng thái camera
+      setCamera(false);
+  } catch (error) {
     setCamera(false);
+      console.error("Error stopping camera:", error);
+      notify(2,"Không thể dừng camera. Vui lòng thử lại!","Thật bại");
   }
+};
+
   const onform=()=>{
     if(total>0){
       setForm(true);}
@@ -289,9 +326,9 @@ const Billing = () => {
             })}
           </ul>
           <button style={{marginTop:"10px",color:"white"}} onClick={startCamera} className="button-sell" >Quét mã</button>      
+          <button onClick={()=>addProduct()} style={{color:"white",marginLeft:"10px"}}  className="button-sell">Thêm sản phẩm</button>
         </div>
         <div className="xx">
-        <button onClick={()=>addProduct()} style={{color:"white"}}  className="button-sell">Thêm sản phẩm</button><br/>
         <button   className="history" onClick={onform_history}>Lịch sử</button><br/>
         <button   className="create_user" onClick={onformcustomer}>Danh sách khách hàng</button></div>
       </div>
