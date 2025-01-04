@@ -161,7 +161,6 @@ const OrderManagement = forwardRef(({ onCreateOrder, onHistory,openModalDetail,s
       hour12: false,
     });
   };
-  console.log("user",user)
   return (
     <div className="order-mgmt-container">
       <div className="order-mgmt-header">

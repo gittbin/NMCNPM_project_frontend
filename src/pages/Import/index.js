@@ -1,5 +1,3 @@
-// import ImageUpload from "../../components/Manage_product/image"
-// import Change_password from"../../components/introduce/resetpassword.js"
 import OrderManagement from "../../components/test/index";
 import ModalHistory from "./ModalHistory";
 import React, {
@@ -7,7 +5,6 @@ import React, {
   useRef,
   useEffect,
   useCallback,
-  useContext,
 } from "react";
 import axios from "axios";
 import debounce from "lodash.debounce";
@@ -42,7 +39,6 @@ function Import() {
   const closeModalHistory = () => setOpenHistory(false);
   const closeModalDetail = () => setOpenDetail(false);
   const openModalDetail = () => setOpenDetail(true);
-  const {startLoading,stopLoading}=useLoading();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,14 +47,21 @@ function Import() {
           `http://localhost:5000/import/orderHistory/lastProductTop100?ownerId=${user.id_owner}`
         );
         const dataRes = await res.json();
-        setDataTop(dataRes);
+        setDataTop((prev)=>{
+          let newData
+          if(prev)
+           newData = [...prev,...dataRes];
+          else newData =[...dataRes]
+          return newData
+        });
 
       } catch (err) {
         console.error(err);
       }
     };
     fetchData();
-  }, [loading]);
+  }, [loading,user]);
+
   const handleSearch = (event) => {
     const term = event.target.value;
     let keyword = term.trim();
@@ -72,32 +75,29 @@ function Import() {
           `http://localhost:5000/import/supplier/search`
         );
       } else {
-        setSuggestions([]); // Nếu không có từ khóa, xóa kết quả gợi ý
+        setSuggestions([]); 
+        setResults([])
       }
     } else {
       setSuppOrPro(true);
-      if (keyword.length > 0) {
-        const topData = dataTop
-          .filter((item) =>
-            item.name.toLowerCase().includes(keyword.toLowerCase())
-          )
-          .slice(0, 5);
-        if (topData.length) {
-          setResults(topData.map((item) => item.name));
-          setSuggestions(topData);
-        } else {
-          console.log("jellooo");
+      if(keyword){
+        if(!dataTop.some(d=>d.name.toLowerCase().includes(keyword.toLowerCase))){
           debouncedFetchSuggestions(
             keyword,
             `http://localhost:5000/import/products/exhibitProN`
           );
         }
-      } else {
-        setSuggestions([]); // Nếu không có từ khóa, xóa kết quả gợi ý
+        setResults([])
+        setSuggestions([])
+        const data_match = dataTop.filter((item) =>item.name.toLowerCase().includes(keyword.toLowerCase())).slice(0, 5);
+        setResults(data_match.map(d=>d.name))
+        setSuggestions(data_match)
+      }else {
+        setSuggestions([]); 
+        setResults([])
       }
     }
   };
-  // database
   const fetchProductSuggestions = async (keyword, hrefLink) => {
     try {
       const response = await axios.get(hrefLink, {
@@ -107,12 +107,11 @@ function Import() {
         },
       });
       const sugg = response.data.map((s) => s.name);
-      setResults(sugg);
       setDataTop((prev) => {
-        const newData = [...prev, ...response.data];
-        return newData;
+        const existingIds = new Set(prev.map((item) => item._id)); 
+        const newData = response.data.filter((item) => !existingIds.has(item._id)); 
+        return [...prev, ...newData]; 
       });
-      setSuggestions(response.data);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
@@ -122,15 +121,13 @@ function Import() {
       (keyword, hrefLink) => fetchProductSuggestions(keyword, hrefLink),
       500
     ),
-    [user] // Chỉ tạo ra một lần
+    [user,loading] // Chỉ tạo ra một lần
   );
 
   const handleAddToOrder = async () => {
-    const idPro = suggestions.filter((sugg) => sugg.name == searchTerm);
-    setSuggestions([]);
+    const idPro = suggestions.filter((sugg) => sugg.name == searchTerm);    
     const suppliersId = idPro ? idPro[0] : null;
     try {
-      // Gửi request GET với query string chứa productId
       if (suppliersId) {
         let response;
         if (!suppOrPro) {
@@ -145,11 +142,9 @@ function Import() {
           );
         }
 
-        // Kiểm tra nếu request thành công
         if (!suppOrPro && response.ok) {
-          const data = await response.json(); // Dữ liệu trả về từ server (có thể là chi tiết sản phẩm)
+          const data = await response.json(); 
           setIdProductAdded(data);
-          // Xử lý dữ liệu từ server (Hiển thị thông tin đơn hàng, ví dụ...)
           setSearchTerm("");
           setResults([]);
         } else if (suppOrPro) {
@@ -159,6 +154,7 @@ function Import() {
         } else {
           console.error("Error adding to order");
         }
+        setSuggestions([])
       }
     } catch (error) {
       console.error("Request failed", error);
@@ -170,10 +166,10 @@ function Import() {
     }, 700);
   };
   const handleSelectLiResult = (result) => {
-    setSearchTerm(result); // Cập nhật giá trị input với kết quả đã chọn
-    setShowDropdown(false); // Ẩn dropdown sau khi chọn
+    setSearchTerm(result); 
+    setShowDropdown(false); 
   };
-  //  console.log(apiGetHistory.current)
+ 
   return (
     <>
       <OrderManagement
@@ -273,23 +269,6 @@ function Import() {
         {" "}
       </ModalDetail>
     </>
-    // <div style={{ textAlign: 'center', margin: '20px' }}>
-    //   <input
-    //     type="file"
-    //     accept="image/*"
-    //     onChange={handleImageChange}
-    //   />
-    //   {selectedImage && (
-    //     <div style={{ marginTop: '20px' }}>
-    //       <h3>Ảnh đã tải lên:</h3>
-    //       <img
-    //         src={selectedImage}
-    //         alt="Uploaded"
-    //         style={{ maxWidth: '300px', maxHeight: '300px' }}
-    //       />
-    //     </div>
-    //   )}
-    // </div>
   );
 }
 
