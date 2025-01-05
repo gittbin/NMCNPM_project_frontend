@@ -206,8 +206,8 @@ detail:details
         console.log(data.message)
       if(data.message==="Success"){turnoff();  notify(1,"thêm sản phẩm thành công","Thành công");refresh();}
       else{
-        notify(2,'SKUD bạn điền đã xuất hiện ở sản phẩm khác','Thất bại');
-        setError("SKUD bạn điền đã xuất hiện ở sản phẩm khác")}
+        notify(2,data.message,'Thất bại');
+        setError(data.message)}
       })
       .catch((error) => {
         notify(2,"thêm sản phẩm thất bại","Thất bại")
