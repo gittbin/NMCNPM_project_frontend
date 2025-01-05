@@ -1163,7 +1163,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
     
    
     try {
- 
+      startLoading();
       const response = await fetch(url, {
         method: "POST", // Phương thức POST
         headers: {
@@ -1171,7 +1171,7 @@ const ContentOrder = ({ dataHis, setIdProductAdded,apiFetchOrderHistory,apiGetHi
         },
         body: JSON.stringify(groupBySupplier), // Chuyển đổi dữ liệu thành chuỗi JSON
       });
-
+      stopLoading();
       if (response.ok) {
         
         notify(1,"you've completed importing goods","Successfully!")
