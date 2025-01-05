@@ -148,9 +148,9 @@ const ModalDetail = ({ isOpen, onClose, idOrder, view ,setLoadLog,setLoadOrder})
     }
    
     // Calculate total amount
-    data.total = amountBill()
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    data.total = Math.floor(amountBill()*(100+myTax)/100)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     data.userName = user.name;
     data.userId = user._id;
     data.ownerId = user.id_owner;
