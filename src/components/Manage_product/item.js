@@ -108,6 +108,24 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
       filteredProducts.reverse()
     }
   const onUpdate=async(a,b,c)=>{
+    if (a.stock_in_shelf < 0 || a.reorderLevel < 0 || a.stock_in_Warehouse < 0) {
+          notify(2, 'Các trường số phải lớn hơn hoặc bằng 0.', 'Lỗi');
+          return;
+      }
+    
+      // Kiểm tra các trường price và purchasePrice phải là chuỗi số hợp lệ
+      const isNumeric = (value) => /^\d+(\.\d+)?$/.test(value.replace(/,/g, '').replace(/\./g, ''));
+      if (
+        !isNumeric(a.price) || !isNumeric(a.purchasePrice) ||
+        a.price < 0 || a.purchasePrice < 0
+      ) {
+        notify(
+          2,
+          'Giá bán và giá nhập phải là chuỗi số hợp lệ và lớn hơn hoặc bằng 0.',
+          'Lỗi'
+        );
+        return;
+      }
     let body={
       user:user,
       product_edit:a,
@@ -136,7 +154,7 @@ const ProductGrid = ({ selectedCategory ,reload, searchTerm,sortByA,sortByB}) =>
       <>
       {product&& <ProductDetail product={product} onClose={onClose} onUpdate={onUpdate}/>}
       {fdelete&& <DeleteProductModal product={fdelete} onClose2={onClose2} onDelete={(a,b)=>onDelete(a,b)}/>}
-      <div className="product-grid">
+      <div className="product-grid" style={{marginBottom:"200px"}}>
         {filteredProducts.map((product,index) => (
           <div className="item" key={index}>
             <div className="product-card">

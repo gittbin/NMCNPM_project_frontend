@@ -11,7 +11,11 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
         email: '',
         phone: '',
     });
-
+    const isPhoneValid = (phone) => {
+        const regex = /^[0-9]+$/;  // Kiểm tra chuỗi có 10 chữ số
+        return regex.test(phone);
+      };
+      
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCustomer({ ...customer, [name]: value });
@@ -19,6 +23,11 @@ function CustomerForm({close,show_customer,show_bill,supplier,change}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isPhoneValid(customer.phone)) {
+            stopLoading();
+            notify(2, "Số điện thoại không hợp lệ", "Thất bại");
+            return;
+        }
         startLoading();
         let response;
         if(!supplier){

@@ -149,6 +149,24 @@ const ProductForm = ({turnoff,refresh,profile}) => {
   }
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.stock_in_shelf < 0 || formData.reorderLevel < 0 || formData.stock_in_Warehouse < 0) {
+      notify(2, 'Các trường số phải lớn hơn hoặc bằng 0.', 'Lỗi');
+      return;
+  }
+
+  // Kiểm tra các trường price và purchasePrice phải là chuỗi số hợp lệ
+  const isNumeric = (value) => /^\d+(\.\d+)?$/.test(value.replace(/,/g, '').replace(/\./g, ''));
+  if (
+    !isNumeric(formData.price) || !isNumeric(formData.purchasePrice) ||
+    formData.price < 0 || formData.purchasePrice < 0
+  ) {
+    notify(
+      2,
+      'Giá bán và giá nhập phải là chuỗi số hợp lệ và lớn hơn hoặc bằng 0.',
+      'Lỗi'
+    );
+    return;
+  }
     if (!formData.supplier&&!profile) {
       notify(3,'Vui lòng chọn nhà cung cấp.Nếu không có nhà cung cấp bạn phải vào "Nhà cung cấp" để thêm','Cảnh báo');
       return;

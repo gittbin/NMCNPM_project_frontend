@@ -100,7 +100,16 @@ const handleEditClick = (index, order) => {
   setEditedOrder({ ...order });
 };
 let count=0;
+const isPhoneValid = (phone) => {
+  const regex = /^[0-9]+$/;  // Kiểm tra chuỗi có 10 chữ số
+  return regex.test(phone);
+};
 const handleSaveClick =async () => {
+  if (!isPhoneValid(editedOrder.phone)) {
+              stopLoading();
+              notify(2, "Số điện thoại không hợp lệ", "Thất bại");
+              return;
+          }
   startLoading()
     let url='http://localhost:5000/sell/edit_customer'
   if(supplier){url='http://localhost:5000/products/edit_supplier'}
