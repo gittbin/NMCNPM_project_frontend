@@ -456,6 +456,7 @@ function AccountTable() {
           ))}
         </tbody>
       </table>
+      <p style={{marginBottom:"5px", color:"red"}}>Lưu ý nếu sửa quyền của Admin sang một quyền khác mà không bao gồm ("*role") bạn sẽ không thể phân quyền nữa</p>
       <button className="deleteAccountBtn" onClick={() => handleDeleteAccount(user._id)}>Xóa Tài Khoản</button>
     </div>
   );

@@ -370,7 +370,7 @@ const [act,setAct]=useState([])
               <div class="card-body">
                 <div class="chart-container" style={{ minHeight: "375px" }}>
                   <ResponsiveContainer width="100%" height={400}>
-                    <AreaChart data={data}>
+                    <AreaChart data={datas}>
                       <XAxis dataKey="name" />
                       <YAxis type="number" domain={[0, "dataMax"]} />
                       <CartesianGrid strokeDasharray="3 3" />

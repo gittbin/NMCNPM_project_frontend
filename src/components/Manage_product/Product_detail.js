@@ -275,7 +275,7 @@ const ProductDetail = ({ product, onClose, onUpdate }) => {
               </div>
               <div className="product-info-details-row">
                 <strong>Nhà cung cấp:</strong>
-                <span>{products.supplier.name}</span>
+                <span>{products.supplier?products.supplier.name:"nhà cung cấp của sản phầm này  đã bị xóa vui lòng hãy thêm nhà cung cấp"}</span>
               </div>
               <div className="product-info-details-row">
                 <strong>Ngày nhập:</strong>

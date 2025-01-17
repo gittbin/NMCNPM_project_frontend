@@ -122,7 +122,7 @@ const Permissions = () => {
           </tbody>
         </table>
       </div>
-
+      <p style={{marginBottom:"5px", color:"red"}}>Lưu ý khi trao quyền "*role" vì nó có thể thao tác được với quyền(bao gồm thêm, chỉnh sửa, xóa) </p>
       <button type="submit" className="update-btn">
         Cập nhật
       </button>

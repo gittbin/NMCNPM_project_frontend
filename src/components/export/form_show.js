@@ -119,14 +119,15 @@ const handleSaveClick =async () => {
       if(supplier) notify(1,"supplier đã được cập nhật","Thành công");else{
         notify(1,"khách hàng đã được cập nhật","Thành công")
       }
+      const updatedOrders = [...initialOrders];
+  updatedOrders[editingIndex] = editedOrder;
+  setInitialOrders(updatedOrders);
+  setEditingIndex(null); // Thoát khỏi chế độ chỉnh sửa
     }else{
       notify(2,data.message,"Thất bại")
     };
     stopLoading()
-  const updatedOrders = [...initialOrders];
-  updatedOrders[editingIndex] = editedOrder;
-  setInitialOrders(updatedOrders);
-  setEditingIndex(null); // Thoát khỏi chế độ chỉnh sửa
+  
 
 };
 
