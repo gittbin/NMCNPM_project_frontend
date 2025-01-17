@@ -175,13 +175,13 @@ console.log(url)
     if(supplier) notify(1,"supplier đã xóa","Thành công");else{
       notify(1,"khách hàng đã xóa","Thành công")
     }
+    let updatedOrders = [...initialOrders];
+  updatedOrders=updatedOrders.filter((item,index)=>index!=deletedOrder);
+  setInitialOrders(updatedOrders);
   }else{
     notify(2,data.message,"Thất bại")
   };
   stopLoading()
-  let updatedOrders = [...initialOrders];
-  updatedOrders=updatedOrders.filter((item,index)=>index!=deletedOrder);
-  setInitialOrders(updatedOrders);
 }
   return (<>
   {showdelete&&<DeleteProductModal supplier={supplier ? showdelete : undefined} customer={supplier ? undefined : showdelete}  onClose2={()=>{Setshowdelete(false)}} onDelete={delete_action}/>}
