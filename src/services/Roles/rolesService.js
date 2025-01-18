@@ -31,7 +31,7 @@ export const createRole = async (newRoleData,user) => {
       body: JSON.stringify({newRoleData, user}),
     });
     const data = await response.json();
-    if(data.message === "Không có quyền truy cập" || data.message === "Vai trò không tồn tại" || data === "Role không được cung cấp"){
+    if(data.message === "Không có quyền truy cập" || data.message === "Vai trò không tồn tại" || data === "Role không được cung cấp" || data.message === "Vai trò đã tồn tại"){
       notify(2,data.message,"Thất bại");
     }else{
       notify(1,"Tạo thành công quyền mới","Thành công");
