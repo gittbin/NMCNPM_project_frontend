@@ -14,7 +14,6 @@ function PaymentComponent({ close, products, totalAmount, customers, discount, v
   const [banks, setBanks] = useState([]);
   const { startLoading, stopLoading } = useLoading();
   const { user, loading } = useAuth();
-
   useEffect(() => {
     const fetchBanks = async () => {
       try {
@@ -157,20 +156,9 @@ function PaymentComponent({ close, products, totalAmount, customers, discount, v
               <h3>Thông tin ngân hàng</h3>
               <p><strong>Tên:</strong> {selectedBankDetails.name}</p>
               <p><strong>Số tài khoản:</strong> {selectedBankDetails.accountNumber}</p>
-              <p><strong>Chủ tài khoản:</strong> {selectedBankDetails.accountHolder}</p>
               <div className="qr-code">
                 <h4>Mã QR</h4>
-                <img 
-                  src={selectedBankDetails.image.secure_url} 
-                  alt="QR Code" 
-                  style={{ 
-                    maxWidth: '100%', 
-                    maxHeight: '220px', 
-                    objectFit: 'contain',
-                    display: 'block',
-                    margin: '0 auto'
-                  }} 
-                />
+                <img src={`https://img.vietqr.io/image/${selectedBankDetails.bankName}-${selectedBankDetails.accountNumber}-compact.jpg?amount=${totalAmount}`} alt="QR Code" />
               </div>
             </div>
           )}

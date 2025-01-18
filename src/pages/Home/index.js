@@ -536,7 +536,7 @@ const [act,setAct]=useState([])
                 <div class="d-flex ">
                   <div class="avatar">
                     <img
-                      src={a.image.secure_url}
+                      src={a.image?a.image.secure_url:"https://www.shutterstock.com/shutterstock/photos/600304136/display_1500/stock-vector-full-basket-of-food-grocery-shopping-special-offer-vector-line-icon-design-600304136.jpg"}
                       alt="..."
                       class="avatar-img rounded-circle"
                     />

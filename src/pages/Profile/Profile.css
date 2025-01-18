@@ -199,3 +199,45 @@
   cursor: pointer;
   transition: "background-color 0.3s ease";
 }
+/* Dropdown chọn ngân hàng */
+.bank-select-container {
+  margin: 20px 0;
+  position: relative;
+}
+
+.bank-select-label {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.bank-select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  appearance: none; /* Xóa mũi tên mặc định */
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.bank-select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+.bank-select-container::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #666;
+  pointer-events: none;
+}

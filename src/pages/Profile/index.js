@@ -12,8 +12,6 @@ import ProfilePictureOptions from './image.js';
 import { notify } from '../../components/Notification/notification';
 
 function Profile() {
-  const CLOUD_NAME = "ddgrjo6jr";
-  const UPLOAD_PRESET = "my-app";
   const { user, logout, loading } = useAuth();
   const [edit, setEdit] = useState(false);
   const [editImage, setEditImage] = useState(false);
@@ -27,9 +25,7 @@ function Profile() {
     accountNumber: '',
     bankName: '',
     name: '',
-    image: '',
   });
-const [image,SetImage]=useState(null)
 const [x,SetX]=useState(false);
   useEffect(() => {
     const fetchProfile = async () => {
@@ -86,17 +82,6 @@ const [x,SetX]=useState(false);
     const { name, value } = e.target;
     setNewBankAccount((prev) => ({ ...prev, [name]: value }));
   };
-  const handleChangeimage=(e)=>{
-    setNewBankAccount({
-      ...newBankAccount,
-      image: e.target.files[0]
-    });
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      SetImage(imageUrl);
-    }
- }
   const addBankAccount = async (e) => {
     e.preventDefault();
     if(data.role!="Admin"){
@@ -108,33 +93,6 @@ const [x,SetX]=useState(false);
       user:user,
       newPr:{...newBankAccount},
           };
-    const imageData = new FormData();
-    imageData.append('file', newBankAccount.image);
-    imageData.append('upload_preset', UPLOAD_PRESET);
-    try {     
-                const cloudinaryResponse = await fetch(
-                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`,
-                    {
-                      method: "POST",
-                      body: imageData, // Gửi FormData trực tiếp mà không cần JSON.stringify
-                    }
-                  );
-                  const data = await cloudinaryResponse.json();
-                  const secure_url=data.secure_url
-                  const public_id=data.public_id
-                // Chuẩn bị dữ liệu sản phẩm để gửi lên backend
-                body = {
-                    user: user, // Giả sử user có thuộc tính _id
-                    newPr: {
-                        ...newBankAccount,
-                        image: {secure_url, public_id } // Thêm thông tin hình ảnh
-                    },
-                };
-                console.log(secure_url)
-        }catch (error) {
-            console.error("Error uploading image:", error);
-            notify(2,"Đã xảy ra lỗi khi tải lên hình ảnh.","Thất bại")
-          }
         fetch("http://localhost:5000/bank/add_bank", {
           method: "POST",
           headers: {
@@ -156,12 +114,6 @@ const [x,SetX]=useState(false);
             notify(2,"thêm sản phẩm thất bại","Thất bại")
             console.log("Lỗi:", error);
           });
-  };
-  const handleEditAccount = (index) => {
-    const accountToEdit = bankAccounts[index];
-    setNewBankAccount(accountToEdit);
-    setShowBankForm(true);
-    SetImage(bankAccounts[index].image.secure_url)
   };
   const handleDeleteAccount = async (index) => {
     if(data.role!="Admin"){
@@ -250,7 +202,6 @@ const [x,SetX]=useState(false);
     name: '',
     image: '',
   });
-  SetImage(false);
 
 }
   }>
@@ -267,14 +218,37 @@ const [x,SetX]=useState(false);
           onChange={handleBankInputChange}
           required
         />
-        <input
-          type="text"
-          name="bankName"
-          placeholder="Ngân hàng"
-          value={newBankAccount.bankName}
-          onChange={handleBankInputChange}
-          required
-        />
+        <div className="bank-select-container">
+  <label htmlFor="bankName" className="bank-select-label">Chọn ngân hàng:</label>
+  <select
+    id="bankName"
+    name="bankName"
+    value={newBankAccount.bankName}
+    onChange={handleBankInputChange}
+    required
+    className="bank-select"
+  >
+    <option value="" disabled>
+      Chọn ngân hàng
+    </option>
+    <option value="VCB">Vietcombank (VCB)</option>
+    <option value="TCB">Techcombank (TCB)</option>
+    <option value="ICB">VietinBank (ICB)</option>
+    <option value="BIDV">BIDV</option>
+    <option value="STB">Sacombank (STB)</option>
+    <option value="MB">MB Bank (MB)</option>
+    <option value="ACB">ACB</option>
+    <option value="VPB">VPBank (VPB)</option>
+    <option value="HDB">HDBank (HDB)</option>
+    <option value="SHB">SHB</option>
+    <option value="Oceanbank">OceanBank</option>
+    <option value="DOB">DongA Bank (DOB)</option>
+    <option value="VBA">Agribank (VBA)</option>
+    <option value="EIB">Eximbank (EIB)</option>
+  </select>
+</div>
+
+
         <input
           type="text"
           name="name"
@@ -283,14 +257,14 @@ const [x,SetX]=useState(false);
           onChange={handleBankInputChange}
           required
         />
-        <label>mã QR</label>
+        {/* <label>mã QR</label>
         <input type="file" name="image" onChange={handleChangeimage} required />
         {image && (
           <div>
             <h3>Ảnh :</h3>
             <img src={image} alt="Captured" style={{ width: '300px' }} />
           </div>
-        )}
+        )} */}
         <button className="message-btn">Lưu tài khoản</button>
       </form>
     </div>
@@ -299,13 +273,7 @@ const [x,SetX]=useState(false);
     {bankAccounts.map((account, index) => (
       <li key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
         <span>{account.name} - {account.bankName} ({account.accountNumber})</span>
-        <button
-          style={{ marginLeft: '10px', cursor: 'pointer' }}
-          onClick={() => handleEditAccount(index)}
-          className="edit_account"
-        >
-          view
-        </button>
+        
         <button
           style={{ marginLeft: '10px', cursor: 'pointer' }}
           onClick={() => handleDeleteAccount(index)}
